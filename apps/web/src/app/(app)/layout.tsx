@@ -13,11 +13,19 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar orgName={organization.name} email={email} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-5xl px-8 py-8">{children}</div>
-      </main>
-    </div>
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-brand-fg"
+      >
+        Skip to content
+      </a>
+      <div className="flex min-h-screen">
+        <Sidebar orgName={organization.name} email={email} />
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-5xl px-8 py-8">{children}</div>
+        </main>
+      </div>
+    </>
   );
 }

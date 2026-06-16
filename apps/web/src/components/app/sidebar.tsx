@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, FolderKanban, Settings } from "lucide-react";
 import { signOut } from "@/app/(auth)/actions";
 
@@ -10,6 +13,8 @@ const NAV = [
 ] as const;
 
 export function Sidebar({ orgName, email }: { orgName: string; email: string | undefined }) {
+  const pathname = usePathname();
+
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r bg-[hsl(var(--muted))]">
       <div className="px-4 py-5">
@@ -22,16 +27,22 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
       </div>
 
       <nav aria-label="Primary" className="flex-1 space-y-1 px-2">
-        {NAV.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-[hsl(var(--muted))]"
-          >
-            <Icon className="h-4 w-4" aria-hidden="true" />
-            {label}
-          </Link>
-        ))}
+        {NAV.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href || pathname.startsWith(`${href}/`);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-[hsl(var(--background))] ${
+                active ? "bg-[hsl(var(--background))] text-brand" : ""
+              }`}
+            >
+              <Icon className="h-4 w-4" aria-hidden="true" />
+              {label}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="border-t p-4">
