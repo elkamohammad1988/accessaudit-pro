@@ -2,8 +2,10 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env";
 
-/** Routes reachable without a session. Everything else requires auth. */
-const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r/"];
+/** Routes reachable without a session. Everything else requires auth.
+ *  `/api` routes authenticate themselves (e.g. the Stripe webhook verifies its
+ *  signature) and must not be redirected to /login. */
+const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r/", "/api"];
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;
