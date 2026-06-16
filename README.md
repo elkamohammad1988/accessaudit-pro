@@ -13,13 +13,13 @@ the architecture decisions.
 ```
 accessaudit-pro/
 ├── apps/
-│   └── web/          # Next.js (App Router) — the SaaS UI + API routes
-│       └── (worker/  # scan worker — Node + Playwright + axe-core — added in Phase 2)
+│   ├── web/          # Next.js (App Router) — the SaaS UI + API routes
+│   └── worker/       # scan worker — Node + Playwright + axe-core (off-request queue consumer)
 ├── packages/
 │   ├── shared/       # plan limits, shared types & constants
 │   └── database/     # generated Supabase types
 ├── supabase/         # migrations, RLS, seed, config (the database phase)
-└── docs/             # PRD, ERD, DB review, database guide
+└── docs/             # PRD, ERD, DB review, database guide, DEPLOYMENT
 ```
 
 ## Stack
@@ -45,9 +45,17 @@ cp .env.example .env.local     # then paste the keys printed by `supabase start`
 
 # 3. App
 pnpm dev                       # http://localhost:3000
+
+# 4. Scan worker (separate terminal — needs Chromium)
+npx playwright install chromium
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... pnpm --filter @accessaudit/worker dev
 ```
 
 Demo login after `db reset`: `demo@accessaudit.pro` / `Password123!`
+
+The web app queues scans; the **worker** runs them. Without the worker running,
+scans stay `queued`. See [`apps/worker/README.md`](apps/worker/README.md) and
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## Scripts
 
@@ -61,6 +69,12 @@ Demo login after `db reset`: `demo@accessaudit.pro` / `Password123!`
 
 ## Roadmap
 
-Phase 0 (foundations) → Phase 1 (tenancy: orgs, clients, projects) →
-**Phase 2 (scan worker — highest risk)** → Phase 3 (reports) →
-Phase 4 (billing) → Phase 5 (polish & launch). See [`docs/PRD.md` §12](docs/PRD.md).
+- ✅ **Phase 0** — foundations (auth, app shell, SSR session).
+- ✅ **Phase 1** — tenancy: organizations, clients & projects CRUD, settings/branding.
+- ✅ **Phase 2** — scan engine: Playwright + axe-core worker, Postgres queue, live progress.
+- ✅ **Phase 3** — reports: score/breakdowns/violations, public share links, CSV + branded PDF.
+- ✅ **Phase 4** — billing: Stripe Checkout + Customer Portal + webhook, plan-limit enforcement.
+- 🚧 **Phase 5** — polish & launch: marketing/pricing, error states, e2e tests, beta.
+
+Go-live (Supabase + Railway + Stripe) is documented in
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Full spec: [`docs/PRD.md` §12](docs/PRD.md).
