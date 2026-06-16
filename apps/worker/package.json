@@ -1,0 +1,25 @@
+{
+  "name": "@accessaudit/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"(no lint configured for worker yet)\""
+  },
+  "dependencies": {
+    "@accessaudit/database": "workspace:*",
+    "@accessaudit/shared": "workspace:*",
+    "@axe-core/playwright": "^4.10.1",
+    "@supabase/supabase-js": "2.47.10",
+    "axe-core": "^4.10.2",
+    "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

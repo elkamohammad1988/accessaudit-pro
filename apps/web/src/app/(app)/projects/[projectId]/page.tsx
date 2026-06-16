@@ -118,16 +118,21 @@ export default async function ProjectDetailPage({
         {scans && scans.length > 0 ? (
           <ul className="divide-y rounded-lg border">
             {scans.map((scan) => (
-              <li key={scan.id} className="flex items-center justify-between px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium capitalize">{scan.status}</p>
-                  <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                    {new Date(scan.created_at).toLocaleString()} · {scan.pages_scanned} page(s)
-                  </p>
-                </div>
-                <span className="text-sm font-semibold">
-                  {scan.score != null ? `${scan.score}/100` : "—"}
-                </span>
+              <li key={scan.id}>
+                <Link
+                  href={`/scans/${scan.id}`}
+                  className="flex items-center justify-between px-4 py-3 hover:bg-[hsl(var(--muted))]"
+                >
+                  <div>
+                    <p className="text-sm font-medium capitalize">{scan.status}</p>
+                    <p className="text-xs text-[hsl(var(--muted-foreground))]">
+                      {new Date(scan.created_at).toLocaleString()} · {scan.pages_scanned} page(s)
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {scan.score != null ? `${scan.score}/100` : "—"}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

@@ -335,6 +335,10 @@ export interface Database {
         Args: { org_id: string };
         Returns: boolean;
       };
+      claim_next_scan: {
+        Args: Record<string, never>;
+        Returns: Database["public"]["Tables"]["scans"]["Row"] | null;
+      };
     };
     Enums: {
       scan_status: "queued" | "running" | "completed" | "failed" | "partial";
