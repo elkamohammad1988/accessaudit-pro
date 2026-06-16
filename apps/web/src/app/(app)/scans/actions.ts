@@ -171,6 +171,34 @@ export async function rescanScan(formData: FormData): Promise<void> {
   redirect(`/scans/${data.id}`);
 }
 
+/**
+ * Toggle a public, read-only share link for a scan. Enabling mints a fresh token
+ * (revoking the previous link); disabling clears the token so old URLs 404.
+ */
+export async function setScanShare(formData: FormData): Promise<void> {
+  const id = formData.get("scanId");
+  const makePublic = formData.get("share") === "on";
+  if (typeof id !== "string" || !id) return;
+
+  const { supabase, organization } = await requireOrg();
+  if (makePublic) {
+    const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+    await supabase
+      .from("scans")
+      .update({ is_public: true, share_token: token, shared_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("organization_id", organization.id);
+  } else {
+    await supabase
+      .from("scans")
+      .update({ is_public: false, share_token: null })
+      .eq("id", id)
+      .eq("organization_id", organization.id);
+  }
+
+  revalidatePath(`/scans/${id}`);
+}
+
 /** Hard-delete a scan (cascades pages + violations). Owner-only via RLS. */
 export async function deleteScan(formData: FormData): Promise<void> {
   const id = formData.get("scanId");

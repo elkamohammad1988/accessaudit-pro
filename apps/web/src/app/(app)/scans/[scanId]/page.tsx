@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ScanStatus } from "@accessaudit/shared";
-import type { Violation } from "@accessaudit/database";
+import { limitsFor, type PlanTier, type ScanStatus } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { publicEnv } from "@/lib/env";
 import { STATUS_META, parseTotals } from "@/lib/scan-format";
-import { groupViolations } from "@/lib/report";
-import { ReportView, type ReportPage } from "@/components/scans/report-view";
+import { loadReportByScan } from "@/lib/load-report";
+import { ReportView } from "@/components/scans/report-view";
 import { ScanLive } from "@/components/scans/scan-live";
+import { ShareControl } from "@/components/scans/share-control";
 import { rescanScan, deleteScan } from "../actions";
 
 export const metadata: Metadata = { title: "Scan report" };
@@ -23,60 +24,28 @@ export default async function ScanReportPage({
   if (!organization) return null;
 
   const supabase = await createClient();
-  const { data: scan } = await supabase
-    .from("scans")
-    .select("*")
-    .eq("id", scanId)
-    .eq("organization_id", organization.id)
-    .maybeSingle();
-  if (!scan) notFound();
+  const [report, { data: sub }] = await Promise.all([
+    loadReportByScan(supabase, scanId, organization.id),
+    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+  ]);
+  if (!report) notFound();
 
-  const { data: project } = await supabase
-    .from("projects")
-    .select("id, name, client_id")
-    .eq("id", scan.project_id)
-    .maybeSingle();
-  const { data: client } = project
-    ? await supabase.from("clients").select("name").eq("id", project.client_id).maybeSingle()
-    : { data: null };
-
-  const { data: pages } = await supabase
-    .from("scan_pages")
-    .select("id, url, status, http_status, score, totals")
-    .eq("scan_id", scan.id)
-    .order("created_at", { ascending: true });
-
-  const pageRows = pages ?? [];
-  const pageIds = pageRows.map((p) => p.id);
-
-  let violations: Violation[] = [];
-  if (pageIds.length > 0) {
-    const { data } = await supabase.from("violations").select("*").in("scan_page_id", pageIds);
-    violations = data ?? [];
-  }
-
-  const pageUrlById = new Map(pageRows.map((p) => [p.id, p.url] as const));
-  const groups = groupViolations(violations, pageUrlById);
-  const reportPages: ReportPage[] = pageRows.map((p) => ({
-    url: p.url,
-    status: p.status,
-    httpStatus: p.http_status,
-    score: p.score,
-    totals: parseTotals(p.totals),
-  }));
-
+  const { scan } = report;
   const status = scan.status as ScanStatus;
   const statusMeta = STATUS_META[status];
+  const plan: PlanTier = sub?.plan ?? "free";
+  const limits = limitsFor(plan);
+  const canExport = status === "completed" || status === "partial";
 
   return (
     <div className="space-y-8">
       <div>
-        {project ? (
+        {report.projectId ? (
           <Link
-            href={`/projects/${project.id}`}
+            href={`/projects/${report.projectId}`}
             className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
           >
-            ← {project.name}
+            ← {report.projectName}
           </Link>
         ) : null}
 
@@ -91,7 +60,7 @@ export default async function ScanReportPage({
               </span>
             </div>
             <p className="text-sm text-[hsl(var(--muted-foreground))]">
-              {client?.name ? `${client.name} · ` : ""}
+              {report.clientName ? `${report.clientName} · ` : ""}
               {scan.scan_type === "single" ? "Single page" : "URL list"} · WCAG {scan.wcag_level} ·{" "}
               {new Date(scan.created_at).toLocaleString()}
             </p>
@@ -123,6 +92,48 @@ export default async function ScanReportPage({
 
       {!statusMeta.terminal ? <ScanLive scanId={scan.id} status={status} /> : null}
 
+      {canExport ? (
+        <section
+          aria-label="Share & export"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4"
+        >
+          <ShareControl
+            scanId={scan.id}
+            isPublic={scan.is_public}
+            shareToken={scan.share_token}
+            appUrl={publicEnv.appUrl}
+          />
+          <div className="flex items-center gap-2">
+            {limits.whiteLabelPdf ? (
+              <a
+                href={`/scans/${scan.id}/print`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium hover:bg-[hsl(var(--muted))]"
+              >
+                Export PDF
+              </a>
+            ) : null}
+            {limits.dataExport ? (
+              <a
+                href={`/scans/${scan.id}/export`}
+                className="inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium hover:bg-[hsl(var(--muted))]"
+              >
+                Export CSV
+              </a>
+            ) : null}
+            {!limits.whiteLabelPdf && !limits.dataExport ? (
+              <Link
+                href="/settings/billing"
+                className="text-sm text-brand underline-offset-4 hover:underline"
+              >
+                Upgrade to export branded PDF &amp; CSV
+              </Link>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <ReportView
         status={status}
         score={scan.score}
@@ -131,8 +142,8 @@ export default async function ScanReportPage({
         pagesScanned={scan.pages_scanned}
         finishedAt={scan.finished_at}
         errorReason={scan.error_reason}
-        pages={reportPages}
-        groups={groups}
+        pages={report.pages}
+        groups={report.groups}
       />
     </div>
   );

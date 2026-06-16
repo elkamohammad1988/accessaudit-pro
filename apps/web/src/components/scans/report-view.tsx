@@ -26,6 +26,8 @@ export interface ReportViewProps {
   errorReason: string | null;
   pages: ReportPage[];
   groups: GroupedViolation[];
+  /** Render every violation expanded (used by the print/PDF view). */
+  expanded?: boolean;
 }
 
 export function ReportView({
@@ -38,6 +40,7 @@ export function ReportView({
   errorReason,
   pages,
   groups,
+  expanded = false,
 }: ReportViewProps) {
   const issues = totalViolations(totals);
   const inProgress = status === "queued" || status === "running";
@@ -144,7 +147,7 @@ export function ReportView({
           <ul className="space-y-3">
             {groups.map((group) => (
               <li key={group.ruleId} className="rounded-lg border">
-                <details>
+                <details open={expanded}>
                   <summary className="flex cursor-pointer items-start justify-between gap-3 p-4">
                     <span className="min-w-0">
                       <span className="flex flex-wrap items-center gap-2">

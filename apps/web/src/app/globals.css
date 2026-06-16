@@ -44,3 +44,15 @@
     outline-offset: 2px;
   }
 }
+
+/* Print / Save-as-PDF: drop the app chrome so reports print as clean documents.
+   Open report details so nothing is hidden behind a collapsed <details>. */
+@media print {
+  aside,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    overflow: visible !important;
+  }
+}
