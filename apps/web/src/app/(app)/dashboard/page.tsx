@@ -18,29 +18,35 @@ export default async function DashboardPage() {
 
   const supabase = await createClient();
 
-  const [{ data: subscription }, { count: scansThisMonth }, { data: recentScans }] =
-    await Promise.all([
-      supabase
-        .from("subscriptions")
-        .select("plan")
-        .eq("organization_id", organization.id)
-        .maybeSingle(),
-      supabase
-        .from("scans")
-        .select("id", { count: "exact", head: true })
-        .eq("organization_id", organization.id)
-        .gte("created_at", startOfMonthIso()),
-      supabase
-        .from("scans")
-        .select("id, status, score, created_at, pages_scanned")
-        .eq("organization_id", organization.id)
-        .order("created_at", { ascending: false })
-        .limit(5),
-    ]);
+  const [
+    { data: subscription },
+    { count: scansThisMonth },
+    { count: clientsCount },
+    { data: recentScans },
+  ] = await Promise.all([
+    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+    supabase
+      .from("scans")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organization.id)
+      .gte("created_at", startOfMonthIso()),
+    supabase
+      .from("clients")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organization.id)
+      .is("archived_at", null),
+    supabase
+      .from("scans")
+      .select("id, status, score, created_at, pages_scanned")
+      .eq("organization_id", organization.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
+  ]);
 
   const plan: PlanTier = subscription?.plan ?? "free";
   const limits = limitsFor(plan);
   const used = scansThisMonth ?? 0;
+  const clients = clientsCount ?? 0;
 
   return (
     <div className="space-y-8">
@@ -73,14 +79,16 @@ export default async function DashboardPage() {
             </span>
           </p>
         </div>
-        <div className="rounded-lg border p-4">
+        <Link href="/clients" className="rounded-lg border p-4 hover:bg-[hsl(var(--muted))]">
           <p className="text-sm text-[hsl(var(--muted-foreground))]">Clients</p>
           <p className="mt-1 text-2xl font-semibold">
+            {clients}
             <span className="text-base font-normal text-[hsl(var(--muted-foreground))]">
-              up to {formatLimit(limits.clients)}
+              {" "}
+              / {formatLimit(limits.clients)}
             </span>
           </p>
-        </div>
+        </Link>
         <div className="rounded-lg border p-4">
           <p className="text-sm text-[hsl(var(--muted-foreground))]">Pages / scan</p>
           <p className="mt-1 text-2xl font-semibold">{formatLimit(limits.pagesPerScan)}</p>

@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import type { Organization, Profile } from "@accessaudit/database";
 import { createClient } from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@accessaudit/database";
 
 export interface SessionContext {
   userId: string;
@@ -39,4 +41,38 @@ export async function requireSession(): Promise<SessionContext> {
     profile: profile ?? null,
     organization: organization ?? null,
   };
+}
+
+export interface OrgContext {
+  supabase: SupabaseClient<Database>;
+  userId: string;
+  organization: Organization;
+}
+
+/**
+ * For Server Actions and mutations: resolve the signed-in user and their owned
+ * organization, and hand back the Supabase client so the caller can reuse it for
+ * the write. Redirects to /login when unauthenticated and /onboarding when the
+ * user has no workspace yet — so callers can treat `organization` as guaranteed.
+ */
+export async function requireOrg(): Promise<OrgContext> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: organization } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+  if (!organization) {
+    redirect("/onboarding");
+  }
+
+  return { supabase, userId: user.id, organization };
 }
