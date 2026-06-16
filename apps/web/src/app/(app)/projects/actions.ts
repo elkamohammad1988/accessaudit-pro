@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
+import { normalizeScanUrl } from "@/lib/url-safety";
+import { genericWriteError } from "@/lib/errors";
 
 export type ProjectFormState = { error: string | null };
 
@@ -13,24 +15,6 @@ const projectSchema = z.object({
   clientId: z.string().uuid("Choose a client for this project."),
   baseUrl: z.string().trim().min(1, "Enter the website URL."),
 });
-
-/**
- * Accept URLs with or without a scheme; default to https. Returns the normalized
- * absolute URL, or null if it can't be parsed into a real host.
- */
-function normalizeUrl(raw: string): string | null {
-  const trimmed = raw.trim();
-  if (!trimmed) return null;
-  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  try {
-    const url = new URL(candidate);
-    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
-    if (!url.hostname.includes(".")) return null;
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
 
 function parse(formData: FormData) {
   return projectSchema.safeParse({
@@ -64,7 +48,7 @@ export async function createProjectRecord(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const baseUrl = normalizeUrl(parsed.data.baseUrl);
+  const baseUrl = normalizeScanUrl(parsed.data.baseUrl);
   if (!baseUrl) {
     return { error: "Enter a valid website URL, e.g. https://example.com." };
   }
@@ -103,7 +87,7 @@ export async function createProjectRecord(
     .select("id")
     .single();
 
-  if (error) return { error: error.message };
+  if (error) return { error: genericWriteError("createProject", error) };
 
   revalidatePath("/projects");
   revalidatePath(`/clients/${parsed.data.clientId}`);
@@ -123,7 +107,7 @@ export async function updateProjectRecord(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
-  const baseUrl = normalizeUrl(parsed.data.baseUrl);
+  const baseUrl = normalizeScanUrl(parsed.data.baseUrl);
   if (!baseUrl) {
     return { error: "Enter a valid website URL, e.g. https://example.com." };
   }
@@ -144,7 +128,7 @@ export async function updateProjectRecord(
     .eq("id", id)
     .eq("organization_id", organization.id);
 
-  if (error) return { error: error.message };
+  if (error) return { error: genericWriteError("updateProject", error) };
 
   revalidatePath("/projects");
   revalidatePath(`/projects/${id}`);

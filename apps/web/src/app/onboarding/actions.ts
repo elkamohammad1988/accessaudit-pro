@@ -62,9 +62,10 @@ export async function createOrganization(
       revalidatePath("/", "layout");
       redirect("/dashboard");
     }
-    // 23505 = unique_violation (slug taken). Anything else: surface it.
+    // 23505 = unique_violation (slug taken). Anything else: log + generic.
     if (error.code !== "23505") {
-      return { error: error.message };
+      console.error("[createOrganization]", error);
+      return { error: "Could not create your workspace. Please try again." };
     }
   }
 

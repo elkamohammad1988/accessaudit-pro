@@ -5,27 +5,11 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
+import { startOfMonthIso } from "@/lib/dates";
+import { normalizeScanUrl } from "@/lib/url-safety";
+import { genericWriteError } from "@/lib/errors";
 
 export type NewScanState = { error: string | null };
-
-function startOfMonthIso(): string {
-  const now = new Date();
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-}
-
-function normalizeUrl(raw: string): string | null {
-  const trimmed = raw.trim();
-  if (!trimmed) return null;
-  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  try {
-    const url = new URL(candidate);
-    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
-    if (!url.hostname.includes(".")) return null;
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
 
 const schema = z.object({
   projectId: z.string().uuid("Choose a project to scan."),
@@ -87,7 +71,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
 
   let urls: string[];
   if (parsed.data.scanType === "single") {
-    const single = normalizeUrl(parsed.data.singleUrl?.trim() || project.base_url);
+    const single = normalizeScanUrl(parsed.data.singleUrl?.trim() || project.base_url);
     if (!single) return { error: "Enter a valid URL to scan." };
     urls = [single];
   } else {
@@ -95,7 +79,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
       ...new Set(
         (parsed.data.urlList ?? "")
           .split(/\r?\n/)
-          .map((line) => normalizeUrl(line))
+          .map((line) => normalizeScanUrl(line))
           .filter((u): u is string => Boolean(u)),
       ),
     ];
@@ -119,7 +103,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     .select("id")
     .single();
 
-  if (error) return { error: error.message };
+  if (error) return { error: genericWriteError("createScan", error) };
 
   revalidatePath("/dashboard");
   revalidatePath(`/projects/${project.id}`);

@@ -3,13 +3,9 @@ import Link from "next/link";
 import { limitsFor, formatLimit, type PlanTier } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { startOfMonthIso } from "@/lib/dates";
 
 export const metadata: Metadata = { title: "Dashboard" };
-
-function startOfMonthIso(): string {
-  const now = new Date();
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-}
 
 export default async function DashboardPage() {
   const { organization } = await requireSession();

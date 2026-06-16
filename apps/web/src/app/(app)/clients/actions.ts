@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
+import { genericWriteError } from "@/lib/errors";
 
 export type ClientFormState = { error: string | null };
 
@@ -72,7 +73,7 @@ export async function createClientRecord(
     .select("id")
     .single();
 
-  if (error) return { error: error.message };
+  if (error) return { error: genericWriteError("createClient", error) };
 
   revalidatePath("/clients");
   revalidatePath("/dashboard");
@@ -104,7 +105,7 @@ export async function updateClientRecord(
     .eq("id", id)
     .eq("organization_id", organization.id);
 
-  if (error) return { error: error.message };
+  if (error) return { error: genericWriteError("updateClient", error) };
 
   revalidatePath("/clients");
   revalidatePath(`/clients/${id}`);

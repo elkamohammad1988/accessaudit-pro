@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
+import { genericWriteError } from "@/lib/errors";
 
 export type SettingsState = { error: string | null; ok: boolean };
 
@@ -37,7 +38,7 @@ export async function updateProfile(_prev: SettingsState, formData: FormData): P
     })
     .eq("id", userId);
 
-  if (error) return { error: error.message, ok: false };
+  if (error) return { error: genericWriteError("updateProfile", error), ok: false };
 
   revalidatePath("/settings");
   return { error: null, ok: true };
@@ -86,7 +87,7 @@ export async function updateOrganization(
     if (error.code === "23505") {
       return { error: "That workspace URL is taken — choose a different slug.", ok: false };
     }
-    return { error: error.message, ok: false };
+    return { error: genericWriteError("updateOrganization", error), ok: false };
   }
 
   revalidatePath("/", "layout");

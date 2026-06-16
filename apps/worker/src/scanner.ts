@@ -2,6 +2,7 @@ import { chromium, type Browser } from "playwright";
 import { AxeBuilder } from "@axe-core/playwright";
 import type { ImpactLevel, WcagLevel } from "@accessaudit/shared";
 import { tagsForLevel } from "./wcag";
+import { assertScannableUrl, isBlockedRequestUrl } from "./url-guard";
 
 export interface AxeViolationLite {
   ruleId: string;
@@ -38,9 +39,32 @@ export async function scanPage(
   level: WcagLevel,
   opts: { timeoutMs: number; maxNodes: number },
 ): Promise<PageScanResult> {
+  try {
+    // SSRF gate: validate (and DNS-resolve) the target before we touch the network.
+    await assertScannableUrl(url);
+  } catch (err) {
+    return {
+      url,
+      ok: false,
+      httpStatus: null,
+      error: err instanceof Error ? err.message : "Blocked URL.",
+      violations: [],
+    };
+  }
+
   const context = await browser.newContext();
   const page = await context.newPage();
   try {
+    // Defense-in-depth: abort any request (redirects, subresources) to a literal
+    // private address or blocked host that slips past the pre-navigation check.
+    await context.route("**/*", (route) => {
+      if (isBlockedRequestUrl(route.request().url())) {
+        void route.abort("blockedbyclient");
+      } else {
+        void route.continue();
+      }
+    });
+
     const response = await page.goto(url, { waitUntil: "load", timeout: opts.timeoutMs });
     const httpStatus = response?.status() ?? null;
     if (httpStatus !== null && httpStatus >= 400) {

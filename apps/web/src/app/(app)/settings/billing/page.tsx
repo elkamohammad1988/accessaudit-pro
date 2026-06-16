@@ -9,14 +9,10 @@ import {
 } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { startOfMonthIso } from "@/lib/dates";
 import { startCheckout, openPortal } from "./actions";
 
 export const metadata: Metadata = { title: "Billing" };
-
-function startOfMonthIso(): string {
-  const now = new Date();
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-}
 
 const STATUS_BANNER: Record<string, { text: string; className: string }> = {
   success: {

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { publicEnv } from "@/lib/env";
+import { safeNextPath } from "@/lib/utils";
 
 export type AuthState = { error: string | null; message: string | null };
 
@@ -33,8 +34,7 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   revalidatePath("/", "layout");
-  const next = (formData.get("next") as string) || "/dashboard";
-  const dest = next.startsWith("/") ? next : "/dashboard";
+  const dest = safeNextPath(formData.get("next") as string | null);
   // `dest` is a runtime string; cast past typedRoutes' static-route checking.
   redirect(dest as Parameters<typeof redirect>[0]);
 }
@@ -78,7 +78,7 @@ export async function requestPasswordReset(
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
-    redirectTo: `${publicEnv.appUrl}/auth/callback?next=/dashboard`,
+    redirectTo: `${publicEnv.appUrl}/auth/callback?next=/update-password`,
   });
   if (error) {
     return { error: error.message, message: null };
@@ -88,6 +88,34 @@ export async function requestPasswordReset(
     error: null,
     message: "If that email has an account, a reset link is on its way.",
   };
+}
+
+const newPassword = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
+/** Set a new password for the currently-authenticated user (post reset-link). */
+export async function updatePassword(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = newPassword.safeParse({ password: formData.get("password") });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "Your reset link has expired. Request a new one.", message: null };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) {
+    return { error: error.message, message: null };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
 }
 
 export async function signOut(): Promise<void> {
