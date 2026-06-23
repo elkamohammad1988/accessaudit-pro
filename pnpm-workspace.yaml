@@ -5,3 +5,6 @@ allowBuilds:
   '@sentry/cli': false
   esbuild: true
   sharp: false
+  # eslint-config-next's import resolver. Ships prebuilt native binaries via
+  # optional deps, so its postinstall build script isn't needed.
+  unrs-resolver: false
