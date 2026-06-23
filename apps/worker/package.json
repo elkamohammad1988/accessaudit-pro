@@ -13,6 +13,7 @@
     "@accessaudit/database": "workspace:*",
     "@accessaudit/shared": "workspace:*",
     "@axe-core/playwright": "^4.10.1",
+    "@sentry/node": "^8.47.0",
     "@supabase/supabase-js": "2.47.10",
     "axe-core": "^4.10.2",
     "playwright": "^1.49.1"

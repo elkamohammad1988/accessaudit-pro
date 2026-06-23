@@ -100,7 +100,8 @@ export default function LandingPage() {
         </div>
         <p className="text-center text-xs text-[hsl(var(--muted-foreground))]">
           Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review
-          is still required — protecting you and your clients.
+          is still required — protecting you and your clients. Workspaces are single-user in this
+          release; team seats are on the roadmap.
         </p>
       </section>
 

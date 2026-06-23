@@ -30,6 +30,9 @@ supabase/.env
 npm-debug.log*
 pnpm-debug.log*
 
+# Claude Code session locks
+.claude/scheduled_tasks.lock
+
 # Editor / OS
 .vscode/*
 !.vscode/extensions.json

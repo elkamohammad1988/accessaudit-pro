@@ -1,0 +1,31 @@
+# Scan worker image. Built from the official Playwright image (Chromium + all
+# system deps preinstalled, matching the playwright npm version). Build context
+# is the repo root so workspace packages (@accessaudit/shared, /database) resolve.
+#
+#   docker build -f Dockerfile.worker -t accessaudit-worker .
+#   docker run --rm -e SUPABASE_URL=... -e SUPABASE_SERVICE_ROLE_KEY=... accessaudit-worker
+
+FROM mcr.microsoft.com/playwright:v1.49.1-noble
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# pnpm via corepack, pinned to the repo's version.
+RUN corepack enable && corepack prepare pnpm@11.3.0 --activate
+
+# Install deps first for layer caching (manifests only).
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
+COPY packages/shared/package.json   packages/shared/
+COPY packages/database/package.json packages/database/
+COPY apps/worker/package.json       apps/worker/
+RUN pnpm install --frozen-lockfile --filter @accessaudit/worker...
+
+# App source.
+COPY packages/shared   packages/shared
+COPY packages/database packages/database
+COPY apps/worker       apps/worker
+
+# Ensure the Chromium build matching the resolved playwright version is present.
+RUN pnpm --filter @accessaudit/worker exec playwright install chromium
+
+CMD ["pnpm", "--filter", "@accessaudit/worker", "start"]

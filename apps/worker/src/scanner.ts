@@ -1,4 +1,4 @@
-import { chromium, type Browser } from "playwright";
+import { chromium, type Browser, type BrowserContext } from "playwright";
 import { AxeBuilder } from "@axe-core/playwright";
 import type { ImpactLevel, WcagLevel } from "@accessaudit/shared";
 import { tagsForLevel } from "./wcag";
@@ -22,15 +22,20 @@ export interface PageScanResult {
   violations: AxeViolationLite[];
 }
 
-/** Launch a single Chromium instance for the whole scan, then dispose it. */
-export async function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
-  // --no-sandbox is required in most container hosts (Railway/Render/Docker).
-  const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-  try {
-    return await fn(browser);
-  } finally {
-    await browser.close();
-  }
+/** Launch a Chromium instance. Reused across scans by the worker (see index.ts). */
+export function launchBrowser(): Promise<Browser> {
+  // --no-sandbox / --disable-dev-shm-usage are required in most container hosts.
+  return chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+}
+
+function errorResult(url: string, err: unknown): PageScanResult {
+  return {
+    url,
+    ok: false,
+    httpStatus: null,
+    error: err instanceof Error ? err.message : String(err),
+    violations: [],
+  };
 }
 
 export async function scanPage(
@@ -39,22 +44,18 @@ export async function scanPage(
   level: WcagLevel,
   opts: { timeoutMs: number; maxNodes: number },
 ): Promise<PageScanResult> {
+  // SSRF gate: validate (and DNS-resolve) the target before we touch the network.
   try {
-    // SSRF gate: validate (and DNS-resolve) the target before we touch the network.
     await assertScannableUrl(url);
   } catch (err) {
-    return {
-      url,
-      ok: false,
-      httpStatus: null,
-      error: err instanceof Error ? err.message : "Blocked URL.",
-      violations: [],
-    };
+    return errorResult(url, err);
   }
 
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  let context: BrowserContext | null = null;
   try {
+    context = await browser.newContext();
+    const page = await context.newPage();
+
     // Defense-in-depth: abort any request (redirects, subresources) to a literal
     // private address or blocked host that slips past the pre-navigation check.
     await context.route("**/*", (route) => {
@@ -88,14 +89,14 @@ export async function scanPage(
 
     return { url, ok: true, httpStatus, violations };
   } catch (err) {
-    return {
-      url,
-      ok: false,
-      httpStatus: null,
-      error: err instanceof Error ? err.message : String(err),
-      violations: [],
-    };
+    return errorResult(url, err);
   } finally {
-    await context.close();
+    if (context) {
+      try {
+        await context.close();
+      } catch {
+        // browser may have died; the caller relaunches it.
+      }
+    }
   }
 }

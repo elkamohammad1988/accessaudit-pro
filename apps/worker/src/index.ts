@@ -1,13 +1,31 @@
+// Imported first so Sentry is initialized before anything it instruments.
+import { captureError, flushSentry } from "./sentry";
+import type { Browser } from "playwright";
 import type { Scan } from "@accessaudit/database";
 import type { WcagLevel } from "@accessaudit/shared";
 import { env } from "./env";
 import { supabase } from "./supabase";
 import { persistResults } from "./persistence";
-import { scanPage, withBrowser, type PageScanResult } from "./scanner";
+import { launchBrowser, scanPage, type PageScanResult } from "./scanner";
 
 let shuttingDown = false;
+let browser: Browser | null = null;
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/** Reuse one Chromium instance across scans; relaunch if it crashed/disconnected. */
+async function getBrowser(): Promise<Browser> {
+  if (browser && browser.isConnected()) return browser;
+  if (browser) {
+    try {
+      await browser.close();
+    } catch {
+      /* already gone */
+    }
+  }
+  browser = await launchBrowser();
+  return browser;
+}
 
 function targetUrls(scan: Scan): string[] {
   const raw = scan.target_urls;
@@ -24,6 +42,24 @@ async function claimScan(): Promise<Scan | null> {
     return null;
   }
   return data;
+}
+
+/**
+ * Fail scans stuck in 'running' past the stale threshold — e.g. a worker that
+ * crashed mid-job. Idempotent and safe to run from multiple workers.
+ */
+async function reapStaleScans(): Promise<void> {
+  const cutoff = new Date(Date.now() - env.staleScanMs).toISOString();
+  const { error } = await supabase
+    .from("scans")
+    .update({
+      status: "failed",
+      error_reason: "Scan timed out — the worker did not finish in time. Try re-scanning.",
+      finished_at: new Date().toISOString(),
+    })
+    .eq("status", "running")
+    .lt("started_at", cutoff);
+  if (error) console.error("reapStaleScans failed:", error.message);
 }
 
 async function finalize(scanId: string, patch: Partial<Scan>): Promise<void> {
@@ -47,18 +83,16 @@ async function processScan(scan: Scan): Promise<void> {
 
   let pages: PageScanResult[];
   try {
-    pages = await withBrowser(async (browser) => {
-      const results: PageScanResult[] = [];
-      for (const url of urls) {
-        let result = await scanPage(browser, url, level, scanOpts);
-        // Retry once on a hard navigation failure (no HTTP response = transient).
-        if (!result.ok && result.httpStatus === null) {
-          result = await scanPage(browser, url, level, scanOpts);
-        }
-        results.push(result);
+    const activeBrowser = await getBrowser();
+    pages = [];
+    for (const url of urls) {
+      let result = await scanPage(activeBrowser, url, level, scanOpts);
+      // Retry once on a hard failure with no HTTP response (transient).
+      if (!result.ok && result.httpStatus === null) {
+        result = await scanPage(await getBrowser(), url, level, scanOpts);
       }
-      return results;
-    });
+      pages.push(result);
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     await finalize(scan.id, {
@@ -92,12 +126,17 @@ async function processScan(scan: Scan): Promise<void> {
       finished_at: new Date().toISOString(),
     });
     console.error(`scan ${scan.id} persistence error:`, message);
+    // Persistence failures are unexpected (DB/bug) rather than normal scan
+    // failures, so surface them for observability.
+    captureError(err, { scanId: scan.id, scope: "persistResults" });
   }
 }
 
 async function loop(): Promise<void> {
   console.log("AccessAudit scan worker started. Polling for queued scans…");
   while (!shuttingDown) {
+    await reapStaleScans();
+
     const scan = await claimScan();
     if (!scan) {
       await sleep(env.pollIntervalMs);
@@ -105,6 +144,14 @@ async function loop(): Promise<void> {
     }
     console.log(`Claimed scan ${scan.id} (${scan.scan_type}, WCAG ${scan.wcag_level})`);
     await processScan(scan);
+  }
+
+  if (browser) {
+    try {
+      await browser.close();
+    } catch {
+      /* ignore */
+    }
   }
   console.log("Worker stopped cleanly.");
 }
@@ -116,7 +163,9 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
   });
 }
 
-loop().catch((err) => {
+loop().catch(async (err) => {
   console.error("Fatal worker error:", err);
+  captureError(err, { scope: "worker.loop" });
+  await flushSentry();
   process.exit(1);
 });

@@ -24,4 +24,6 @@ export const env = {
   pageTimeoutMs: numberEnv("WORKER_PAGE_TIMEOUT_MS", 30000),
   /** Cap affected-element nodes stored per violation (avoids JSONB bloat). */
   maxNodesPerViolation: numberEnv("WORKER_MAX_NODES", 5),
+  /** A scan stuck in 'running' longer than this is failed by the reaper (ms). */
+  staleScanMs: numberEnv("WORKER_STALE_SCAN_MS", 1_800_000),
 };

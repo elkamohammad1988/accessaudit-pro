@@ -41,6 +41,7 @@ Deploy `apps/web`. Set environment variables (see [`.env.example`](../.env.examp
 | `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | from Stripe (step 4) |
 | `STRIPE_PRICE_STARTER` / `_AGENCY` / `_SCALE` | Stripe Price ids (step 4) |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
+| `NEXT_PUBLIC_SENTRY_DSN` / `SENTRY_DSN` | Sentry DSN — optional (step 5) |
 
 Build command `pnpm build`, output is a standard Next.js app.
 
@@ -53,7 +54,7 @@ The worker needs Chromium and a long-running process — **not** serverless.
    (or use a Playwright base image).
 3. Start command: `pnpm --filter @accessaudit/worker start`.
 4. Env: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (optional: `WORKER_POLL_INTERVAL_MS`,
-   `WORKER_PAGE_TIMEOUT_MS`, `WORKER_MAX_NODES`).
+   `WORKER_PAGE_TIMEOUT_MS`, `WORKER_MAX_NODES`, `WORKER_STALE_SCAN_MS`, `SENTRY_DSN`).
 
 Scale horizontally if needed — `claim_next_scan()` uses `FOR UPDATE SKIP LOCKED`,
 so multiple workers won't double-process a job.
@@ -71,7 +72,24 @@ so multiple workers won't double-process a job.
    stripe listen --forward-to localhost:3000/api/stripe/webhook
    ```
 
-## 5. Smoke test (the MVP acceptance path)
+## 5. Sentry (error tracking) — optional
+
+Observability is wired and dormant until you give it a DSN; with no DSN the SDK
+never initializes, so nothing changes.
+
+1. Create a project at [sentry.io](https://sentry.io) and copy its **DSN**.
+2. Web host: set `NEXT_PUBLIC_SENTRY_DSN` (browser) and `SENTRY_DSN` (server/edge).
+   The browser DSN is build-time inlined, so redeploy after setting it.
+3. Worker (Railway): set `SENTRY_DSN`.
+
+What's instrumented: client + server (`instrumentation.ts` / `instrumentation-client.ts`),
+the App Router error boundaries (`(app)/error.tsx`, `global-error.tsx`), server
+request errors (`onRequestError`), and the worker's fatal + persistence failures.
+Errors-only by default (no tracing/replay) to keep event volume low; raise
+`tracesSampleRate` if you want performance data later. For readable stack traces,
+add `withSentryConfig` + a `SENTRY_AUTH_TOKEN` to upload source maps.
+
+## 6. Smoke test (the MVP acceptance path)
 
 1. Sign up → verify email → create organization.
 2. Add a client → add a project (a public URL).
@@ -83,7 +101,8 @@ so multiple workers won't double-process a job.
 
 ## Still TODO before a paid launch (Phase 5 tail)
 
-- Sentry (the `(app)/error.tsx` boundary already logs; wire the DSN).
+- Sentry is wired (web + worker) — just set the DSN (step 5). Add source-map
+  upload (`withSentryConfig` + `SENTRY_AUTH_TOKEN`) if you want readable traces.
 - Playwright e2e tests for the core flow; load-test the scan queue.
 - Email deliverability (SMTP) and onboarding copy polish.
 - Legal: confirm the automated-vs-manual disclaimer wording with counsel.

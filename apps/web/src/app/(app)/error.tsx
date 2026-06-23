@@ -10,7 +10,11 @@ export default function AppError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Surface for observability (wire to Sentry at go-live).
+    // Report to Sentry when configured; the SDK is loaded lazily so it stays out
+    // of the bundle when no DSN is set. Always keep a local console trace.
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      void import("@sentry/nextjs").then((Sentry) => Sentry.captureException(error));
+    }
     console.error(error);
   }, [error]);
 

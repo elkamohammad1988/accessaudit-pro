@@ -196,7 +196,7 @@ export default async function BillingPage({
         </div>
         <p className="text-xs text-[hsl(var(--muted-foreground))]">
           Limits are enforced as you create clients, projects, and scans. Prices billed monthly via
-          Stripe.
+          Stripe. Workspaces are single-user in this release — team seats are on the roadmap.
         </p>
       </section>
     </div>
