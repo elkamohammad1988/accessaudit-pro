@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   PLAN_LIMITS,
   PLAN_TIERS,
+  effectivePlan,
   formatLimit,
   limitsFor,
   type PlanTier,
@@ -67,9 +68,15 @@ export default async function BillingPage({
         .is("archived_at", null),
     ]);
 
-  const plan: PlanTier = sub?.plan ?? "free";
+  // The subscription names a tier; `effectivePlan` is what's actually enforced
+  // (an unpaid/canceled sub reverts to free limits). Show the real tier in the
+  // header/plan grid, but size the usage meters by the enforced limits.
+  const actualPlan: PlanTier = sub?.plan ?? "free";
+  const plan = effectivePlan(sub?.plan, sub?.status);
+  const actualLimits = limitsFor(actualPlan);
   const limits = limitsFor(plan);
-  const hasPaid = plan !== "free" && Boolean(sub?.stripe_subscription_id);
+  const hasPaid = actualPlan !== "free" && Boolean(sub?.stripe_subscription_id);
+  const downgraded = plan !== actualPlan;
   const banner = status ? STATUS_BANNER[status] : undefined;
 
   const usage = [
@@ -89,13 +96,24 @@ export default async function BillingPage({
         </Link>
         <h1 className="mt-2 text-2xl font-semibold">Billing</h1>
         <p className="text-sm text-[hsl(var(--muted-foreground))]">
-          {limits.label} plan
+          {actualLimits.label} plan
           {hasPaid && sub?.status ? ` · ${sub.status}` : ""}
           {hasPaid && sub?.current_period_end
             ? ` · renews ${new Date(sub.current_period_end).toLocaleDateString()}`
             : ""}
         </p>
       </div>
+
+      {downgraded ? (
+        <p
+          role="status"
+          className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800"
+        >
+          Your {actualLimits.label} subscription is {sub?.status ?? "inactive"}, so{" "}
+          {limits.label}-plan limits currently apply. Update your payment method in the billing
+          portal to restore full access.
+        </p>
+      ) : null}
 
       {banner ? (
         <p role="status" className={`rounded-lg border p-3 text-sm ${banner.className}`}>
@@ -140,7 +158,7 @@ export default async function BillingPage({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PLAN_TIERS.map((tier) => {
             const p = PLAN_LIMITS[tier];
-            const isCurrent = tier === plan;
+            const isCurrent = tier === actualPlan;
             return (
               <div
                 key={tier}

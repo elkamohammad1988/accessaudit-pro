@@ -1,9 +1,10 @@
 "use server";
 
+import { randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { startOfMonthIso } from "@/lib/dates";
 import { normalizeScanUrl } from "@/lib/url-safety";
@@ -26,14 +27,19 @@ async function checkScanQuota(
   pageCount: number,
 ): Promise<string | null> {
   const [{ data: sub }, { count }] = await Promise.all([
-    supabase.from("subscriptions").select("plan").eq("organization_id", organizationId).maybeSingle(),
+    supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", organizationId)
+      .maybeSingle(),
     supabase
       .from("scans")
       .select("id", { count: "exact", head: true })
       .eq("organization_id", organizationId)
       .gte("created_at", startOfMonthIso()),
   ]);
-  const plan: PlanTier = sub?.plan ?? "free";
+  // Effective plan: an unpaid/canceled subscription reverts to free limits.
+  const plan = effectivePlan(sub?.plan, sub?.status);
   const limits = limitsFor(plan);
   if (!isWithinLimit(plan, "scansPerMonth", count ?? 0)) {
     return `You've used all ${formatLimit(limits.scansPerMonth)} scans on the ${limits.label} plan this month. Upgrade for more.`;
@@ -166,7 +172,9 @@ export async function setScanShare(formData: FormData): Promise<void> {
 
   const { supabase, organization } = await requireOrg();
   if (makePublic) {
-    const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+    // 256 bits from a CSPRNG, URL-safe. (UUIDs have fixed version/variant bits —
+    // the wrong primitive for an unguessable, unauthenticated share token.)
+    const token = randomBytes(32).toString("base64url");
     await supabase
       .from("scans")
       .update({ is_public: true, share_token: token, shared_at: new Date().toISOString() })

@@ -31,13 +31,20 @@ async function syncFromSubscription(
   };
 
   // Match by org id (from metadata) when available; otherwise by customer id.
+  // Throw on a DB error so POST returns 500 and Stripe retries — swallowing it
+  // would ack the event (200) and leave the subscription row permanently stale.
   if (orgId) {
-    await admin
+    const { error } = await admin
       .from("subscriptions")
       .update({ ...patch, stripe_customer_id: customerId })
       .eq("organization_id", orgId);
+    if (error) throw error;
   } else if (customerId) {
-    await admin.from("subscriptions").update(patch).eq("stripe_customer_id", customerId);
+    const { error } = await admin
+      .from("subscriptions")
+      .update(patch)
+      .eq("stripe_customer_id", customerId);
+    if (error) throw error;
   }
 }
 
@@ -100,10 +107,11 @@ export async function POST(req: Request): Promise<Response> {
         const customerId =
           typeof invoice.customer === "string" ? invoice.customer : (invoice.customer?.id ?? null);
         if (customerId) {
-          await admin
+          const { error } = await admin
             .from("subscriptions")
             .update({ status: "past_due" })
             .eq("stripe_customer_id", customerId);
+          if (error) throw error;
         }
         break;
       }

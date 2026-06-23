@@ -89,6 +89,33 @@ export function limitsFor(plan: PlanTier): PlanLimits {
   return PLAN_LIMITS[plan];
 }
 
+/** Subscription lifecycle states, mirrored from the `subscription_status` enum. */
+export type SubscriptionStatus = "trialing" | "active" | "past_due" | "canceled" | "incomplete";
+
+/**
+ * Statuses that still entitle an org to its paid plan's limits. `past_due` is
+ * deliberately included as a grace period: Stripe is still retrying the charge,
+ * so we don't revoke access on the first failed payment. Anything else
+ * (`canceled`, `incomplete`, or no/unknown status) reverts to free limits.
+ */
+export const ENTITLED_STATUSES: readonly string[] = ["active", "trialing", "past_due"];
+
+/**
+ * The plan whose limits actually apply right now. A paid `plan` only counts
+ * while the subscription is in an entitled status — a canceled or incomplete
+ * subscription is treated as free even though the row still names the paid tier
+ * (the webhook keeps the price-derived plan until the subscription is deleted).
+ * This is the single gate that prevents unpaid orgs from keeping paid limits.
+ */
+export function effectivePlan(
+  plan: PlanTier | null | undefined,
+  status: SubscriptionStatus | string | null | undefined,
+): PlanTier {
+  const tier = plan ?? "free";
+  if (tier === "free") return "free";
+  return status != null && ENTITLED_STATUSES.includes(status) ? tier : "free";
+}
+
 /** Numeric-limit keys you can gate a "create" action on. */
 export type QuotaKey = "clients" | "projects" | "scansPerMonth" | "pagesPerScan" | "teamSeats";
 

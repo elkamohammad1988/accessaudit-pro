@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { limitsFor, type PlanTier, type ScanStatus } from "@accessaudit/shared";
+import { effectivePlan, limitsFor, type ScanStatus } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { publicEnv } from "@/lib/env";
@@ -26,15 +26,20 @@ export default async function ScanReportPage({
   const supabase = await createClient();
   const [report, { data: sub }] = await Promise.all([
     loadReportByScan(supabase, scanId, organization.id),
-    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+    supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", organization.id)
+      .maybeSingle(),
   ]);
   if (!report) notFound();
 
   const { scan } = report;
   const status = scan.status as ScanStatus;
   const statusMeta = STATUS_META[status];
-  const plan: PlanTier = sub?.plan ?? "free";
-  const limits = limitsFor(plan);
+  // Export features (white-label PDF / CSV) follow the enforced plan, so a
+  // canceled paid sub loses them rather than keeping them indefinitely.
+  const limits = limitsFor(effectivePlan(sub?.plan, sub?.status));
   const canExport = status === "completed" || status === "partial";
 
   return (

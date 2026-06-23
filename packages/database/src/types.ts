@@ -166,6 +166,7 @@ export interface Database {
           is_public: boolean;
           shared_at: string | null;
           started_at: string | null;
+          last_progress_at: string | null;
           finished_at: string | null;
           created_at: string;
         };
@@ -186,6 +187,7 @@ export interface Database {
           is_public?: boolean;
           shared_at?: string | null;
           started_at?: string | null;
+          last_progress_at?: string | null;
           finished_at?: string | null;
           created_at?: string;
         };
@@ -206,6 +208,7 @@ export interface Database {
           is_public?: boolean;
           shared_at?: string | null;
           started_at?: string | null;
+          last_progress_at?: string | null;
           finished_at?: string | null;
           created_at?: string;
         };

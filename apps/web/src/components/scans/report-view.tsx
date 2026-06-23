@@ -44,6 +44,9 @@ export function ReportView({
 }: ReportViewProps) {
   const issues = totalViolations(totals);
   const inProgress = status === "queued" || status === "running";
+  // For a partial scan, `pagesScanned` counts only pages that loaded; the score
+  // and totals are computed from those alone, so call out the missing pages.
+  const failedPages = Math.max(0, pages.length - pagesScanned);
 
   if (inProgress) {
     return (
@@ -67,6 +70,19 @@ export function ReportView({
 
   return (
     <div className="space-y-8">
+      {status === "partial" && failedPages > 0 ? (
+        <section
+          aria-label="Partial scan"
+          className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+        >
+          <p className="font-medium">Partial scan — {failedPages} page(s) could not be loaded</p>
+          <p className="mt-1">
+            The score and totals below reflect only the {pagesScanned} page(s) that loaded
+            successfully. Check the per-page list for the URLs that failed, then re-scan if needed.
+          </p>
+        </section>
+      ) : null}
+
       {/* Summary */}
       <section aria-label="Summary" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border p-4">

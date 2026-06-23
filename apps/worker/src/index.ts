@@ -46,7 +46,9 @@ async function claimScan(): Promise<Scan | null> {
 
 /**
  * Fail scans stuck in 'running' past the stale threshold — e.g. a worker that
- * crashed mid-job. Idempotent and safe to run from multiple workers.
+ * crashed mid-job. Keyed off `last_progress_at` (the per-page heartbeat), NOT
+ * `started_at`, so a long but healthy multi-page scan that keeps making
+ * progress is never reaped. Idempotent and safe to run from multiple workers.
  */
 async function reapStaleScans(): Promise<void> {
   const cutoff = new Date(Date.now() - env.staleScanMs).toISOString();
@@ -58,12 +60,31 @@ async function reapStaleScans(): Promise<void> {
       finished_at: new Date().toISOString(),
     })
     .eq("status", "running")
-    .lt("started_at", cutoff);
+    .lt("last_progress_at", cutoff);
   if (error) console.error("reapStaleScans failed:", error.message);
 }
 
+/** Push the heartbeat forward so the reaper can see this scan is still alive. */
+async function heartbeat(scanId: string): Promise<void> {
+  const { error } = await supabase
+    .from("scans")
+    .update({ last_progress_at: new Date().toISOString() })
+    .eq("id", scanId)
+    .eq("status", "running");
+  if (error) console.error(`heartbeat failed for ${scanId}:`, error.message);
+}
+
+/**
+ * Apply a terminal patch, but only while the scan is still 'running'. The guard
+ * means a scan the reaper already failed is never silently un-failed by a job
+ * that finishes a moment later — the two can't fight over the final row.
+ */
 async function finalize(scanId: string, patch: Partial<Scan>): Promise<void> {
-  const { error } = await supabase.from("scans").update(patch).eq("id", scanId);
+  const { error } = await supabase
+    .from("scans")
+    .update(patch)
+    .eq("id", scanId)
+    .eq("status", "running");
   if (error) console.error(`Failed to finalize scan ${scanId}:`, error.message);
 }
 
@@ -83,15 +104,18 @@ async function processScan(scan: Scan): Promise<void> {
 
   let pages: PageScanResult[];
   try {
-    const activeBrowser = await getBrowser();
     pages = [];
     for (const url of urls) {
-      let result = await scanPage(activeBrowser, url, level, scanOpts);
+      // Fetch the browser at the top of every iteration so a crash mid-scan is
+      // transparently recovered for the *next* page, not just the retry path.
+      let result = await scanPage(await getBrowser(), url, level, scanOpts);
       // Retry once on a hard failure with no HTTP response (transient).
       if (!result.ok && result.httpStatus === null) {
         result = await scanPage(await getBrowser(), url, level, scanOpts);
       }
       pages.push(result);
+      // Heartbeat after each page so the stale-scan reaper leaves long scans alone.
+      await heartbeat(scan.id);
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

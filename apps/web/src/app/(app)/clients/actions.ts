@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { genericWriteError } from "@/lib/errors";
 
@@ -47,14 +47,18 @@ export async function createClientRecord(
 
   // Quota: only active (non-archived) clients count toward the plan limit.
   const [{ data: sub }, { count }] = await Promise.all([
-    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+    supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", organization.id)
+      .maybeSingle(),
     supabase
       .from("clients")
       .select("id", { count: "exact", head: true })
       .eq("organization_id", organization.id)
       .is("archived_at", null),
   ]);
-  const plan: PlanTier = sub?.plan ?? "free";
+  const plan = effectivePlan(sub?.plan, sub?.status);
   if (!isWithinLimit(plan, "clients", count ?? 0)) {
     const limits = limitsFor(plan);
     return {

@@ -5,11 +5,14 @@ import { publicEnv } from "@/lib/env";
 /** Routes reachable without a session. Everything else requires auth.
  *  `/api` routes authenticate themselves (e.g. the Stripe webhook verifies its
  *  signature) and must not be redirected to /login. */
-const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r/", "/api"];
+const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r", "/api"];
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;
-  return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`) || pathname.startsWith(p));
+  // Exact match or a real path-segment boundary only — `/reset` must not make
+  // `/reset-internal` public (a bare startsWith would). `(app)/layout.tsx` also
+  // re-checks the session server-side, so this is defense in depth.
+  return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 /**

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { formatLimit, isWithinLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { normalizeScanUrl } from "@/lib/url-safety";
 import { genericWriteError } from "@/lib/errors";
@@ -61,14 +61,18 @@ export async function createProjectRecord(
 
   // Quota: only active (non-archived) projects count toward the plan limit.
   const [{ data: sub }, { count }] = await Promise.all([
-    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+    supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", organization.id)
+      .maybeSingle(),
     supabase
       .from("projects")
       .select("id", { count: "exact", head: true })
       .eq("organization_id", organization.id)
       .is("archived_at", null),
   ]);
-  const plan: PlanTier = sub?.plan ?? "free";
+  const plan = effectivePlan(sub?.plan, sub?.status);
   if (!isWithinLimit(plan, "projects", count ?? 0)) {
     const limits = limitsFor(plan);
     return {
