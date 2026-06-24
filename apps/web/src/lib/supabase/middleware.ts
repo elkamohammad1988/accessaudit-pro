@@ -5,7 +5,7 @@ import { publicEnv } from "@/lib/env";
 /** Routes reachable without a session. Everything else requires auth.
  *  `/api` routes authenticate themselves (e.g. the Stripe webhook verifies its
  *  signature) and must not be redirected to /login. */
-const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r", "/api"];
+const PUBLIC_PREFIXES = ["/login", "/signup", "/reset", "/auth", "/r", "/api", "/terms", "/privacy"];
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;

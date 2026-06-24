@@ -10,6 +10,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </Link>
         </div>
         {children}
+        <p className="text-center text-xs text-[hsl(var(--muted-foreground))]">
+          By continuing you agree to our{" "}
+          <Link href="/terms" className="underline underline-offset-4">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline underline-offset-4">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );
