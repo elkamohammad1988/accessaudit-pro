@@ -101,8 +101,16 @@ add `withSentryConfig` + a `SENTRY_AUTH_TOKEN` to upload source maps.
 
 ## Still TODO before a paid launch (Phase 5 tail)
 
+- **Fill the legal placeholders.** `/terms` and `/privacy` ship with real baseline
+  copy but bracketed placeholders — `[Company Legal Name]`, `[Jurisdiction]`, and
+  the `legal@` / `privacy@` contact emails (in `app/(legal)/terms/page.tsx` and
+  `privacy/page.tsx`). Fill these in, and have counsel confirm the
+  automated-vs-manual disclaimer wording.
 - Sentry is wired (web + worker) — just set the DSN (step 5). Add source-map
   upload (`withSentryConfig` + `SENTRY_AUTH_TOKEN`) if you want readable traces.
 - Playwright e2e tests for the core flow; load-test the scan queue.
 - Email deliverability (SMTP) and onboarding copy polish.
-- Legal: confirm the automated-vs-manual disclaimer wording with counsel.
+
+> Migrations: `supabase db push` (step 2) applies everything in
+> `supabase/migrations/`, including `..._scan_heartbeat.sql` (the worker's
+> stale-scan heartbeat). Re-run it after pulling new migrations.
