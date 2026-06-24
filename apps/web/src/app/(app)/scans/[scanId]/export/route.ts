@@ -1,4 +1,4 @@
-import { limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { loadReportByScan } from "@/lib/load-report";
 import { parseNodes } from "@/lib/report";
@@ -16,10 +16,10 @@ export async function GET(
 
   const { data: sub } = await supabase
     .from("subscriptions")
-    .select("plan")
+    .select("plan, status")
     .eq("organization_id", organization.id)
     .maybeSingle();
-  const plan: PlanTier = sub?.plan ?? "free";
+  const plan = effectivePlan(sub?.plan, sub?.status);
   if (!limitsFor(plan).dataExport) {
     return new Response("CSV export is available on paid plans. Upgrade to enable it.", {
       status: 403,

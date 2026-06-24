@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { limitsFor, type PlanTier, type ScanStatus } from "@accessaudit/shared";
+import { effectivePlan, limitsFor, type ScanStatus } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { parseTotals } from "@/lib/scan-format";
@@ -22,11 +22,11 @@ export default async function PrintReportPage({
   const supabase = await createClient();
   const { data: sub } = await supabase
     .from("subscriptions")
-    .select("plan")
+    .select("plan, status")
     .eq("organization_id", organization.id)
     .maybeSingle();
-  const plan: PlanTier = sub?.plan ?? "free";
-  if (!limitsFor(plan).whiteLabelPdf) {
+  const limits = limitsFor(effectivePlan(sub?.plan, sub?.status));
+  if (!limits.whiteLabelPdf) {
     redirect("/settings/billing");
   }
 
@@ -34,7 +34,7 @@ export default async function PrintReportPage({
   if (!report) notFound();
 
   const { scan } = report;
-  const showPoweredBy = !limitsFor(plan).removePoweredBy;
+  const showPoweredBy = !limits.removePoweredBy;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 py-2">
