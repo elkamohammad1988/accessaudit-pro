@@ -112,15 +112,18 @@ export default function LandingPage() {
           </p>
         </div>
         <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/signup"
               className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
             >
               Start free
             </Link>
-            <Link href="/login" className="text-sm font-medium underline-offset-4 hover:underline">
-              Sign in
+            <Link
+              href="/sample"
+              className="inline-flex h-10 items-center justify-center rounded-md border px-5 text-sm font-medium hover:bg-[hsl(var(--muted))]"
+            >
+              See a sample report
             </Link>
           </div>
           <p className="text-xs text-[hsl(var(--muted-foreground))]">
