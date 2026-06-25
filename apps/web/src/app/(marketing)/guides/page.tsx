@@ -15,6 +15,12 @@ const GUIDES = [
     summary:
       "Who the EAA covers, the standard it points to, and how agencies can turn the June 2025 deadline into a service line.",
   },
+  {
+    href: "/guides/wcag-2-2-aa-checklist",
+    title: "WCAG 2.2 AA: a practical audit checklist for agencies",
+    summary:
+      "The full Level AA checklist organized by the POUR principles — including the new 2.2 criteria — and what an automated scan can and can't catch.",
+  },
 ] as const;
 
 export default function GuidesPage() {

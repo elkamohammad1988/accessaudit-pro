@@ -8,6 +8,7 @@ const PATHS = [
   "/sample",
   "/guides",
   "/guides/european-accessibility-act",
+  "/guides/wcag-2-2-aa-checklist",
   "/signup",
   "/terms",
   "/privacy",
