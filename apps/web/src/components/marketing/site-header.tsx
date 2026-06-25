@@ -9,6 +9,9 @@ export function SiteHeader() {
           AccessAudit<span className="text-brand"> Pro</span>
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-4 text-sm">
+          <Link href="/guides" className="hidden font-medium underline-offset-4 hover:underline sm:inline">
+            Guides
+          </Link>
           <Link href="/pricing" className="font-medium underline-offset-4 hover:underline">
             Pricing
           </Link>

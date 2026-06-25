@@ -16,6 +16,7 @@ const PUBLIC_PREFIXES = [
   "/privacy",
   "/pricing",
   "/sample",
+  "/guides",
 ];
 
 function isPublicPath(pathname: string): boolean {
