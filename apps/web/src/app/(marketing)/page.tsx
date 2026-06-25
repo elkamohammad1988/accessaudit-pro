@@ -219,6 +219,11 @@ export default function LandingPage() {
             );
           })}
         </div>
+        <p className="text-center text-sm">
+          <Link href="/pricing" className="font-medium text-brand underline-offset-4 hover:underline">
+            Compare all features →
+          </Link>
+        </p>
         <p className="mx-auto max-w-2xl text-center text-xs text-[hsl(var(--muted-foreground))]">
           Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review
           is still required — protecting you and your clients. Workspaces are single-user in this
@@ -269,24 +274,6 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
-
-      <footer className="space-y-3 border-t py-8 text-center text-sm text-[hsl(var(--muted-foreground))]">
-        <p>
-          AccessAudit<span className="text-brand"> Pro</span> · WCAG 2.2 accessibility audits for
-          agencies
-        </p>
-        <nav className="flex justify-center gap-4">
-          <Link href="/terms" className="underline-offset-4 hover:underline">
-            Terms
-          </Link>
-          <Link href="/privacy" className="underline-offset-4 hover:underline">
-            Privacy
-          </Link>
-          <Link href="/login" className="underline-offset-4 hover:underline">
-            Sign in
-          </Link>
-        </nav>
-      </footer>
     </div>
   );
 }
