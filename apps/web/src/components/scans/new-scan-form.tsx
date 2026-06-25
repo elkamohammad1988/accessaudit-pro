@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { FormError } from "@/components/ui/form-error";
 import { createScan, type NewScanState } from "@/app/(app)/scans/actions";
 
 export interface ProjectOption {
@@ -125,11 +126,7 @@ export function NewScanForm({
         </Select>
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
+      <FormError error={state.error} upgrade={state.upgrade} />
 
       <SubmitButton pendingLabel="Starting scan…">Start scan</SubmitButton>
     </form>

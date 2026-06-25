@@ -24,6 +24,9 @@ export function SiteFooter() {
         <Link href="/privacy" className="underline-offset-4 hover:underline">
           Privacy
         </Link>
+        <Link href="/accessibility" className="underline-offset-4 hover:underline">
+          Accessibility
+        </Link>
         <Link href="/login" className="underline-offset-4 hover:underline">
           Sign in
         </Link>

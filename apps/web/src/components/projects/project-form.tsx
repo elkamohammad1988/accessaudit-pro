@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { FormError } from "@/components/ui/form-error";
 import type { ProjectFormState } from "@/app/(app)/projects/actions";
 
 const initialState: ProjectFormState = { error: null };
@@ -76,11 +77,7 @@ export function ProjectForm({
         </span>
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
+      <FormError error={state.error} upgrade={state.upgrade} />
 
       <SubmitButton pendingLabel="Saving…">{submitLabel}</SubmitButton>
     </form>

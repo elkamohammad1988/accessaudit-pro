@@ -22,6 +22,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         <Link href="/">Home</Link>
         <Link href="/terms">Terms</Link>
         <Link href="/privacy">Privacy</Link>
+        <Link href="/accessibility">Accessibility</Link>
       </footer>
     </div>
   );

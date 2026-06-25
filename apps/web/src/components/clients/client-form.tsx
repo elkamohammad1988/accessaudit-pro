@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { FormError } from "@/components/ui/form-error";
 import type { ClientFormState } from "@/app/(app)/clients/actions";
 
 const initialState: ClientFormState = { error: null };
@@ -61,11 +62,7 @@ export function ClientForm({
         />
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
+      <FormError error={state.error} upgrade={state.upgrade} />
 
       <SubmitButton pendingLabel="Saving…">{submitLabel}</SubmitButton>
     </form>

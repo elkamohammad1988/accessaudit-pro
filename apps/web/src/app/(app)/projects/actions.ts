@@ -8,7 +8,7 @@ import { requireOrg } from "@/lib/auth";
 import { normalizeScanUrl } from "@/lib/url-safety";
 import { genericWriteError } from "@/lib/errors";
 
-export type ProjectFormState = { error: string | null };
+export type ProjectFormState = { error: string | null; upgrade?: boolean };
 
 const projectSchema = z.object({
   name: z.string().trim().min(2, "Project name must be at least 2 characters.").max(80),
@@ -77,6 +77,7 @@ export async function createProjectRecord(
     const limits = limitsFor(plan);
     return {
       error: `Your ${limits.label} plan allows ${formatLimit(limits.projects)} project(s). Archive one or upgrade to add more.`,
+      upgrade: true,
     };
   }
 

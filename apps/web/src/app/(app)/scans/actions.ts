@@ -10,7 +10,7 @@ import { startOfMonthIso } from "@/lib/dates";
 import { normalizeScanUrl } from "@/lib/url-safety";
 import { genericWriteError } from "@/lib/errors";
 
-export type NewScanState = { error: string | null };
+export type NewScanState = { error: string | null; upgrade?: boolean };
 
 const schema = z.object({
   projectId: z.string().uuid("Choose a project to scan."),
@@ -93,7 +93,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
   }
 
   const quotaError = await checkScanQuota(supabase, organization.id, urls.length);
-  if (quotaError) return { error: quotaError };
+  if (quotaError) return { error: quotaError, upgrade: true };
 
   const { data, error } = await supabase
     .from("scans")

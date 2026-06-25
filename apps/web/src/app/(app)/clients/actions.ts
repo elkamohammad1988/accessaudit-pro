@@ -7,7 +7,7 @@ import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaud
 import { requireOrg } from "@/lib/auth";
 import { genericWriteError } from "@/lib/errors";
 
-export type ClientFormState = { error: string | null };
+export type ClientFormState = { error: string | null; upgrade?: boolean };
 
 const clientSchema = z.object({
   name: z.string().trim().min(2, "Client name must be at least 2 characters.").max(80),
@@ -63,6 +63,7 @@ export async function createClientRecord(
     const limits = limitsFor(plan);
     return {
       error: `Your ${limits.label} plan allows ${formatLimit(limits.clients)} client(s). Archive one or upgrade to add more.`,
+      upgrade: true,
     };
   }
 
