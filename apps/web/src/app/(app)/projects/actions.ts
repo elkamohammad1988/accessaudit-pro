@@ -145,11 +145,12 @@ export async function archiveProjectRecord(formData: FormData): Promise<void> {
   if (typeof id !== "string" || !id) return;
 
   const { supabase, organization } = await requireOrg();
-  await supabase
+  const { error } = await supabase
     .from("projects")
     .update({ archived_at: new Date().toISOString() })
     .eq("id", id)
     .eq("organization_id", organization.id);
+  if (error) redirect(`/projects/${id}?notice=archive-failed`);
 
   revalidatePath("/projects");
   revalidatePath(`/projects/${id}`);
@@ -162,11 +163,12 @@ export async function restoreProjectRecord(formData: FormData): Promise<void> {
   if (typeof id !== "string" || !id) return;
 
   const { supabase, organization } = await requireOrg();
-  await supabase
+  const { error } = await supabase
     .from("projects")
     .update({ archived_at: null })
     .eq("id", id)
     .eq("organization_id", organization.id);
+  if (error) redirect(`/projects/${id}?notice=restore-failed`);
 
   revalidatePath("/projects");
   revalidatePath(`/projects/${id}`);

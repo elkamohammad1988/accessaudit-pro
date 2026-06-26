@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import {
   PLAN_LIMITS,
   PLAN_TIERS,
@@ -7,6 +8,7 @@ import {
   type PlanLimits,
   type PlanTier,
 } from "@accessaudit/shared";
+import { ButtonLink, buttonVariants } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -65,7 +67,7 @@ function Check() {
 
 function Dash() {
   return (
-    <span className="text-[hsl(var(--muted-foreground))]">
+    <span className="text-muted-foreground">
       <span aria-hidden>—</span>
       <span className="sr-only">Not included</span>
     </span>
@@ -79,7 +81,7 @@ export default function PricingPage() {
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Pricing that scales with your client list
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-[hsl(var(--muted-foreground))]">
+        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
           Start free — no credit card. Move up when you take on more clients or need white-label
           deliverables. Cancel anytime.
         </p>
@@ -104,13 +106,13 @@ export default function PricingPage() {
                     key={tier}
                     scope="col"
                     className={`px-3 py-3 text-center align-bottom ${
-                      popular ? "rounded-t-lg bg-[hsl(var(--muted))]" : ""
+                      popular ? "rounded-t-lg bg-muted" : ""
                     }`}
                   >
                     <span className="block font-semibold">{p.label}</span>
                     <span className="mt-1 block text-lg font-bold">
                       ${p.priceMonthly}
-                      <span className="text-xs font-normal text-[hsl(var(--muted-foreground))]">
+                      <span className="text-xs font-normal text-muted-foreground">
                         /mo
                       </span>
                     </span>
@@ -119,11 +121,11 @@ export default function PricingPage() {
                     )}
                     <Link
                       href="/signup"
-                      className={`mt-2 inline-flex h-8 items-center justify-center rounded-md px-3 text-xs font-medium ${
-                        popular
-                          ? "bg-brand text-brand-fg transition-opacity hover:opacity-90"
-                          : "border hover:bg-[hsl(var(--muted))]"
-                      }`}
+                      className={buttonVariants({
+                        variant: popular ? "primary" : "secondary",
+                        size: "sm",
+                        className: "mt-2",
+                      })}
                     >
                       {p.priceMonthly === 0 ? "Get started" : "Choose"}
                     </Link>
@@ -144,7 +146,7 @@ export default function PricingPage() {
                   return (
                     <td
                       key={tier}
-                      className={`px-3 py-3 text-center ${popular ? "bg-[hsl(var(--muted))]" : ""}`}
+                      className={`px-3 py-3 text-center ${popular ? "bg-muted" : ""}`}
                     >
                       {"text" in result ? result.text : result.bool ? <Check /> : <Dash />}
                     </td>
@@ -156,7 +158,7 @@ export default function PricingPage() {
         </table>
       </div>
 
-      <p className="mx-auto mt-6 max-w-2xl text-center text-xs text-[hsl(var(--muted-foreground))]">
+      <p className="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">
         Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review is
         still required — protecting you and your clients. Workspaces are single-user in this release;
         team seats are on the roadmap.
@@ -169,19 +171,22 @@ export default function PricingPage() {
         </h2>
         <div className="mx-auto mt-8 max-w-2xl space-y-3">
           {BILLING_FAQS.map((item) => (
-            <details key={item.q} className="group rounded-lg border p-5">
+            <details
+              key={item.q}
+              className="group rounded-lg border bg-card p-5 transition-colors hover:border-foreground/15"
+            >
               <summary className="cursor-pointer list-none font-medium [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-4">
                   {item.q}
                   <span
                     aria-hidden
-                    className="text-[hsl(var(--muted-foreground))] transition-transform group-open:rotate-45"
+                    className="text-muted-foreground transition-transform group-open:rotate-45"
                   >
                     +
                   </span>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">{item.a}</p>
+              <p className="mt-3 text-sm text-muted-foreground">{item.a}</p>
             </details>
           ))}
         </div>
@@ -189,17 +194,33 @@ export default function PricingPage() {
 
       {/* CTA */}
       <section className="mt-16 border-t pt-16">
-        <div className="flex flex-col items-center gap-5 rounded-xl border bg-[hsl(var(--muted))] px-6 py-12 text-center">
-          <h2 className="text-2xl font-bold">Try it free — no card required</h2>
-          <p className="max-w-md text-sm text-[hsl(var(--muted-foreground))]">
-            Run a real WCAG audit and see the report your clients would get, before you pay a cent.
-          </p>
-          <Link
-            href="/signup"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-          >
-            Start free
-          </Link>
+        <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-14 text-center shadow-lg">
+          <div
+            aria-hidden="true"
+            className="bg-dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_50%,black,transparent)]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-brand-2/15 blur-3xl"
+          />
+          <div className="relative">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Try it free — no card required
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+              Run a real WCAG audit and see the report your clients would get, before you pay a cent.
+            </p>
+            <div className="mt-6 flex justify-center">
+              <ButtonLink href="/signup" size="lg">
+                Start free
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </ButtonLink>
+            </div>
+          </div>
         </div>
       </section>
     </div>

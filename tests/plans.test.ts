@@ -5,6 +5,7 @@ import {
   isUnlimited,
   isWithinLimit,
   limitsFor,
+  pagesWithinScanLimit,
   UNLIMITED,
 } from "@accessaudit/shared";
 
@@ -34,6 +35,14 @@ describe("plan limits", () => {
   it("formatLimit renders Unlimited for infinite caps", () => {
     expect(formatLimit(UNLIMITED)).toBe("Unlimited");
     expect(formatLimit(25)).toBe("25");
+  });
+
+  it("pagesWithinScanLimit gates the whole requested page count (boundary inclusive)", () => {
+    expect(pagesWithinScanLimit("free", 1)).toBe(true); // free = 1 page
+    expect(pagesWithinScanLimit("free", 2)).toBe(false);
+    expect(pagesWithinScanLimit("starter", 25)).toBe(true); // boundary is allowed
+    expect(pagesWithinScanLimit("starter", 26)).toBe(false);
+    expect(pagesWithinScanLimit("scale", 500)).toBe(true);
   });
 });
 

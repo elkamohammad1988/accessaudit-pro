@@ -49,7 +49,7 @@ export default async function PublicReportPage({
         ) : null}
         <div>
           <p className="text-lg font-semibold">{org?.name ?? "Accessibility report"}</p>
-          <p className="text-sm text-[hsl(var(--muted-foreground))]">
+          <p className="text-sm text-muted-foreground">
             {report.clientName ? `${report.clientName} · ` : ""}
             WCAG {scan.wcag_level} · {new Date(scan.created_at).toLocaleDateString()}
           </p>
@@ -73,7 +73,7 @@ export default async function PublicReportPage({
       </div>
 
       {showPoweredBy ? (
-        <footer className="mt-10 border-t pt-4 text-center text-xs text-[hsl(var(--muted-foreground))]">
+        <footer className="mt-10 border-t pt-4 text-center text-xs text-muted-foreground">
           Powered by AccessAudit Pro
         </footer>
       ) : null}

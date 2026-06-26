@@ -168,6 +168,7 @@ export interface Database {
           started_at: string | null;
           last_progress_at: string | null;
           finished_at: string | null;
+          attempts: number;
           created_at: string;
         };
         Insert: {
@@ -189,6 +190,7 @@ export interface Database {
           started_at?: string | null;
           last_progress_at?: string | null;
           finished_at?: string | null;
+          attempts?: number;
           created_at?: string;
         };
         Update: {
@@ -210,6 +212,7 @@ export interface Database {
           started_at?: string | null;
           last_progress_at?: string | null;
           finished_at?: string | null;
+          attempts?: number;
           created_at?: string;
         };
         Relationships: [];
@@ -331,6 +334,42 @@ export interface Database {
         };
         Relationships: [];
       };
+      stripe_events: {
+        Row: {
+          event_id: string;
+          type: string;
+          received_at: string;
+        };
+        Insert: {
+          event_id: string;
+          type: string;
+          received_at?: string;
+        };
+        Update: {
+          event_id?: string;
+          type?: string;
+          received_at?: string;
+        };
+        Relationships: [];
+      };
+      rate_limits: {
+        Row: {
+          key: string;
+          count: number;
+          window_start: string;
+        };
+        Insert: {
+          key: string;
+          count?: number;
+          window_start?: string;
+        };
+        Update: {
+          key?: string;
+          count?: number;
+          window_start?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<never, never>;
     Functions: {
@@ -341,6 +380,14 @@ export interface Database {
       claim_next_scan: {
         Args: Record<string, never>;
         Returns: Database["public"]["Tables"]["scans"]["Row"] | null;
+      };
+      check_rate_limit: {
+        Args: { p_key: string; p_max: number; p_window_seconds: number };
+        Returns: boolean;
+      };
+      persist_scan_results: {
+        Args: { p_scan_id: string; p_org_id: string; p_pages: Json };
+        Returns: undefined;
       };
     };
     Enums: {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { publicEnv } from "@/lib/env";
+import { themeScript } from "@/lib/theme-script";
 
 const TITLE = "AccessAudit Pro";
 const DESCRIPTION =
@@ -32,8 +33,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">
+        {/* Set the theme class before paint to avoid a flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <Providers>{children}</Providers>
       </body>
     </html>

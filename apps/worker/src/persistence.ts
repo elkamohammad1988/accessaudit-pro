@@ -1,5 +1,5 @@
 import type { ImpactTotals } from "@accessaudit/shared";
-import { EMPTY_TOTALS, scoreFromTotals, sumTotals } from "@accessaudit/shared";
+import { EMPTY_TOTALS, scoreFromPages, scoreFromTotals, sumTotals } from "@accessaudit/shared";
 import { supabase } from "./supabase";
 import { criteriaFromTags } from "./wcag";
 import type { PageScanResult } from "./scanner";
@@ -23,10 +23,34 @@ function totalsFromViolations(violations: PageScanResult["violations"]): ImpactT
   return totals;
 }
 
+/** Shape one page (and its violations) into the JSONB the persist RPC expects. */
+function pagePayload(page: PageScanResult, totals: ImpactTotals) {
+  return {
+    url: page.url,
+    status: page.ok ? "ok" : "error",
+    http_status: page.httpStatus,
+    score: page.ok ? scoreFromTotals(totals) : null,
+    totals,
+    violations: page.ok
+      ? page.violations.map((v) => ({
+          rule_id: v.ruleId,
+          impact: v.impact,
+          wcag_criteria: criteriaFromTags(v.wcagTags),
+          description: v.description,
+          help_text: v.help,
+          help_url: v.helpUrl,
+          nodes: v.nodes,
+        }))
+      : [],
+  };
+}
+
 /**
- * Write per-page results and their violations, then return a rollup the caller
- * uses to finalize the scan row. organization_id comes only from the claimed
- * scan — never from page content.
+ * Write a scan's pages + violations and return a rollup the caller uses to
+ * finalize the scan row. The whole write goes through `persist_scan_results`,
+ * a single transactional RPC that does a delete-then-insert — so a retried scan
+ * can't leave duplicated or half-written results. organization_id comes only
+ * from the claimed scan, never from page content.
  */
 export async function persistResults(
   scan: { id: string; organization_id: string },
@@ -36,7 +60,7 @@ export async function persistResults(
   let okCount = 0;
   let firstError: string | null = null;
 
-  for (const page of pages) {
+  const payload = pages.map((page) => {
     const totals = totalsFromViolations(page.violations);
     if (page.ok) {
       okPageTotals.push(totals);
@@ -44,48 +68,23 @@ export async function persistResults(
     } else if (!firstError) {
       firstError = page.error ?? "Page could not be scanned.";
     }
+    return pagePayload(page, totals);
+  });
 
-    const { data: pageRow, error: pageErr } = await supabase
-      .from("scan_pages")
-      .insert({
-        scan_id: scan.id,
-        organization_id: scan.organization_id,
-        url: page.url,
-        status: page.ok ? "ok" : "error",
-        http_status: page.httpStatus,
-        score: page.ok ? scoreFromTotals(totals) : null,
-        totals,
-      })
-      .select("id")
-      .single();
-
-    if (pageErr || !pageRow) {
-      throw new Error(`Failed to insert scan_page for ${page.url}: ${pageErr?.message ?? "no row"}`);
-    }
-
-    if (page.ok && page.violations.length > 0) {
-      const rows = page.violations.map((v) => ({
-        scan_page_id: pageRow.id,
-        organization_id: scan.organization_id,
-        rule_id: v.ruleId,
-        impact: v.impact,
-        wcag_criteria: criteriaFromTags(v.wcagTags),
-        description: v.description,
-        help_text: v.help,
-        help_url: v.helpUrl,
-        nodes: v.nodes,
-      }));
-      const { error: vErr } = await supabase.from("violations").insert(rows);
-      if (vErr) {
-        throw new Error(`Failed to insert violations for ${page.url}: ${vErr.message}`);
-      }
-    }
+  const { error } = await supabase.rpc("persist_scan_results", {
+    p_scan_id: scan.id,
+    p_org_id: scan.organization_id,
+    p_pages: payload,
+  });
+  if (error) {
+    throw new Error(`Failed to persist scan results: ${error.message}`);
   }
 
-  const scanTotals = sumTotals(okPageTotals);
   return {
-    totals: scanTotals,
-    score: scoreFromTotals(scanTotals),
+    totals: sumTotals(okPageTotals),
+    // Overall score is normalized per page (not the raw sum) so a large site is
+    // judged on typical page health. Per-page scores stay un-normalized above.
+    score: scoreFromPages(okPageTotals),
     pagesScanned: okCount,
     allFailed: okCount === 0,
     anyFailed: okCount !== pages.length,

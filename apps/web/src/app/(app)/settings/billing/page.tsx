@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, CreditCard } from "lucide-react";
 import {
   PLAN_LIMITS,
   PLAN_TIERS,
@@ -11,6 +12,10 @@ import {
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { startOfMonthIso } from "@/lib/dates";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { startCheckout, openPortal } from "./actions";
 
 export const metadata: Metadata = { title: "Billing" };
@@ -18,19 +23,23 @@ export const metadata: Metadata = { title: "Billing" };
 const STATUS_BANNER: Record<string, { text: string; className: string }> = {
   success: {
     text: "Subscription updated. It can take a few seconds to reflect here.",
-    className: "border-green-200 bg-green-50 text-green-800",
+    className: "border-success/30 bg-success/10 text-success",
   },
   cancel: {
     text: "Checkout canceled — no changes were made.",
-    className: "border-amber-200 bg-amber-50 text-amber-800",
+    className: "border-warning/30 bg-warning/10 text-warning",
   },
   error: {
     text: "Something went wrong with billing. Please try again.",
-    className: "border-red-200 bg-red-50 text-red-700",
+    className: "border-danger/30 bg-danger/10 text-danger",
   },
   "no-customer": {
     text: "No billing account yet — pick a plan to get started.",
-    className: "border-amber-200 bg-amber-50 text-amber-800",
+    className: "border-warning/30 bg-warning/10 text-warning",
+  },
+  "scan-limit": {
+    text: "You've reached your plan's scan limit for this month. Upgrade to run more.",
+    className: "border-warning/30 bg-warning/10 text-warning",
   },
 };
 
@@ -90,14 +99,17 @@ export default async function BillingPage({
       <div>
         <Link
           href="/settings"
-          className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          ← Settings
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          Settings
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold">Billing</h1>
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">
-          {actualLimits.label} plan
-          {hasPaid && sub?.status ? ` · ${sub.status}` : ""}
+        <header className="mt-3 flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
+          <Badge variant={hasPaid ? "default" : "secondary"}>{actualLimits.label} plan</Badge>
+        </header>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {hasPaid && sub?.status ? `${sub.status}` : "No active subscription"}
           {hasPaid && sub?.current_period_end
             ? ` · renews ${new Date(sub.current_period_end).toLocaleDateString()}`
             : ""}
@@ -107,7 +119,7 @@ export default async function BillingPage({
       {downgraded ? (
         <p
           role="status"
-          className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800"
+          className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning"
         >
           Your {actualLimits.label} subscription is {sub?.status ?? "inactive"}, so{" "}
           {limits.label}-plan limits currently apply. Update your payment method in the billing
@@ -122,35 +134,45 @@ export default async function BillingPage({
       ) : null}
 
       <section aria-label="Usage" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {usage.map((u) => (
-          <div key={u.label} className="rounded-lg border p-4">
-            <p className="text-sm text-[hsl(var(--muted-foreground))]">{u.label}</p>
-            <p className="mt-1 text-2xl font-semibold">
-              {u.used}
-              <span className="text-base font-normal text-[hsl(var(--muted-foreground))]">
-                {" "}
-                / {formatLimit(u.limit)}
-              </span>
-            </p>
-          </div>
-        ))}
+        {usage.map((u) => {
+          const overEighty = Number.isFinite(u.limit) && u.limit > 0 && u.used / u.limit >= 0.8;
+          return (
+            <Card key={u.label} className="p-5">
+              <p className="text-sm text-muted-foreground">{u.label}</p>
+              <p className="mt-1 text-2xl font-semibold tabular-nums">
+                {u.used}
+                <span className="text-base font-normal text-muted-foreground">
+                  {" "}
+                  / {formatLimit(u.limit)}
+                </span>
+              </p>
+              <Progress
+                className="mt-3"
+                value={u.used}
+                max={u.limit}
+                tone={overEighty ? "warning" : "brand"}
+                label={`${u.label} usage`}
+              />
+            </Card>
+          );
+        })}
       </section>
 
       {hasPaid ? (
-        <section aria-label="Manage subscription" className="rounded-lg border p-6">
-          <h2 className="text-lg font-medium">Manage subscription</h2>
-          <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-            Change plan, update payment method, view invoices, or cancel.
-          </p>
-          <form action={openPortal} className="mt-4">
-            <button
-              type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-brand-fg hover:opacity-90"
-            >
-              Open billing portal
-            </button>
-          </form>
-        </section>
+        <Card>
+          <section aria-label="Manage subscription" className="p-6">
+            <h2 className="text-lg font-medium">Manage subscription</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Change plan, update payment method, view invoices, or cancel.
+            </p>
+            <form action={openPortal} className="mt-4">
+              <Button type="submit">
+                <CreditCard className="h-4 w-4" aria-hidden="true" />
+                Open billing portal
+              </Button>
+            </form>
+          </section>
+        </Card>
       ) : null}
 
       <section aria-label="Plans" className="space-y-3">
@@ -160,23 +182,19 @@ export default async function BillingPage({
             const p = PLAN_LIMITS[tier];
             const isCurrent = tier === actualPlan;
             return (
-              <div
+              <Card
                 key={tier}
-                className={`flex flex-col rounded-lg border p-4 ${isCurrent ? "border-brand ring-1 ring-brand" : ""}`}
+                className={`flex flex-col p-5 ${isCurrent ? "border-brand ring-1 ring-brand" : ""}`}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <p className="font-semibold">{p.label}</p>
-                  {isCurrent ? (
-                    <span className="rounded border border-brand px-2 py-0.5 text-xs font-medium text-brand">
-                      Current
-                    </span>
-                  ) : null}
+                  {isCurrent ? <Badge>Current</Badge> : null}
                 </div>
-                <p className="mt-1 text-2xl font-bold">
+                <p className="mt-1 text-2xl font-bold tracking-tight">
                   ${p.priceMonthly}
-                  <span className="text-sm font-normal text-[hsl(var(--muted-foreground))]">/mo</span>
+                  <span className="text-sm font-normal text-muted-foreground">/mo</span>
                 </p>
-                <ul className="mt-3 space-y-1 text-sm text-[hsl(var(--muted-foreground))]">
+                <ul className="mt-3 flex-1 space-y-1 text-sm text-muted-foreground">
                   <li>{formatLimit(p.clients)} clients</li>
                   <li>{formatLimit(p.projects)} projects</li>
                   <li>{formatLimit(p.scansPerMonth)} scans/mo</li>
@@ -185,34 +203,27 @@ export default async function BillingPage({
                 </ul>
                 <div className="mt-4">
                   {isCurrent ? (
-                    <span className="text-xs text-[hsl(var(--muted-foreground))]">Your plan</span>
+                    <span className="text-xs text-muted-foreground">Your plan</span>
                   ) : tier === "free" ? (
                     hasPaid ? (
-                      <span className="text-xs text-[hsl(var(--muted-foreground))]">
-                        Downgrade via portal
-                      </span>
+                      <span className="text-xs text-muted-foreground">Downgrade via portal</span>
                     ) : null
                   ) : hasPaid ? (
-                    <span className="text-xs text-[hsl(var(--muted-foreground))]">
-                      Switch via portal
-                    </span>
+                    <span className="text-xs text-muted-foreground">Switch via portal</span>
                   ) : (
                     <form action={startCheckout}>
                       <input type="hidden" name="plan" value={tier} />
-                      <button
-                        type="submit"
-                        className="inline-flex h-9 w-full items-center justify-center rounded-md bg-brand px-3 text-sm font-medium text-brand-fg hover:opacity-90"
-                      >
+                      <Button type="submit" size="sm" className="w-full">
                         Choose {p.label}
-                      </button>
+                      </Button>
                     </form>
                   )}
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
-        <p className="text-xs text-[hsl(var(--muted-foreground))]">
+        <p className="text-xs text-muted-foreground">
           Limits are enforced as you create clients, projects, and scans. Prices billed monthly via
           Stripe. Workspaces are single-user in this release — team seats are on the roadmap.
         </p>

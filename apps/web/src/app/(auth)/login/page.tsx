@@ -3,7 +3,11 @@ import Link from "next/link";
 import { signIn } from "../actions";
 import { AuthForm } from "@/components/auth/auth-form";
 
-export const metadata: Metadata = { title: "Sign in" };
+export const metadata: Metadata = {
+  title: "Sign in",
+  description: "Sign in to your AccessAudit Pro workspace to run WCAG audits and manage reports.",
+  robots: { index: false, follow: true },
+};
 
 export default async function LoginPage({
   searchParams,
@@ -16,7 +20,7 @@ export default async function LoginPage({
     <div className="space-y-6">
       <div className="space-y-1 text-center">
         <h1 className="text-xl font-semibold">Sign in</h1>
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">
+        <p className="text-sm text-muted-foreground">
           Welcome back to your agency workspace.
         </p>
       </div>

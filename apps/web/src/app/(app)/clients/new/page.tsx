@@ -11,7 +11,7 @@ export default function NewClientPage() {
       <div>
         <Link
           href="/clients"
-          className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
+          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           ← Clients
         </Link>

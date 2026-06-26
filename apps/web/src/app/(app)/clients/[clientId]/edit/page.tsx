@@ -32,7 +32,7 @@ export default async function EditClientPage({
       <div>
         <Link
           href={`/clients/${client.id}`}
-          className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
+          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           ← {client.name}
         </Link>

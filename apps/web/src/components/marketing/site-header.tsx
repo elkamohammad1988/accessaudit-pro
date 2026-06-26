@@ -1,29 +1,44 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
-/** Top navigation for the public marketing surface (landing + pricing). */
+/** Top navigation for the public marketing surface (landing, pricing, guides). */
 export function SiteHeader() {
   return (
-    <header className="border-b">
+    <header className="glass sticky top-0 z-40 border-b">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-        <Link href="/" className="font-semibold">
-          AccessAudit<span className="text-brand"> Pro</span>
+        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <span
+            aria-hidden="true"
+            className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-brand-fg shadow-sm ring-1 ring-inset ring-white/15"
+          >
+            A
+          </span>
+          AccessAudit<span className="text-brand">&nbsp;Pro</span>
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-4 text-sm">
-          <Link href="/guides" className="hidden font-medium underline-offset-4 hover:underline sm:inline">
+        <nav aria-label="Primary" className="flex items-center gap-1 text-sm sm:gap-2">
+          <Link
+            href="/guides"
+            className="hidden rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
+          >
             Guides
           </Link>
-          <Link href="/pricing" className="font-medium underline-offset-4 hover:underline">
+          <Link
+            href="/pricing"
+            className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
             Pricing
           </Link>
-          <Link href="/login" className="font-medium underline-offset-4 hover:underline">
+          <Link
+            href="/login"
+            className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
             Sign in
           </Link>
-          <Link
-            href="/signup"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-brand px-4 font-medium text-brand-fg transition-opacity hover:opacity-90"
-          >
+          <ThemeToggle className="hidden sm:inline-flex" />
+          <ButtonLink href="/signup" size="sm" className="h-9 px-4">
             Start free
-          </Link>
+          </ButtonLink>
         </nav>
       </div>
     </header>

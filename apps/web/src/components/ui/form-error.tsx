@@ -1,4 +1,19 @@
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
+
+/** Inline success banner — the positive twin of FormError, same visual rhythm. */
+export function FormSuccess({ message }: { message: string | null }) {
+  if (!message) return null;
+  return (
+    <p
+      role="status"
+      className="flex animate-fade-in items-center gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-sm text-success"
+    >
+      <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+      {message}
+    </p>
+  );
+}
 
 /**
  * Inline form error. When `upgrade` is set — i.e. the action failed because a
@@ -10,13 +25,13 @@ export function FormError({ error, upgrade }: { error: string | null; upgrade?: 
   return (
     <div
       role="alert"
-      className="space-y-1 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+      className="animate-fade-in space-y-1 rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger"
     >
       <p>{error}</p>
       {upgrade ? (
         <Link
           href="/settings/billing"
-          className="inline-block font-medium text-red-800 underline underline-offset-4 hover:no-underline"
+          className="inline-block font-semibold underline underline-offset-4 hover:no-underline"
         >
           Upgrade your plan →
         </Link>

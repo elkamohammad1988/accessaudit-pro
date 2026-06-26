@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button";
 
 const TITLE = "The European Accessibility Act: what web agencies need to know";
 const DESCRIPTION =
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 // Reuse the legal pages' prose styling for long-form copy.
 const PROSE =
-  "mt-8 space-y-4 text-sm leading-relaxed [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-[hsl(var(--foreground))] [&_h3]:mt-6 [&_h3]:font-medium [&_h3]:text-[hsl(var(--foreground))] [&_a]:text-brand [&_a]:underline-offset-4 hover:[&_a]:underline [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_p]:text-[hsl(var(--muted-foreground))] [&_li]:text-[hsl(var(--muted-foreground))]";
+  "mt-8 space-y-4 text-sm leading-relaxed [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-[hsl(var(--foreground))] [&_h3]:mt-6 [&_h3]:font-medium [&_h3]:text-[hsl(var(--foreground))] [&_a]:text-brand [&_a]:underline-offset-4 hover:[&_a]:underline [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_p]:text-muted-foreground [&_li]:text-muted-foreground";
 
 const JSON_LD = {
   "@context": "https://schema.org",
@@ -41,9 +42,9 @@ export default function EaaGuidePage() {
         {TITLE}
       </h1>
 
-      <div className="mt-6 rounded-lg border bg-[hsl(var(--muted))] p-5 text-sm">
+      <div className="mt-6 rounded-lg border bg-muted p-5 text-sm">
         <p className="font-medium text-[hsl(var(--foreground))]">In one minute</p>
-        <p className="mt-1 text-[hsl(var(--muted-foreground))]">
+        <p className="mt-1 text-muted-foreground">
           The European Accessibility Act (Directive (EU) 2019/882) has applied since{" "}
           <strong>28 June 2025</strong>. It requires many digital products and services sold to EU
           consumers — e-commerce, banking, e-books, transport, and more — to be accessible, measured
@@ -159,20 +160,15 @@ export default function EaaGuidePage() {
 
       {/* CTA lives outside the prose wrapper so its button colors aren't overridden
           by the [&_a] descendant rule. */}
-      <div className="mt-10 flex flex-col items-center gap-4 rounded-xl border bg-[hsl(var(--muted))] px-6 py-10 text-center">
+      <div className="mt-10 flex flex-col items-center gap-4 rounded-xl border bg-muted px-6 py-10 text-center">
         <p className="text-lg font-bold text-[hsl(var(--foreground))]">
           Run a WCAG 2.2 audit on a client site — free
         </p>
-        <p className="max-w-md text-sm text-[hsl(var(--muted-foreground))]">
+        <p className="max-w-md text-sm text-muted-foreground">
           See the prioritized, client-ready report AccessAudit Pro produces. No credit card.
         </p>
         <div className="flex items-center gap-3">
-          <Link
-            href="/signup"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-          >
-            Start free
-          </Link>
+          <ButtonLink href="/signup">Start free</ButtonLink>
           <Link href="/sample" className="text-sm font-medium underline-offset-4 hover:underline">
             See a sample report
           </Link>
@@ -189,7 +185,7 @@ export default function EaaGuidePage() {
         </p>
       </div>
 
-      <p className="mt-10 border-t pt-6 text-xs text-[hsl(var(--muted-foreground))]">
+      <p className="mt-10 border-t pt-6 text-xs text-muted-foreground">
         <Link href="/guides" className="text-brand underline-offset-4 hover:underline">
           ← All guides
         </Link>

@@ -1,4 +1,10 @@
-import { scoreFromTotals, sumTotals, type ImpactTotals, type ScanStatus } from "@accessaudit/shared";
+import {
+  scoreFromPages,
+  scoreFromTotals,
+  sumTotals,
+  type ImpactTotals,
+  type ScanStatus,
+} from "@accessaudit/shared";
 import type { ReportPage, ReportViewProps } from "@/components/scans/report-view";
 import type { GroupedViolation } from "@/lib/report";
 
@@ -230,7 +236,7 @@ const SAMPLE_GROUPS: GroupedViolation[] = [
 /** Props ready to spread into <ReportView />. */
 export const SAMPLE_REPORT: ReportViewProps = {
   status: "completed" as ScanStatus,
-  score: scoreFromTotals(SAMPLE_TOTALS),
+  score: scoreFromPages([homeTotals, contactTotals]),
   totals: SAMPLE_TOTALS,
   wcagLevel: "AA",
   pagesScanned: 2,

@@ -67,6 +67,19 @@ export async function POST(req: Request): Promise<Response> {
 
   const admin = createAdminClient();
 
+  // Idempotency: skip an event we've already applied. We record the id only after
+  // successful processing (below), so a handler that 500s leaves no row and Stripe's
+  // retry reprocesses it. Subscription updates set absolute state, so even a rare
+  // check-then-insert race double-applies harmlessly.
+  const { data: seen } = await admin
+    .from("stripe_events")
+    .select("event_id")
+    .eq("event_id", event.id)
+    .maybeSingle();
+  if (seen) {
+    return new Response("ok (already processed)", { status: 200 });
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -121,6 +134,15 @@ export async function POST(req: Request): Promise<Response> {
   } catch (err) {
     console.error(`Webhook handler error (${event.type}):`, err);
     return new Response("Handler error.", { status: 500 });
+  }
+
+  // Mark processed so redeliveries are skipped. Best-effort: a failure here just
+  // means a duplicate may reprocess later (handlers are idempotent), so don't 500.
+  const { error: ledgerError } = await admin
+    .from("stripe_events")
+    .insert({ event_id: event.id, type: event.type });
+  if (ledgerError && ledgerError.code !== "23505") {
+    console.error("Failed to record stripe_event:", ledgerError);
   }
 
   return new Response("ok", { status: 200 });

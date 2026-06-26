@@ -41,7 +41,7 @@ export default async function EditProjectPage({
       <div>
         <Link
           href={`/projects/${project.id}`}
-          className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
+          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           ← {project.name}
         </Link>

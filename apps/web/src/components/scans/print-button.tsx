@@ -1,13 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export function PrintButton() {
   return (
-    <button
-      type="button"
-      onClick={() => window.print()}
-      className="no-print inline-flex h-10 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-brand-fg hover:opacity-90"
-    >
+    <Button type="button" onClick={() => window.print()} className="no-print">
       Print / Save as PDF
-    </button>
+    </Button>
   );
 }

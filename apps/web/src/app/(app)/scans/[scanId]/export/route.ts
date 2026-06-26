@@ -2,10 +2,9 @@ import { effectivePlan, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { loadReportByScan } from "@/lib/load-report";
 import { parseNodes } from "@/lib/report";
+import { rowsToCsv } from "@/lib/csv";
 
 export const dynamic = "force-dynamic";
-
-const escapeCsv = (value: string): string => `"${value.replace(/"/g, '""')}"`;
 
 export async function GET(
   _req: Request,
@@ -65,8 +64,7 @@ export async function GET(
     }
   }
 
-  // BOM so Excel reads UTF-8 correctly; CRLF line endings.
-  const csv = "﻿" + rows.map((row) => row.map((cell) => escapeCsv(String(cell))).join(",")).join("\r\n");
+  const csv = rowsToCsv(rows);
 
   return new Response(csv, {
     status: 200,

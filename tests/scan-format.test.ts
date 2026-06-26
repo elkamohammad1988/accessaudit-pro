@@ -25,11 +25,11 @@ describe("totalViolations", () => {
 });
 
 describe("scoreClassName", () => {
-  it("bands the score by color", () => {
-    expect(scoreClassName(95)).toContain("green");
-    expect(scoreClassName(75)).toContain("amber");
-    expect(scoreClassName(40)).toContain("red");
-    expect(scoreClassName(null)).toContain("muted-foreground");
+  it("bands the score by semantic tone", () => {
+    expect(scoreClassName(95)).toBe("text-success");
+    expect(scoreClassName(75)).toBe("text-warning");
+    expect(scoreClassName(40)).toBe("text-danger");
+    expect(scoreClassName(null)).toBe("text-muted-foreground");
   });
 });
 

@@ -72,7 +72,7 @@ export function ProjectForm({
           placeholder="https://example.com"
           aria-describedby="baseUrl-hint"
         />
-        <span id="baseUrl-hint" className="text-xs text-[hsl(var(--muted-foreground))]">
+        <span id="baseUrl-hint" className="text-xs text-muted-foreground">
           The base address of the site you want to audit.
         </span>
       </div>

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, UserPlus } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { ButtonLink } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { ProjectForm } from "@/components/projects/project-form";
 import { createProjectRecord } from "../actions";
 
@@ -29,11 +32,12 @@ export default async function NewProjectPage({
       <div>
         <Link
           href="/projects"
-          className="text-sm text-[hsl(var(--muted-foreground))] underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          ← Projects
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          Projects
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold">New project</h1>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">New project</h1>
       </div>
 
       {clients && clients.length > 0 ? (
@@ -44,17 +48,17 @@ export default async function NewProjectPage({
           submitLabel="Create project"
         />
       ) : (
-        <div className="rounded-lg border border-dashed p-6 text-center">
-          <p className="text-sm text-[hsl(var(--muted-foreground))]">
-            You need a client before you can add a project.
-          </p>
-          <Link
-            href="/clients/new"
-            className="mt-4 inline-flex h-10 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-brand-fg hover:opacity-90"
-          >
-            Add a client
-          </Link>
-        </div>
+        <EmptyState
+          icon={UserPlus}
+          title="No clients yet"
+          description="You need a client before you can add a project (their website)."
+          action={
+            <ButtonLink href="/clients/new">
+              <UserPlus className="h-4 w-4" aria-hidden="true" />
+              Add a client
+            </ButtonLink>
+          }
+        />
       )}
     </div>
   );

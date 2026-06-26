@@ -2,51 +2,231 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Design tokens. HSL channels (no `hsl()` wrapper) so Tailwind can apply opacity
+ * via `hsl(var(--token) / <alpha-value>)`. Dark theme lives under `.dark`
+ * (class strategy) — the no-flash script in the root layout sets the class from
+ * the user's saved choice or their OS preference before first paint.
+ */
 :root {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas,
+    monospace;
 
-  /* Brand palette (HSL channels; overridable per-org later). Indigo #4F46E5. */
+  /* Brand — indigo #4F46E5, with a violet companion for gradients/glows.
+   * Overridable per-org at runtime. */
   --brand: 243 75% 59%;
+  --brand-2: 262 72% 62%;
   --brand-fg: 0 0% 100%;
 
+  /* Surfaces & text. `elevated` sits a half-step above `card` for nested panels. */
   --background: 0 0% 100%;
   --foreground: 222 47% 11%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --elevated: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --muted: 210 40% 96.5%;
+  --muted-foreground: 215 16% 46%;
+  --accent: 210 40% 96.5%;
+  --accent-foreground: 222 47% 11%;
+
+  /* Lines & controls */
   --border: 214 32% 91%;
+  --input: 214 32% 87%;
+  --ring: 243 75% 59%;
+
+  /* Accessibility-impact scale (axe taxonomy) — the product's core semantics */
+  --sev-critical: 0 72% 51%;
+  --sev-serious: 22 90% 48%;
+  --sev-moderate: 38 92% 45%;
+  --sev-minor: 199 89% 42%;
+
+  /* Status */
+  --success: 142 71% 40%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 45%;
+  --warning-foreground: 0 0% 100%;
+  --danger: 0 72% 51%;
+  --danger-foreground: 0 0% 100%;
+
+  --radius: 0.625rem;
+
+  /* Layered, low-contrast shadows for a soft "lifted" feel (light theme).
+   * Each combines a tight contact shadow with a softer ambient one — the recipe
+   * premium UIs (Stripe, Linear) use to read as real elevation, not a drop blur. */
+  --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
+  --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.06), 0 1px 3px -1px hsl(222 47% 11% / 0.07);
+  --shadow-md: 0 2px 4px -1px hsl(222 47% 11% / 0.06), 0 8px 20px -6px hsl(222 47% 11% / 0.12);
+  --shadow-lg: 0 4px 8px -2px hsl(222 47% 11% / 0.08), 0 18px 40px -12px hsl(222 47% 11% / 0.16);
+  --shadow-xl: 0 8px 16px -4px hsl(222 47% 11% / 0.10), 0 28px 64px -16px hsl(222 47% 11% / 0.22);
+  /* Colored glow for the primary CTA + focus emphasis. */
+  --shadow-brand: 0 1px 2px 0 hsl(var(--brand) / 0.30), 0 8px 22px -8px hsl(var(--brand) / 0.45);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --border: 217 33% 20%;
-  }
+.dark {
+  --brand: 243 80% 70%;
+  --brand-2: 264 80% 74%;
+  --brand-fg: 222 47% 6%;
+
+  --background: 222 47% 5%;
+  --foreground: 210 40% 98%;
+  --card: 222 40% 8%;
+  --card-foreground: 210 40% 98%;
+  --elevated: 220 38% 11%;
+  --popover: 222 44% 7%;
+  --popover-foreground: 210 40% 98%;
+  --muted: 217 33% 14%;
+  --muted-foreground: 215 20% 62%;
+  --accent: 217 33% 16%;
+  --accent-foreground: 210 40% 98%;
+
+  --border: 217 33% 18%;
+  --input: 217 33% 22%;
+  --ring: 243 80% 70%;
+
+  --sev-critical: 0 84% 64%;
+  --sev-serious: 25 95% 60%;
+  --sev-moderate: 41 96% 58%;
+  --sev-minor: 199 92% 60%;
+
+  --success: 142 66% 50%;
+  --success-foreground: 222 47% 6%;
+  --warning: 41 96% 58%;
+  --warning-foreground: 222 47% 6%;
+  --danger: 0 84% 64%;
+  --danger-foreground: 0 0% 100%;
+
+  /* Dark surfaces don't read shadows well — lean on near-black, larger spreads. */
+  --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.30);
+  --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.40), 0 1px 2px -1px hsl(0 0% 0% / 0.30);
+  --shadow-md: 0 4px 14px -2px hsl(0 0% 0% / 0.50), 0 2px 6px -2px hsl(0 0% 0% / 0.35);
+  --shadow-lg: 0 14px 40px -10px hsl(0 0% 0% / 0.60), 0 4px 12px -4px hsl(0 0% 0% / 0.45);
+  --shadow-xl: 0 24px 60px -12px hsl(0 0% 0% / 0.70), 0 8px 20px -6px hsl(0 0% 0% / 0.50);
+  --shadow-brand: 0 1px 2px 0 hsl(0 0% 0% / 0.40), 0 8px 26px -8px hsl(var(--brand) / 0.50);
 }
 
 @layer base {
   * {
     border-color: hsl(var(--border));
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Visible focus for keyboard users — we sell accessibility, we dogfood it. */
+  /* Tighter optical tracking on display headings, the way premium UIs set type. */
+  h1,
+  h2 {
+    letter-spacing: -0.02em;
+  }
+
+  /* One consistent, accessible focus ring everywhere — we sell accessibility. */
   :focus-visible {
-    outline: 2px solid hsl(var(--brand));
+    outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: hsl(var(--brand) / 0.22);
+  }
+
+  /* Quiet, themed scrollbars (WebKit) for the app chrome. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border: 2px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
   }
 }
 
-/* Print / Save-as-PDF: drop the app chrome so reports print as clean documents.
-   Open report details so nothing is hidden behind a collapsed <details>. */
+@layer components {
+  /* Brand gradient text for marketing display headings. */
+  .text-gradient-brand {
+    background-image: linear-gradient(
+      110deg,
+      hsl(var(--brand)) 0%,
+      hsl(var(--brand-2)) 55%,
+      hsl(var(--brand)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Cards get a faint inner top highlight so light appears to fall from above —
+   * the subtle bevel that separates a flat box from a "real" surface. */
+  .surface-highlight {
+    box-shadow:
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.6),
+      var(--shadow-sm);
+  }
+  .dark .surface-highlight {
+    box-shadow:
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.04),
+      var(--shadow-sm);
+  }
+
+  /* Frosted panel for floating chrome (sticky headers, command-style overlays). */
+  .glass {
+    background-color: hsl(var(--background) / 0.72);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+  }
+
+  /* Subtle dot grid for hero / empty-state backdrops. */
+  .bg-dot-grid {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+@layer utilities {
+  /* Soft radial spotlight, anchored top-center — for hero and auth backdrops. */
+  .bg-spotlight {
+    background-image: radial-gradient(
+      60% 50% at 50% 0%,
+      hsl(var(--brand) / 0.10) 0%,
+      transparent 70%
+    );
+  }
+}
+
+/* Honor reduced-motion: disable transitions/animations for users who ask. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print / Save-as-PDF: drop app chrome so reports print as clean documents.
+ * Force the FULL light surface palette — including `.dark`, since the print
+ * route inherits the user's theme. Without this, a dark-mode user exports a
+ * white-label PDF with dark cards/borders on white paper. */
 @media print {
   aside,
   .no-print {
@@ -54,5 +234,25 @@
   }
   main {
     overflow: visible !important;
+  }
+  :root,
+  .dark {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --elevated: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --muted: 210 40% 96.5%;
+    --muted-foreground: 215 16% 46%;
+    --accent: 210 40% 96.5%;
+    --accent-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 88%;
+    --sev-critical: 0 72% 51%;
+    --sev-serious: 22 90% 48%;
+    --sev-moderate: 38 92% 45%;
+    --sev-minor: 199 89% 42%;
   }
 }

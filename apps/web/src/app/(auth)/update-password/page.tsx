@@ -3,7 +3,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { UpdatePasswordForm } from "@/components/auth/update-password-form";
 
-export const metadata: Metadata = { title: "Set a new password" };
+export const metadata: Metadata = {
+  title: "Set a new password",
+  description: "Choose a new password for your AccessAudit Pro account.",
+  robots: { index: false, follow: false },
+};
 export const dynamic = "force-dynamic";
 
 // Reached via the reset-password email link → /auth/callback exchanges the code
@@ -21,7 +25,7 @@ export default async function UpdatePasswordPage() {
     <div className="space-y-6">
       <div className="space-y-1 text-center">
         <h1 className="text-xl font-semibold">Set a new password</h1>
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">
+        <p className="text-sm text-muted-foreground">
           Choose a new password for {user.email}.
         </p>
       </div>

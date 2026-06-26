@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
+import { optionalHttpsUrl } from "@/lib/validation";
 import { genericWriteError } from "@/lib/errors";
 
 export type SettingsState = { error: string | null; ok: boolean };
@@ -17,7 +18,7 @@ const emptyToNull = (value?: string | null): string | null => {
 
 const profileSchema = z.object({
   fullName: z.string().trim().max(120).optional(),
-  avatarUrl: z.string().trim().url("Avatar must be a valid URL.").optional().or(z.literal("")),
+  avatarUrl: optionalHttpsUrl("Avatar URL"),
 });
 
 export async function updateProfile(_prev: SettingsState, formData: FormData): Promise<SettingsState> {
@@ -55,7 +56,7 @@ const orgSchema = z.object({
     .max(48)
     .regex(/^[a-z0-9-]+$/, "Slug may contain only lowercase letters, numbers, and hyphens."),
   brandColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Brand color must be a hex value like #4F46E5."),
-  logoUrl: z.string().trim().url("Logo must be a valid URL.").optional().or(z.literal("")),
+  logoUrl: optionalHttpsUrl("Logo URL"),
 });
 
 export async function updateOrganization(

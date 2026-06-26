@@ -1,6 +1,7 @@
 import {
   EMPTY_TOTALS,
   IMPACT_LEVELS,
+  scoreBand,
   type ImpactLevel,
   type ImpactTotals,
   type ScanStatus,
@@ -31,12 +32,15 @@ export const IMPACT_LABEL: Record<ImpactLevel, string> = {
   minor: "Minor",
 };
 
-/** Tailwind classes for an impact badge. Order matches severity. */
+/**
+ * Tailwind classes for an impact badge — soft tint + inset ring, theme-aware via
+ * the severity tokens so they read correctly in both light and dark mode.
+ */
 export const IMPACT_BADGE: Record<ImpactLevel, string> = {
-  critical: "border-red-300 bg-red-50 text-red-700",
-  serious: "border-orange-300 bg-orange-50 text-orange-700",
-  moderate: "border-amber-300 bg-amber-50 text-amber-800",
-  minor: "border-slate-300 bg-slate-50 text-slate-700",
+  critical: "bg-critical/10 text-critical ring-1 ring-inset ring-critical/25",
+  serious: "bg-serious/10 text-serious ring-1 ring-inset ring-serious/25",
+  moderate: "bg-moderate/10 text-moderate ring-1 ring-inset ring-moderate/25",
+  minor: "bg-minor/10 text-minor ring-1 ring-inset ring-minor/25",
 };
 
 export interface StatusMeta {
@@ -47,17 +51,18 @@ export interface StatusMeta {
 }
 
 export const STATUS_META: Record<ScanStatus, StatusMeta> = {
-  queued: { label: "Queued", className: "border-slate-300 bg-slate-50 text-slate-700", terminal: false },
-  running: { label: "Running", className: "border-blue-300 bg-blue-50 text-blue-700", terminal: false },
-  completed: { label: "Completed", className: "border-green-300 bg-green-50 text-green-700", terminal: true },
-  partial: { label: "Partial", className: "border-amber-300 bg-amber-50 text-amber-800", terminal: true },
-  failed: { label: "Failed", className: "border-red-300 bg-red-50 text-red-700", terminal: true },
+  queued: { label: "Queued", className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", terminal: false },
+  running: { label: "Running", className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", terminal: false },
+  completed: { label: "Completed", className: "bg-success/10 text-success ring-1 ring-inset ring-success/25", terminal: true },
+  partial: { label: "Partial", className: "bg-warning/10 text-warning ring-1 ring-inset ring-warning/25", terminal: true },
+  failed: { label: "Failed", className: "bg-danger/10 text-danger ring-1 ring-inset ring-danger/25", terminal: true },
 };
 
 /** Color the numeric score by band (good / needs work / poor). */
 export function scoreClassName(score: number | null): string {
-  if (score === null) return "text-[hsl(var(--muted-foreground))]";
-  if (score >= 90) return "text-green-600";
-  if (score >= 70) return "text-amber-600";
-  return "text-red-600";
+  const { tone } = scoreBand(score);
+  if (tone === "success") return "text-success";
+  if (tone === "warning") return "text-warning";
+  if (tone === "danger") return "text-danger";
+  return "text-muted-foreground";
 }

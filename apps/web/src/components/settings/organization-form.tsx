@@ -5,6 +5,7 @@ import type { Organization } from "@accessaudit/database";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { FormError, FormSuccess } from "@/components/ui/form-error";
 import { updateOrganization, type SettingsState } from "@/app/(app)/settings/actions";
 
 const initialState: SettingsState = { error: null, ok: false };
@@ -29,7 +30,7 @@ export function OrganizationForm({ organization }: { organization: Organization 
           defaultValue={organization.slug}
           aria-describedby="slug-hint"
         />
-        <p id="slug-hint" className="text-xs text-[hsl(var(--muted-foreground))]">
+        <p id="slug-hint" className="text-xs text-muted-foreground">
           Lowercase letters, numbers, and hyphens. Used in links and public reports.
         </p>
       </div>
@@ -42,10 +43,10 @@ export function OrganizationForm({ organization }: { organization: Organization 
             name="brandColor"
             type="color"
             defaultValue={organization.brand_color}
-            className="h-10 w-14 cursor-pointer rounded-md border bg-transparent"
+            className="h-10 w-14 cursor-pointer rounded-md border border-input bg-background p-1 shadow-xs transition-colors hover:border-foreground/25 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0"
             aria-describedby="brandColor-hint"
           />
-          <span id="brandColor-hint" className="text-sm text-[hsl(var(--muted-foreground))]">
+          <span id="brandColor-hint" className="text-sm text-muted-foreground">
             Applied to your white-label reports.
           </span>
         </div>
@@ -61,21 +62,13 @@ export function OrganizationForm({ organization }: { organization: Organization 
           placeholder="https://…/logo.png"
           aria-describedby="logoUrl-hint"
         />
-        <p id="logoUrl-hint" className="text-xs text-[hsl(var(--muted-foreground))]">
+        <p id="logoUrl-hint" className="text-xs text-muted-foreground">
           Shown on branded reports. Paste a hosted image URL.
         </p>
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
-      {state.ok ? (
-        <p role="status" className="text-sm text-green-600">
-          Workspace saved.
-        </p>
-      ) : null}
+      <FormError error={state.error} />
+      <FormSuccess message={state.ok ? "Workspace saved." : null} />
 
       <SubmitButton>Save workspace</SubmitButton>
     </form>

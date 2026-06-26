@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { FormError, FormSuccess } from "@/components/ui/form-error";
 import { updateProfile, type SettingsState } from "@/app/(app)/settings/actions";
 
 const initialState: SettingsState = { error: null, ok: false };
@@ -24,7 +25,7 @@ export function ProfileForm({
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input id="email" value={email ?? ""} disabled readOnly />
-        <p className="text-xs text-[hsl(var(--muted-foreground))]">
+        <p className="text-xs text-muted-foreground">
           Sign-in email — change it from your auth provider.
         </p>
       </div>
@@ -45,16 +46,8 @@ export function ProfileForm({
         />
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
-      {state.ok ? (
-        <p role="status" className="text-sm text-green-600">
-          Profile saved.
-        </p>
-      ) : null}
+      <FormError error={state.error} />
+      <FormSuccess message={state.ok ? "Profile saved." : null} />
 
       <SubmitButton>Save profile</SubmitButton>
     </form>

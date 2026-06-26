@@ -7,6 +7,7 @@ import type { AuthState } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormError, FormSuccess } from "@/components/ui/form-error";
 
 const initialState: AuthState = { error: null, message: null };
 
@@ -37,11 +38,8 @@ export function UpdatePasswordForm() {
         />
       </div>
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
+      <FormError error={state.error} />
+      <FormSuccess message={state.message} />
 
       <SubmitButton />
     </form>

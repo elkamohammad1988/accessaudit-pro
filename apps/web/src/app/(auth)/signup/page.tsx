@@ -3,14 +3,19 @@ import Link from "next/link";
 import { signUp } from "../actions";
 import { AuthForm } from "@/components/auth/auth-form";
 
-export const metadata: Metadata = { title: "Create account" };
+export const metadata: Metadata = {
+  title: "Create account",
+  description:
+    "Create your free AccessAudit Pro workspace and run your first WCAG 2.2 accessibility audit in minutes. No credit card required.",
+  robots: { index: false, follow: true },
+};
 
 export default function SignupPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1 text-center">
         <h1 className="text-xl font-semibold">Create your account</h1>
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">
+        <p className="text-sm text-muted-foreground">
           Free to start — no card required.
         </p>
       </div>

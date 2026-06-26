@@ -51,7 +51,7 @@ export default async function PrintReportPage({
         ) : null}
         <div>
           <p className="text-lg font-semibold">{organization.name}</p>
-          <p className="text-sm text-[hsl(var(--muted-foreground))]">
+          <p className="text-sm text-muted-foreground">
             {report.clientName ? `${report.clientName} · ` : ""}
             WCAG {scan.wcag_level} · {new Date(scan.created_at).toLocaleDateString()}
           </p>
@@ -74,7 +74,7 @@ export default async function PrintReportPage({
       />
 
       {showPoweredBy ? (
-        <footer className="border-t pt-4 text-center text-xs text-[hsl(var(--muted-foreground))]">
+        <footer className="border-t pt-4 text-center text-xs text-muted-foreground">
           Powered by AccessAudit Pro
         </footer>
       ) : null}

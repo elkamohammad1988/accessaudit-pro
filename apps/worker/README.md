@@ -27,11 +27,20 @@ Concurrency-safe across multiple worker instances thanks to
 ```bash
 pnpm install
 npx playwright install chromium          # one-time: download the browser binary
-SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... pnpm --filter @accessaudit/worker dev
+
+# Easiest: run the whole stack from the repo root — the worker loads the root
+# .env.local automatically (see src/load-env.ts):
+pnpm dev                                  # runs web + worker together
+
+# Or run just the worker (still reads the root .env.local):
+pnpm --filter @accessaudit/worker dev
 ```
 
-Get the URL + **service-role** key from `supabase start` (local) or your Supabase
-project settings (prod). The service-role key bypasses RLS — keep it server-side.
+Put the URL + **service-role** key in the root `.env.local` (`SUPABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY`). Get them from `supabase start` (local) or your
+Supabase project settings (prod). You can still override per-run with inline env
+vars (`SUPABASE_URL=… pnpm --filter @accessaudit/worker dev`) — shell env wins
+over the file. The service-role key bypasses RLS — keep it server-side.
 
 ## Environment
 

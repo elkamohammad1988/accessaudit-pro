@@ -123,11 +123,12 @@ export async function archiveClientRecord(formData: FormData): Promise<void> {
   if (typeof id !== "string" || !id) return;
 
   const { supabase, organization } = await requireOrg();
-  await supabase
+  const { error } = await supabase
     .from("clients")
     .update({ archived_at: new Date().toISOString() })
     .eq("id", id)
     .eq("organization_id", organization.id);
+  if (error) redirect(`/clients/${id}?notice=archive-failed`);
 
   revalidatePath("/clients");
   revalidatePath(`/clients/${id}`);
@@ -140,11 +141,12 @@ export async function restoreClientRecord(formData: FormData): Promise<void> {
   if (typeof id !== "string" || !id) return;
 
   const { supabase, organization } = await requireOrg();
-  await supabase
+  const { error } = await supabase
     .from("clients")
     .update({ archived_at: null })
     .eq("id", id)
     .eq("organization_id", organization.id);
+  if (error) redirect(`/clients/${id}?notice=restore-failed`);
 
   revalidatePath("/clients");
   revalidatePath(`/clients/${id}`);

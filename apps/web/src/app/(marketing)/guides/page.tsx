@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Guides",
@@ -26,26 +28,30 @@ const GUIDES = [
 export default function GuidesPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight">Guides</h1>
-      <p className="mt-3 text-[hsl(var(--muted-foreground))]">
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Guides</h1>
+      <p className="mt-3 text-muted-foreground">
         Practical, plain-language explainers on accessibility compliance — written for the agencies
         that have to deliver it.
       </p>
       <ul className="mt-10 space-y-4">
         {GUIDES.map((g) => (
-          <li key={g.href} className="rounded-lg border p-6">
-            <h2 className="text-lg font-semibold">
-              <Link href={g.href} className="underline-offset-4 hover:underline">
-                {g.title}
+          <li key={g.href}>
+            <Card interactive className="group p-6">
+              <Link href={g.href} className="block">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
+                  <BookOpen className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h2 className="mt-4 text-lg font-semibold">{g.title}</h2>
+                <p className="mt-2 text-sm text-muted-foreground">{g.summary}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand">
+                  Read the guide
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </span>
               </Link>
-            </h2>
-            <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">{g.summary}</p>
-            <Link
-              href={g.href}
-              className="mt-3 inline-block text-sm font-medium text-brand underline-offset-4 hover:underline"
-            >
-              Read the guide →
-            </Link>
+            </Card>
           </li>
         ))}
       </ul>

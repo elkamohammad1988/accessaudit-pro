@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { ButtonLink } from "@/components/ui/button";
 import { ReportView } from "@/components/scans/report-view";
 import { SAMPLE_BRAND, SAMPLE_REPORT } from "@/lib/sample-report";
 
@@ -14,17 +15,15 @@ export default function SampleReportPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       {/* Conversion banner */}
-      <div className="flex flex-col gap-3 rounded-lg border border-brand bg-[hsl(var(--muted))] p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-lg border border-brand/30 bg-brand/5 p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm">
           <span className="font-semibold">This is a sample report.</span> It&rsquo;s exactly what
           your clients receive — run a real one on any site, free.
         </p>
-        <Link
-          href="/signup"
-          className="inline-flex h-9 shrink-0 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-        >
+        <ButtonLink href="/signup" size="sm" className="h-9 shrink-0">
           Audit my site
-        </Link>
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </ButtonLink>
       </div>
 
       {/* Branded report (mirrors the public /r/[token] deliverable) */}
@@ -44,7 +43,7 @@ export default function SampleReportPage() {
           </div>
           <div>
             <p className="text-lg font-semibold">{SAMPLE_BRAND.agencyName}</p>
-            <p className="text-sm text-[hsl(var(--muted-foreground))]">
+            <p className="text-sm text-muted-foreground">
               {SAMPLE_BRAND.clientName} · WCAG {SAMPLE_REPORT.wcagLevel} · {SAMPLE_BRAND.date}
             </p>
           </div>
@@ -56,27 +55,31 @@ export default function SampleReportPage() {
           <ReportView {...SAMPLE_REPORT} />
         </div>
 
-        <footer className="mt-10 border-t pt-4 text-center text-xs text-[hsl(var(--muted-foreground))]">
+        <footer className="mt-10 border-t pt-4 text-center text-xs text-muted-foreground">
           Powered by AccessAudit Pro
         </footer>
       </div>
 
       {/* Closing CTA */}
-      <div className="mt-10 flex flex-col items-center gap-4 rounded-xl border bg-[hsl(var(--muted))] px-6 py-10 text-center">
-        <h2 className="text-xl font-bold">Generate a report like this for your client</h2>
-        <p className="max-w-md text-sm text-[hsl(var(--muted-foreground))]">
+      <div className="relative mt-10 overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-12 text-center shadow-sm">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/15 blur-3xl"
+        />
+        <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+          Generate a report like this for your client
+        </h2>
+        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
           Free to start — no card. Add your logo and brand color, then export a PDF or share a link.
         </p>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/signup"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-          >
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <ButtonLink href="/signup" size="lg">
             Start free
-          </Link>
-          <Link href="/pricing" className="text-sm font-medium underline-offset-4 hover:underline">
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </ButtonLink>
+          <ButtonLink href="/pricing" size="lg" variant="secondary">
             See pricing
-          </Link>
+          </ButtonLink>
         </div>
       </div>
     </div>

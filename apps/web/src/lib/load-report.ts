@@ -19,29 +19,30 @@ export interface ReportData {
 }
 
 async function assemble(supabase: SupabaseClient<Database>, scan: Scan): Promise<ReportData> {
-  const { data: project } = await supabase
-    .from("projects")
-    .select("id, name, client_id")
-    .eq("id", scan.project_id)
-    .maybeSingle();
-  const { data: client } = project
-    ? await supabase.from("clients").select("name").eq("id", project.client_id).maybeSingle()
-    : { data: null };
-
-  const { data: pages } = await supabase
-    .from("scan_pages")
-    .select("id, url, status, http_status, score, totals")
-    .eq("scan_id", scan.id)
-    .order("created_at", { ascending: true });
+  // project and pages are independent — fetch concurrently instead of in series.
+  const [{ data: project }, { data: pages }] = await Promise.all([
+    supabase.from("projects").select("id, name, client_id").eq("id", scan.project_id).maybeSingle(),
+    supabase
+      .from("scan_pages")
+      .select("id, url, status, http_status, score, totals")
+      .eq("scan_id", scan.id)
+      .order("created_at", { ascending: true }),
+  ]);
 
   const pageRows = pages ?? [];
   const pageIds = pageRows.map((p) => p.id);
 
-  let violations: Violation[] = [];
-  if (pageIds.length > 0) {
-    const { data } = await supabase.from("violations").select("*").in("scan_page_id", pageIds);
-    violations = data ?? [];
-  }
+  // client (needs project.client_id) and violations (needs pageIds) are likewise
+  // independent of each other — run them concurrently in the second round.
+  const [{ data: client }, { data: violationRows }] = await Promise.all([
+    project
+      ? supabase.from("clients").select("name").eq("id", project.client_id).maybeSingle()
+      : Promise.resolve({ data: null as { name: string } | null }),
+    pageIds.length > 0
+      ? supabase.from("violations").select("*").in("scan_page_id", pageIds)
+      : Promise.resolve({ data: [] as Violation[] }),
+  ]);
+  const violations: Violation[] = violationRows ?? [];
 
   const pageUrlById = new Map(pageRows.map((p) => [p.id, p.url] as const));
 

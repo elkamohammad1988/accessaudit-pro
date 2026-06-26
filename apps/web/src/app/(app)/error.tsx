@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { AlertTriangle, RotateCw } from "lucide-react";
+import { Button, ButtonLink } from "@/components/ui/button";
 
 export default function AppError({
   error,
@@ -19,25 +21,22 @@ export default function AppError({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-md space-y-4 py-16 text-center">
-      <h1 className="text-2xl font-semibold">Something went wrong</h1>
-      <p className="text-sm text-[hsl(var(--muted-foreground))]">
+    <div className="mx-auto flex max-w-md flex-col items-center space-y-4 py-16 text-center">
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-danger/10 text-danger ring-1 ring-inset ring-danger/20">
+        <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+      </span>
+      <h1 className="text-2xl font-semibold tracking-tight">Something went wrong</h1>
+      <p className="text-sm text-muted-foreground">
         We hit an unexpected error loading this page. Try again, or head back to your dashboard.
       </p>
-      <div className="flex items-center justify-center gap-2">
-        <button
-          type="button"
-          onClick={reset}
-          className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-4 text-sm font-medium text-brand-fg hover:opacity-90"
-        >
+      <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+        <Button type="button" onClick={reset}>
+          <RotateCw className="h-4 w-4" aria-hidden="true" />
           Try again
-        </button>
-        <a
-          href="/dashboard"
-          className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium hover:bg-[hsl(var(--muted))]"
-        >
+        </Button>
+        <ButtonLink href="/dashboard" variant="secondary">
           Go to dashboard
-        </a>
+        </ButtonLink>
       </div>
     </div>
   );

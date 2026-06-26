@@ -65,6 +65,47 @@ export function isBlockedRequestUrl(rawUrl: string): boolean {
   return false;
 }
 
+/** Resolve a hostname and report whether any address is private. Fails closed. */
+async function resolvesToPrivate(host: string): Promise<boolean> {
+  try {
+    const records = await lookup(host, { all: true });
+    if (records.length === 0) return true;
+    return records.some((record) => isPrivateIp(record.address));
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Async interceptor gate that closes the DNS-rebinding hole the sync check leaves:
+ * a *hostname* (not a literal IP) that resolves to a private address — via a
+ * low-TTL rebind or a redirect to an internal domain — would otherwise slip past
+ * `isBlockedRequestUrl`. This re-resolves every request's host (cached per scan)
+ * and blocks if it points anywhere internal. Pass a Map to cache lookups.
+ */
+export async function isRequestUrlBlocked(
+  rawUrl: string,
+  cache?: Map<string, boolean>,
+): Promise<boolean> {
+  if (isBlockedRequestUrl(rawUrl)) return true;
+
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return true;
+  }
+  const host = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (net.isIP(host)) return false; // literal IPs already cleared by the sync check
+
+  const cached = cache?.get(host);
+  if (cached !== undefined) return cached;
+
+  const blocked = await resolvesToPrivate(host);
+  cache?.set(host, blocked);
+  return blocked;
+}
+
 /** Full async validation for the page we are about to navigate to. Throws if unsafe. */
 export async function assertScannableUrl(rawUrl: string): Promise<void> {
   let url: URL;

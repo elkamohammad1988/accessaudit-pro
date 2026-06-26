@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import type { Organization, Profile } from "@accessaudit/database";
 import { createClient } from "@/lib/supabase/server";
@@ -18,8 +19,13 @@ export interface SessionContext {
  *
  * Uses getUser() (not getSession) so the token is verified against the auth
  * server — never trust an unverified session in server code.
+ *
+ * Wrapped in React `cache` so the layout and the page it renders share one
+ * resolution per request instead of each re-running getUser() + the profile/org
+ * queries (previously 2× the GoTrue round-trip and 4 DB queries before any page
+ * data loaded).
  */
-export async function requireSession(): Promise<SessionContext> {
+export const requireSession = cache(async function requireSession(): Promise<SessionContext> {
   const supabase = await createClient();
 
   const {
@@ -41,7 +47,7 @@ export async function requireSession(): Promise<SessionContext> {
     profile: profile ?? null,
     organization: organization ?? null,
   };
-}
+});
 
 export interface OrgContext {
   supabase: SupabaseClient<Database>;

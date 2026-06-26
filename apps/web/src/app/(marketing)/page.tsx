@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  ArrowRight,
+  Check,
+  FileText,
+  Gauge,
+  Layers,
+  Palette,
+  PlayCircle,
+  Sparkles,
+} from "lucide-react";
 import {
   PLAN_LIMITS,
   PLAN_TIERS,
@@ -6,24 +17,44 @@ import {
   isUnlimited,
   type PlanTier,
 } from "@accessaudit/shared";
+import { ButtonLink } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
+
+export const metadata: Metadata = {
+  title: "WCAG accessibility audits & white-label reports for agencies",
+  description:
+    "Scan any site against WCAG 2.2, get a prioritized report mapped to the EAA / EN 301 549, and hand clients a white-label deliverable. Free to start — no card required.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "AccessAudit Pro — WCAG audits your clients can actually read",
+    description:
+      "On-demand WCAG 2.2 accessibility audits and white-label reports for agencies. Free to start.",
+    url: "/",
+  },
+};
 
 // Signed-in visitors are redirected to /dashboard by middleware; this renders
 // for signed-out visitors only.
 
 const FEATURES = [
   {
+    icon: Gauge,
     title: "Scan in seconds",
     body: "Enter a URL (or a list). A headless-Chromium + axe-core worker audits the rendered page against WCAG 2.2 and scores it.",
   },
   {
+    icon: FileText,
     title: "Reports clients can read",
     body: "Prioritized by impact, mapped to WCAG criteria, with plain-language fix guidance — not a wall of developer console output.",
   },
   {
+    icon: Palette,
     title: "White-label deliverables",
     body: "Share a branded public link or export a PDF with your logo and colors. Sell audits as a service line.",
   },
   {
+    icon: Layers,
     title: "Multi-client by design",
     body: "Organize work by client and project, re-scan over time, and keep every audit on record.",
   },
@@ -97,137 +128,150 @@ export default function LandingPage() {
   return (
     <div className="mx-auto max-w-5xl px-6">
       {/* Hero */}
-      <section className="flex flex-col items-center gap-8 py-20 text-center">
-        <div className="space-y-4">
-          <p className="text-sm font-semibold uppercase tracking-wide text-brand">
+      <section className="bg-spotlight relative flex flex-col items-center gap-8 py-20 text-center sm:py-28">
+        {/* Ambient brand glow + faint dot grid behind the hero for depth. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-10 -z-10 mx-auto h-72 w-full max-w-3xl rounded-full bg-brand/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="bg-dot-grid pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(60%_50%_at_50%_30%,black,transparent)]"
+        />
+        <Reveal className="space-y-5">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand shadow-xs">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             WCAG 2.2 · EAA / EN 301 549
-          </p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Accessibility audits your clients can actually read.
+          </span>
+          <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-6xl">
+            Accessibility audits your clients can{" "}
+            <span className="text-gradient-brand">actually read.</span>
           </h1>
-          <p className="mx-auto max-w-xl text-[hsl(var(--muted-foreground))]">
+          <p className="mx-auto max-w-xl text-pretty text-base text-muted-foreground sm:text-lg">
             The European Accessibility Act is now in force. Scan any site, get a prioritized WCAG
             report, and hand over a white-labeled deliverable — built for agencies, not just
             developers.
           </p>
-        </div>
-        <div className="flex flex-col items-center gap-3">
+        </Reveal>
+        <Reveal delay={0.1} className="flex flex-col items-center gap-3">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/signup"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-            >
+            <ButtonLink href="/signup" size="lg">
               Start free
-            </Link>
-            <Link
-              href="/sample"
-              className="inline-flex h-10 items-center justify-center rounded-md border px-5 text-sm font-medium hover:bg-[hsl(var(--muted))]"
-            >
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </ButtonLink>
+            <ButtonLink href="/sample" size="lg" variant="secondary">
+              <PlayCircle className="h-4 w-4" aria-hidden="true" />
               See a sample report
-            </Link>
+            </ButtonLink>
           </div>
-          <p className="text-xs text-[hsl(var(--muted-foreground))]">
+          <p className="text-xs text-muted-foreground">
             No credit card required · Free forever plan · Powered by axe-core
           </p>
-        </div>
+        </Reveal>
       </section>
 
       {/* How it works */}
-      <section aria-labelledby="how-heading" className="border-t py-16">
-        <div className="text-center">
-          <h2 id="how-heading" className="text-2xl font-bold">
+      <section aria-labelledby="how-heading" className="border-t py-16 sm:py-20">
+        <Reveal className="text-center">
+          <h2 id="how-heading" className="text-2xl font-bold tracking-tight sm:text-3xl">
             From URL to client-ready report in three steps
           </h2>
-          <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
+          <p className="mt-2 text-sm text-muted-foreground">
             No setup, no browser extensions, no spreadsheets.
           </p>
-        </div>
-        <ol className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        </Reveal>
+        <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {STEPS.map((s) => (
-            <li key={s.n} className="rounded-lg border p-6">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-semibold text-brand-fg">
-                {s.n}
-              </span>
-              <h3 className="mt-3 font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">{s.body}</p>
-            </li>
+            <StaggerItem key={s.n}>
+              <Card interactive className="h-full p-6">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-2 text-sm font-semibold text-brand-fg shadow-sm ring-1 ring-inset ring-white/15">
+                  {s.n}
+                </span>
+                <h3 className="mt-4 font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              </Card>
+            </StaggerItem>
           ))}
-        </ol>
+        </Stagger>
       </section>
 
       {/* Features */}
-      <section aria-label="Features" className="grid grid-cols-1 gap-4 border-t py-16 sm:grid-cols-2">
-        {FEATURES.map((f) => (
-          <div key={f.title} className="rounded-lg border p-6">
-            <h2 className="font-semibold">{f.title}</h2>
-            <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">{f.body}</p>
-          </div>
-        ))}
+      <section aria-label="Features" className="border-t py-16 sm:py-20">
+        <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {FEATURES.map((f) => (
+            <StaggerItem key={f.title}>
+              <Card interactive className="h-full p-6">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
+                  <f.icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="mt-4 font-semibold">{f.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+              </Card>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </section>
 
       {/* Pricing */}
-      <section aria-labelledby="pricing-heading" className="space-y-6 border-t py-16">
-        <div className="text-center">
-          <h2 id="pricing-heading" className="text-2xl font-bold">
+      <section aria-labelledby="pricing-heading" className="space-y-8 border-t py-16 sm:py-20">
+        <Reveal className="text-center">
+          <h2 id="pricing-heading" className="text-2xl font-bold tracking-tight sm:text-3xl">
             Simple, agency-friendly pricing
           </h2>
-          <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
+          <p className="mt-2 text-sm text-muted-foreground">
             Start free, no card required. Upgrade when you need more.
           </p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        </Reveal>
+        <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PLAN_TIERS.map((tier) => {
             const p = PLAN_LIMITS[tier];
             const popular = tier === POPULAR;
             return (
-              <div
-                key={tier}
-                className={`relative flex flex-col rounded-lg border p-5 ${
-                  popular ? "border-brand ring-1 ring-brand" : ""
-                }`}
-              >
-                {popular && (
-                  <span className="absolute -top-3 left-5 rounded-full bg-brand px-2.5 py-0.5 text-xs font-medium text-brand-fg">
-                    Most popular
-                  </span>
-                )}
-                <p className="font-semibold">{p.label}</p>
-                <p className="mt-1 text-2xl font-bold">
-                  ${p.priceMonthly}
-                  <span className="text-sm font-normal text-[hsl(var(--muted-foreground))]">
-                    /mo
-                  </span>
-                </p>
-                <ul className="mt-3 flex-1 space-y-1.5 text-sm text-[hsl(var(--muted-foreground))]">
-                  {planHighlights(tier).map((line) => (
-                    <li key={line} className="flex gap-2">
-                      <span aria-hidden className="text-brand">
-                        ✓
-                      </span>
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/signup"
-                  className={`mt-4 inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium ${
-                    popular
-                      ? "bg-brand text-brand-fg transition-opacity hover:opacity-90"
-                      : "border hover:bg-[hsl(var(--muted))]"
+              <StaggerItem key={tier} className="h-full">
+                <Card
+                  interactive
+                  className={`relative flex h-full flex-col p-5 ${
+                    popular ? "border-brand/60 shadow-lg ring-1 ring-brand/40" : ""
                   }`}
                 >
-                  {p.priceMonthly === 0 ? "Get started" : `Choose ${p.label}`}
-                </Link>
-              </div>
+                  {popular && (
+                    <span className="absolute -top-3 left-5 inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-0.5 text-xs font-medium text-brand-fg shadow-sm">
+                      <Sparkles className="h-3 w-3" aria-hidden="true" />
+                      Most popular
+                    </span>
+                  )}
+                  <p className="font-semibold">{p.label}</p>
+                  <p className="mt-1 text-3xl font-bold tracking-tight">
+                    ${p.priceMonthly}
+                    <span className="text-sm font-normal text-muted-foreground">/mo</span>
+                  </p>
+                  <ul className="mt-4 flex-1 space-y-2 text-sm text-muted-foreground">
+                    {planHighlights(tier).map((line) => (
+                      <li key={line} className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ButtonLink
+                    href="/signup"
+                    size="sm"
+                    variant={popular ? "primary" : "secondary"}
+                    className="mt-5"
+                  >
+                    {p.priceMonthly === 0 ? "Get started" : `Choose ${p.label}`}
+                  </ButtonLink>
+                </Card>
+              </StaggerItem>
             );
           })}
-        </div>
+        </Stagger>
         <p className="text-center text-sm">
           <Link href="/pricing" className="font-medium text-brand underline-offset-4 hover:underline">
             Compare all features →
           </Link>
         </p>
-        <p className="mx-auto max-w-2xl text-center text-xs text-[hsl(var(--muted-foreground))]">
+        <p className="mx-auto max-w-2xl text-center text-xs text-muted-foreground">
           Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review
           is still required — protecting you and your clients. Workspaces are single-user in this
           release; team seats are on the roadmap.
@@ -235,47 +279,65 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="faq-heading" className="border-t py-16">
-        <div className="text-center">
-          <h2 id="faq-heading" className="text-2xl font-bold">
+      <section aria-labelledby="faq-heading" className="border-t py-16 sm:py-20">
+        <Reveal className="text-center">
+          <h2 id="faq-heading" className="text-2xl font-bold tracking-tight sm:text-3xl">
             Questions agencies ask
           </h2>
-        </div>
+        </Reveal>
         <div className="mx-auto mt-8 max-w-2xl space-y-3">
           {FAQS.map((item) => (
-            <details key={item.q} className="group rounded-lg border p-5">
+            <details key={item.q} className="group rounded-lg border bg-card p-5 transition-colors hover:border-foreground/15">
               <summary className="cursor-pointer list-none font-medium [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-4">
                   {item.q}
                   <span
                     aria-hidden
-                    className="text-[hsl(var(--muted-foreground))] transition-transform group-open:rotate-45"
+                    className="text-muted-foreground transition-transform group-open:rotate-45"
                   >
                     +
                   </span>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">{item.a}</p>
+              <p className="mt-3 text-sm text-muted-foreground">{item.a}</p>
             </details>
           ))}
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="border-t py-16">
-        <div className="flex flex-col items-center gap-5 rounded-xl border bg-[hsl(var(--muted))] px-6 py-12 text-center">
-          <h2 className="text-2xl font-bold">Run your first audit today</h2>
-          <p className="max-w-md text-sm text-[hsl(var(--muted-foreground))]">
-            Turn accessibility compliance into a service line. Free to start — no card, no
-            commitment.
-          </p>
-          <Link
-            href="/signup"
-            className="inline-flex h-10 items-center justify-center rounded-md bg-brand px-5 text-sm font-medium text-brand-fg transition-opacity hover:opacity-90"
-          >
-            Start free
-          </Link>
-        </div>
+      <section className="border-t py-16 sm:py-20">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-14 text-center shadow-lg">
+            <div
+              aria-hidden="true"
+              className="bg-dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_50%,black,transparent)]"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-brand-2/15 blur-3xl"
+            />
+            <div className="relative">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                Run your first audit today
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+                Turn accessibility compliance into a service line. Free to start — no card, no
+                commitment.
+              </p>
+              <div className="mt-6 flex justify-center">
+                <ButtonLink href="/signup" size="lg">
+                  Start free
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </ButtonLink>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </section>
     </div>
   );

@@ -33,6 +33,15 @@ export default function GlobalError({
           color: "#111",
         }}
       >
+        {/* Tailwind/tokens may not be loaded here, so honor the OS theme with a
+            self-contained media query (!important to beat the inline styles). */}
+        <style>{`
+          @media (prefers-color-scheme: dark) {
+            body { background: #070b14 !important; color: #f5f7fa !important; }
+            body p { color: #9aa3b2 !important; }
+            body a { color: #f5f7fa !important; border-color: #2a2f3a !important; }
+          }
+        `}</style>
         <main style={{ maxWidth: 420, padding: 24, textAlign: "center" }}>
           <h1 style={{ fontSize: 22, fontWeight: 600, margin: 0 }}>Something went wrong</h1>
           <p style={{ color: "#666", marginTop: 8, fontSize: 14 }}>

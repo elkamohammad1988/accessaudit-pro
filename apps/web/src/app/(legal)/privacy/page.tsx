@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How AccessAudit Pro collects, uses, and protects your data.",
+  alternates: { canonical: "/privacy" },
 };
 
 // Fixed publication date; bump on change. Fill the bracketed placeholders with

@@ -6,8 +6,11 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { publicEnv } from "@/lib/env";
 import { safeNextPath } from "@/lib/utils";
+import { allowByIp } from "@/lib/rate-limit";
 
 export type AuthState = { error: string | null; message: string | null };
+
+const TOO_MANY = "Too many attempts. Please wait a minute and try again.";
 
 const credentials = z.object({
   email: z.string().email("Enter a valid email address."),
@@ -27,10 +30,17 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
   }
 
+  // Throttle password guessing per source IP before touching the auth server.
+  if (!(await allowByIp("auth:signin", { max: 10, windowSeconds: 60 }))) {
+    return { error: TOO_MANY, message: null };
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
-    return { error: error.message, message: null };
+    // Generic, non-enumerating message — never reveal whether the email exists
+    // or echo a backend error string.
+    return { error: "Incorrect email or password.", message: null };
   }
 
   revalidatePath("/", "layout");
@@ -45,6 +55,11 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
   }
 
+  // Cap sign-ups per IP to blunt automated account creation / email-bombing.
+  if (!(await allowByIp("auth:signup", { max: 5, windowSeconds: 60 }))) {
+    return { error: TOO_MANY, message: null };
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     ...parsed.data,
@@ -52,7 +67,12 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   });
 
   if (error) {
-    return { error: error.message, message: null };
+    // Don't echo backend specifics (e.g. "User already registered") — that's an
+    // account-enumeration oracle. Keep it generic.
+    return {
+      error: "We couldn't create that account. Try a different email, or sign in.",
+      message: null,
+    };
   }
 
   // When email confirmation is on, no session is returned yet.
@@ -76,13 +96,21 @@ export async function requestPasswordReset(
     return { error: "Enter a valid email address.", message: null };
   }
 
+  // Throttle reset emails per IP (prevents using us to spam a victim's inbox).
+  // Still returns the same neutral copy on the limit so it isn't an oracle.
+  if (!(await allowByIp("auth:reset", { max: 5, windowSeconds: 300 }))) {
+    return {
+      error: null,
+      message: "If that email has an account, a reset link is on its way.",
+    };
+  }
+
   const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
+  // Always return the same neutral message regardless of whether the email exists
+  // or the call errored — never confirm account existence (enumeration guard).
+  await supabase.auth.resetPasswordForEmail(email.data, {
     redirectTo: `${publicEnv.appUrl}/auth/callback?next=/update-password`,
   });
-  if (error) {
-    return { error: error.message, message: null };
-  }
 
   return {
     error: null,
@@ -111,7 +139,10 @@ export async function updatePassword(_prev: AuthState, formData: FormData): Prom
 
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) {
-    return { error: error.message, message: null };
+    return {
+      error: "Couldn't update your password. Request a new reset link and try again.",
+      message: null,
+    };
   }
 
   revalidatePath("/", "layout");

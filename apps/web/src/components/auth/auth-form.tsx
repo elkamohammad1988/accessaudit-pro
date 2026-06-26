@@ -6,6 +6,7 @@ import type { AuthState } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormError, FormSuccess } from "@/components/ui/form-error";
 
 const initialState: AuthState = { error: null, message: null };
 
@@ -64,16 +65,8 @@ export function AuthForm({
         </div>
       ) : null}
 
-      {state.error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
-        </p>
-      ) : null}
-      {state.message ? (
-        <p role="status" className="text-sm text-green-700">
-          {state.message}
-        </p>
-      ) : null}
+      <FormError error={state.error} />
+      <FormSuccess message={state.message} />
 
       <SubmitButton label={submitLabel} />
     </form>

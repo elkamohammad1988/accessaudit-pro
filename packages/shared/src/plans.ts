@@ -127,6 +127,15 @@ export function isWithinLimit(plan: PlanTier, key: QuotaKey, currentCount: numbe
   return currentCount + 1 <= PLAN_LIMITS[plan][key];
 }
 
+/**
+ * Is a scan of `pageCount` pages allowed on this plan? Unlike `isWithinLimit`
+ * (which gates adding one more item), this compares the whole requested page count
+ * against the per-scan cap.
+ */
+export function pagesWithinScanLimit(plan: PlanTier, pageCount: number): boolean {
+  return pageCount <= PLAN_LIMITS[plan].pagesPerScan;
+}
+
 export function isUnlimited(value: number): boolean {
   return !Number.isFinite(value);
 }

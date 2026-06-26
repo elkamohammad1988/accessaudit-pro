@@ -57,19 +57,27 @@ export function NewScanForm({
       </div>
 
       <fieldset className="space-y-2">
-        <legend className="text-sm font-medium leading-none">Scope</legend>
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-          <label className="flex items-center gap-2 text-sm">
+        <legend className="mb-2 text-sm font-medium leading-none">Scope</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-input bg-background p-3.5 shadow-xs transition-all hover:border-foreground/25 has-[:checked]:border-brand has-[:checked]:bg-brand/5 has-[:checked]:ring-1 has-[:checked]:ring-brand">
             <input
               type="radio"
               name="scanType"
               value="single"
               checked={scanType === "single"}
               onChange={() => setScanType("single")}
+              className="mt-0.5 accent-brand"
             />
-            Single page
+            <span className="space-y-0.5">
+              <span className="block text-sm font-medium">Single page</span>
+              <span className="block text-xs text-muted-foreground">Audit one specific URL.</span>
+            </span>
           </label>
-          <label className="flex items-center gap-2 text-sm">
+          <label
+            className={`flex items-start gap-3 rounded-lg border border-input bg-background p-3.5 shadow-xs transition-all has-[:checked]:border-brand has-[:checked]:bg-brand/5 has-[:checked]:ring-1 has-[:checked]:ring-brand ${
+              multiAllowed ? "cursor-pointer hover:border-foreground/25" : "cursor-not-allowed opacity-60"
+            }`}
+          >
             <input
               type="radio"
               name="scanType"
@@ -77,13 +85,14 @@ export function NewScanForm({
               checked={scanType === "list"}
               onChange={() => setScanType("list")}
               disabled={!multiAllowed}
+              className="mt-0.5 accent-brand"
             />
-            URL list{" "}
-            {multiAllowed ? (
-              <span className="text-[hsl(var(--muted-foreground))]">(up to {pagesPerScan})</span>
-            ) : (
-              <span className="text-[hsl(var(--muted-foreground))]">(upgrade to scan multiple)</span>
-            )}
+            <span className="space-y-0.5">
+              <span className="block text-sm font-medium">URL list</span>
+              <span className="block text-xs text-muted-foreground">
+                {multiAllowed ? `Audit up to ${pagesPerScan} pages at once.` : "Upgrade to scan multiple pages."}
+              </span>
+            </span>
           </label>
         </div>
       </fieldset>
@@ -98,7 +107,7 @@ export function NewScanForm({
             placeholder={selected?.base_url ?? "https://example.com"}
             defaultValue={selected?.base_url ?? ""}
           />
-          <p className="text-xs text-[hsl(var(--muted-foreground))]">
+          <p className="text-xs text-muted-foreground">
             Defaults to the project&apos;s base URL. Change it to scan a specific page.
           </p>
         </div>
@@ -111,7 +120,7 @@ export function NewScanForm({
             rows={6}
             placeholder={`${selected?.base_url ?? "https://example.com"}\n${selected?.base_url ?? "https://example.com"}/about`}
           />
-          <p className="text-xs text-[hsl(var(--muted-foreground))]">
+          <p className="text-xs text-muted-foreground">
             One URL per line, up to {pagesPerScan} pages on your plan.
           </p>
         </div>

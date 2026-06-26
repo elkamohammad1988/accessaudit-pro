@@ -2,7 +2,25 @@ import { chromium, type Browser, type BrowserContext } from "playwright";
 import { AxeBuilder } from "@axe-core/playwright";
 import type { ImpactLevel, WcagLevel } from "@accessaudit/shared";
 import { tagsForLevel } from "./wcag";
-import { assertScannableUrl, isBlockedRequestUrl } from "./url-guard";
+import { assertScannableUrl, isRequestUrlBlocked } from "./url-guard";
+
+/** Reject a promise that doesn't settle within `ms`, so nothing can hang forever. */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    timer.unref?.();
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
 
 export interface AxeViolationLite {
   ruleId: string;
@@ -42,7 +60,7 @@ export async function scanPage(
   browser: Browser,
   url: string,
   level: WcagLevel,
-  opts: { timeoutMs: number; maxNodes: number },
+  opts: { timeoutMs: number; maxNodes: number; settleMs: number },
 ): Promise<PageScanResult> {
   // SSRF gate: validate (and DNS-resolve) the target before we touch the network.
   try {
@@ -56,23 +74,43 @@ export async function scanPage(
     context = await browser.newContext();
     const page = await context.newPage();
 
-    // Defense-in-depth: abort any request (redirects, subresources) to a literal
-    // private address or blocked host that slips past the pre-navigation check.
-    await context.route("**/*", (route) => {
-      if (isBlockedRequestUrl(route.request().url())) {
-        void route.abort("blockedbyclient");
+    // Defense-in-depth: abort any request (navigation, redirects, subresources)
+    // that resolves to a private/blocked address — including hostnames that rebind
+    // to internal IPs, which the literal-IP check alone would miss. Cached per scan.
+    const dnsCache = new Map<string, boolean>();
+    await context.route("**/*", async (route) => {
+      if (await isRequestUrlBlocked(route.request().url(), dnsCache)) {
+        await route.abort("blockedbyclient");
       } else {
-        void route.continue();
+        await route.continue();
       }
     });
 
-    const response = await page.goto(url, { waitUntil: "load", timeout: opts.timeoutMs });
+    const response = await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: opts.timeoutMs,
+    });
     const httpStatus = response?.status() ?? null;
     if (httpStatus !== null && httpStatus >= 400) {
       return { url, ok: false, httpStatus, error: `HTTP ${httpStatus}`, violations: [] };
     }
 
-    const results = await new AxeBuilder({ page }).withTags(tagsForLevel(level)).analyze();
+    // Let client-rendered (SPA) content settle before auditing, but never block
+    // the scan on a page that streams forever (analytics beacons, open sockets):
+    // wait for network idle only up to a short, bounded budget, then proceed.
+    await page
+      .waitForLoadState("networkidle", { timeout: opts.settleMs })
+      .catch(() => {
+        /* not idle within budget — audit what rendered anyway */
+      });
+
+    // axe has no built-in timeout — a pathological DOM could hang it indefinitely
+    // and wedge the single-threaded worker, so bound it explicitly.
+    const results = await withTimeout(
+      new AxeBuilder({ page }).withTags(tagsForLevel(level)).analyze(),
+      opts.timeoutMs,
+      "Accessibility analysis",
+    );
     const violations: AxeViolationLite[] = results.violations.map((v) => ({
       ruleId: v.id,
       impact: (v.impact ?? "minor") as ImpactLevel,

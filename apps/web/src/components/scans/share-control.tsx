@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { setScanShare } from "@/app/(app)/scans/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function ShareControl({
   scanId,
@@ -33,41 +35,31 @@ export function ShareControl({
       <form action={setScanShare}>
         <input type="hidden" name="scanId" value={scanId} />
         <input type="hidden" name="share" value="on" />
-        <button
-          type="submit"
-          className="inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium hover:bg-[hsl(var(--muted))]"
-        >
+        <Button type="submit" variant="secondary" size="sm" className="h-9">
           Create share link
-        </button>
+        </Button>
       </form>
     );
   }
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <input
+      <Input
         readOnly
         value={shareUrl}
         onFocus={(e) => e.currentTarget.select()}
-        className="h-9 w-64 rounded-md border bg-transparent px-3 text-sm"
+        className="h-9 w-full font-mono text-xs sm:w-72"
         aria-label="Public report link"
       />
-      <button
-        type="button"
-        onClick={copy}
-        className="inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium hover:bg-[hsl(var(--muted))]"
-      >
+      <Button type="button" onClick={copy} variant="secondary" size="sm" className="h-9 w-20">
         {copied ? "Copied" : "Copy"}
-      </button>
+      </Button>
       <form action={setScanShare}>
         <input type="hidden" name="scanId" value={scanId} />
         <input type="hidden" name="share" value="off" />
-        <button
-          type="submit"
-          className="inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium text-red-600 hover:bg-[hsl(var(--muted))]"
-        >
+        <Button type="submit" variant="secondary" size="sm" className="h-9 text-danger">
           Revoke
-        </button>
+        </Button>
       </form>
     </div>
   );
