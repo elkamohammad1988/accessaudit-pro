@@ -3,7 +3,31 @@
 All notable changes to AccessAudit Pro. Dates are UTC. This project follows a
 phase-based pre-1.0 cadence; see [`README.md`](README.md) for the roadmap.
 
-## [Unreleased] — Acquisition-readiness hardening (2026-06-25)
+## v1.0.0-rc.1 — Release candidate (2026-06-26)
+
+First production-quality release candidate. Scope: stability, correct local
+environment loading, and release hygiene — **no new features, no redesign**.
+
+### Fixed
+- **Local environment loading** — the monorepo-root `.env.local` / `.env` is now
+  loaded for **both** apps: web via `apps/web/next.config.mjs` →
+  `scripts/load-env.mjs`, and the worker via `apps/worker/src/load-env.ts`
+  (imported first in `index.ts`). The worker no longer crashes with
+  "Missing required env var SUPABASE_URL" under `npm run dev`. Zero-dependency,
+  precedence shell env > `.env.local` > `.env`; `.env.local` stays git-ignored.
+
+### Removed
+- Dead, unreferenced "coming soon" `Placeholder` component (scaffold cleanup).
+
+### Verified (RC gate)
+- All gates green: `typecheck`, `lint`, **67 tests**, `build` (38 routes). Web
+  returns 200; worker `/health` → `{"status":"ok"}`; protected routes redirect to
+  `/login`. Security audit confirmed: auth (`requireOrg`), org-scoped authz + RLS,
+  CSP/security headers, SSRF (incl. DNS-rebinding), DB-backed rate limiting,
+  Stripe-webhook signature verification, server-only service-role key, and no
+  secrets committed.
+
+## Acquisition-readiness hardening (2026-06-25)
 
 A pass focused on product value, premium UX, and enterprise readiness.
 

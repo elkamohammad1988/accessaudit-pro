@@ -53,8 +53,12 @@ The worker needs Chromium and a long-running process — **not** serverless.
 2. Build step installs Chromium: `npx playwright install --with-deps chromium`
    (or use a Playwright base image).
 3. Start command: `pnpm --filter @accessaudit/worker start`.
-4. Env: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (optional: `WORKER_POLL_INTERVAL_MS`,
-   `WORKER_PAGE_TIMEOUT_MS`, `WORKER_MAX_NODES`, `WORKER_STALE_SCAN_MS`, `SENTRY_DSN`).
+4. Env: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (optional tuning:
+   `WORKER_POLL_INTERVAL_MS`, `WORKER_PAGE_TIMEOUT_MS`, `WORKER_SETTLE_MS`,
+   `WORKER_MAX_NODES`, `WORKER_STALE_SCAN_MS`, `WORKER_SCAN_CONCURRENCY`,
+   `WORKER_MAX_ATTEMPTS`, `WORKER_RECYCLE_AFTER_PAGES`, `WORKER_HEALTH_PORT`,
+   `SENTRY_DSN`). In production set these on the host; in local dev all apps read
+   the single root `.env.local` automatically (see [`.env.example`](../.env.example)).
 
 Scale horizontally if needed — `claim_next_scan()` uses `FOR UPDATE SKIP LOCKED`,
 so multiple workers won't double-process a job.
