@@ -28,7 +28,11 @@ export function SeverityBar({ totals }: { totals: ImpactTotals }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex h-2 w-full overflow-hidden rounded-full bg-muted" role="img" aria-label="Violation severity distribution">
+      <div
+        className="flex h-2 w-full origin-left animate-bar-grow overflow-hidden rounded-full bg-muted"
+        role="img"
+        aria-label="Violation severity distribution"
+      >
         {IMPACT_LEVELS.map((level) =>
           totals[level] > 0 ? (
             <div

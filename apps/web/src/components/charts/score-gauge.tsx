@@ -60,6 +60,11 @@ export function ScoreGauge({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          // Sweep the arc from empty → its value on mount. Pure CSS (the
+          // `draw-ring` keyframe reads `--circumference` as its start offset),
+          // so it works in Server Components and is disabled by reduced-motion.
+          className={score != null ? "animate-draw-ring" : undefined}
+          style={{ ["--circumference" as string]: circumference }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

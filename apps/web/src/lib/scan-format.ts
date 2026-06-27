@@ -46,16 +46,19 @@ export const IMPACT_BADGE: Record<ImpactLevel, string> = {
 export interface StatusMeta {
   label: string;
   className: string;
-  /** Terminal states won't change again — used to stop the realtime poller. */
+  /** Background class for the leading status dot in the badge. */
+  dot: string;
+  /** Terminal states won't change again — used to stop the realtime poller and
+   * to decide whether the status dot should pulse (non-terminal = live). */
   terminal: boolean;
 }
 
 export const STATUS_META: Record<ScanStatus, StatusMeta> = {
-  queued: { label: "Queued", className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", terminal: false },
-  running: { label: "Running", className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", terminal: false },
-  completed: { label: "Completed", className: "bg-success/10 text-success ring-1 ring-inset ring-success/25", terminal: true },
-  partial: { label: "Partial", className: "bg-warning/10 text-warning ring-1 ring-inset ring-warning/25", terminal: true },
-  failed: { label: "Failed", className: "bg-danger/10 text-danger ring-1 ring-inset ring-danger/25", terminal: true },
+  queued: { label: "Queued", className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", dot: "bg-muted-foreground", terminal: false },
+  running: { label: "Running", className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", dot: "bg-brand", terminal: false },
+  completed: { label: "Completed", className: "bg-success/10 text-success ring-1 ring-inset ring-success/25", dot: "bg-success", terminal: true },
+  partial: { label: "Partial", className: "bg-warning/10 text-warning ring-1 ring-inset ring-warning/25", dot: "bg-warning", terminal: true },
+  failed: { label: "Failed", className: "bg-danger/10 text-danger ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
 };
 
 /** Color the numeric score by band (good / needs work / poor). */

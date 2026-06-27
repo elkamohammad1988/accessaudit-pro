@@ -14,11 +14,18 @@ export function ScanStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium",
         meta.className,
         className,
       )}
     >
+      {/* Leading status dot — pulses while the scan is still live (queued/running). */}
+      <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+        {!meta.terminal ? (
+          <span className={cn("absolute inline-flex h-full w-full animate-ping rounded-full opacity-75", meta.dot)} />
+        ) : null}
+        <span className={cn("relative inline-flex h-1.5 w-1.5 rounded-full", meta.dot)} />
+      </span>
       {meta.label}
     </span>
   );

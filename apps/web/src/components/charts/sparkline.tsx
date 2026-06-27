@@ -54,7 +54,7 @@ export function Sparkline({
           <stop offset="100%" stopColor="hsl(var(--brand))" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={area} fill={`url(#${gradientId})`} />
+      <path d={area} fill={`url(#${gradientId})`} className="animate-fade-in" />
       <path
         d={line}
         fill="none"
@@ -63,8 +63,20 @@ export function Sparkline({
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
+        // Normalize the path to a length of 1 so the draw keyframe is width-agnostic.
+        pathLength={1}
+        strokeDasharray={1}
+        className="animate-draw-line"
       />
-      <circle cx={lastX} cy={lastY} r={2.5} fill="hsl(var(--brand))" vectorEffect="non-scaling-stroke" />
+      <circle
+        cx={lastX}
+        cy={lastY}
+        r={2.5}
+        fill="hsl(var(--brand))"
+        vectorEffect="non-scaling-stroke"
+        // Pop the latest-point marker in just as the line finishes drawing.
+        style={{ animation: "fade-in 0.5s ease-out 0.9s both" }}
+      />
     </svg>
   );
 }

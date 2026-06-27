@@ -94,6 +94,10 @@ const config: Config = {
         "draw-ring": {
           from: { "stroke-dashoffset": "var(--circumference)" },
         },
+        "draw-line": {
+          from: { "stroke-dashoffset": "1" },
+          to: { "stroke-dashoffset": "0" },
+        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
@@ -105,6 +109,10 @@ const config: Config = {
         "scale-in": "scale-in 0.18s ease-out both",
         shimmer: "shimmer 1.6s infinite",
         "bar-grow": "bar-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
+        // Circular score gauge sweeps from empty to its value on mount.
+        "draw-ring": "draw-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
+        // Sparkline line draws left→right (path normalized via pathLength="1").
+        "draw-line": "draw-line 1.1s ease-out both",
         float: "float 6s ease-in-out infinite",
       },
     },
