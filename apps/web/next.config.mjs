@@ -16,14 +16,22 @@ import { withSentryConfig } from "@sentry/nextjs";
  *   - connect-src https:/wss: — Supabase REST + Realtime (websockets) and Sentry ingest.
  * `frame-ancestors 'none'` stops the dashboard and public reports from being framed
  * (clickjacking). Tighten `script-src` to a per-request nonce as a later hardening step.
+ *
+ * `'unsafe-eval'` is added to `script-src` in development ONLY: Next.js dev mode
+ * (React Refresh / Webpack HMR) evaluates strings as JS, which a strict CSP blocks.
+ * `next build`/`next start` set NODE_ENV to "production", so production CSP stays
+ * strict and never ships `'unsafe-eval'`.
  */
+const isDev = process.env.NODE_ENV !== "production";
+const scriptSrc = `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`;
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  scriptSrc,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",

@@ -12,14 +12,65 @@
 -- The one thing axe does NOT give you is the hand-written, plain-language
 -- `fix_guidance` below — that curated guidance is a product differentiator, so
 -- it is kept here for the production reintroduction of `wcag_rules` as an
--- enrichment table (DB_REVIEW Part 3). When that day comes:
---   1. Recreate the `wcag_rules` table + the `wcag_level` enum.
---   2. Re-run this seed as a migration.
---   3. Join violations.rule_id -> wcag_rules.rule_id for curated guidance.
+-- enrichment table (DB_REVIEW Part 3).
+--
+-- This file is now SELF-CONTAINED: the DDL below recreates the table (and the
+-- `wcag_level` / `impact_level` enums, if missing) idempotently, so you can run
+-- the whole file on its own — in the Supabase SQL editor or as a future
+-- migration — without first hand-applying any schema. Step 3 of reintroduction
+-- remains: join violations.rule_id -> wcag_rules.rule_id for curated guidance.
 --
 -- 50 axe rules mapped to WCAG 2.2 criteria. help_url -> Deque University (axe 4.10).
 -- =============================================================================
 
+-- ----------------------------------------------------------------------------
+-- Schema (idempotent). The two enums already exist in the 8-table MVP initial
+-- schema; the guarded blocks below only create them when this file is run
+-- standalone against a database that does not yet have those migrations.
+-- ----------------------------------------------------------------------------
+do $$ begin
+  create type public.wcag_level as enum ('A', 'AA', 'AAA');
+exception when duplicate_object then null;
+end $$;
+
+do $$ begin
+  create type public.impact_level as enum ('critical', 'serious', 'moderate', 'minor');
+exception when duplicate_object then null;
+end $$;
+
+create table if not exists public.wcag_rules (
+  rule_id        text primary key,                 -- axe rule id, joins violations.rule_id
+  title          text not null,
+  description    text,
+  wcag_criteria  text[] not null default '{}',     -- e.g. {1.4.3} (WCAG 2.2 success criteria)
+  wcag_level     public.wcag_level not null,
+  default_impact public.impact_level not null,     -- axe's typical impact for this rule
+  fix_guidance   text,                             -- curated, plain-language remediation (the differentiator)
+  help_url       text,                             -- Deque University reference
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now()
+);
+comment on table public.wcag_rules is 'Curated WCAG/axe rule enrichment (fix_guidance is hand-written). Global reference data; join violations.rule_id -> wcag_rules.rule_id.';
+
+-- updated_at maintenance: reuse set_updated_at() when it exists (it ships with
+-- the MVP functions migration). The seed's ON CONFLICT also sets updated_at
+-- explicitly, so the trigger is a belt-and-braces for other writers.
+do $$ begin
+  if exists (
+    select 1 from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.proname = 'set_updated_at'
+  ) and not exists (
+    select 1 from pg_trigger where tgname = 'trg_wcag_rules_updated_at'
+  ) then
+    create trigger trg_wcag_rules_updated_at before update on public.wcag_rules
+      for each row execute function public.set_updated_at();
+  end if;
+end $$;
+
+-- ----------------------------------------------------------------------------
+-- Seed data
+-- ----------------------------------------------------------------------------
 insert into public.wcag_rules
   (rule_id, title, description, wcag_criteria, wcag_level, default_impact, fix_guidance, help_url)
 values

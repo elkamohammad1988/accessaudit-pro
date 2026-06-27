@@ -38,6 +38,12 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
+    // Server-side observability only (never reaches the client). The user-facing
+    // copy below stays generic and non-enumerating.
+    console.error("[auth] signIn failed", {
+      code: (error as { code?: string }).code,
+      status: (error as { status?: number }).status,
+    });
     // Generic, non-enumerating message — never reveal whether the email exists
     // or echo a backend error string.
     return { error: "Incorrect email or password.", message: null };
@@ -67,6 +73,11 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   });
 
   if (error) {
+    // Server-side observability only (never reaches the client).
+    console.error("[auth] signUp failed", {
+      code: (error as { code?: string }).code,
+      status: (error as { status?: number }).status,
+    });
     // Don't echo backend specifics (e.g. "User already registered") — that's an
     // account-enumeration oracle. Keep it generic.
     return {

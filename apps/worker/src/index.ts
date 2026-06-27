@@ -76,6 +76,14 @@ async function claimScan(): Promise<Scan | null> {
     console.error("claim_next_scan failed:", error.message);
     return null;
   }
+  // claim_next_scan() is declared `RETURNS public.scans` (a single composite row),
+  // not SETOF. When nothing is queued it does `RETURN null`, which PostgREST
+  // serializes as an all-null row object ({ id: null, ... }) — NOT JSON null. So
+  // `data` is truthy even with no work to do. Key off the primary key to tell a
+  // real claim apart from that phantom empty row, so we never go on to query with
+  // a null id (which becomes the literal `id=eq.null` → "invalid input syntax for
+  // type uuid: null").
+  if (!data?.id) return null;
   return data;
 }
 
