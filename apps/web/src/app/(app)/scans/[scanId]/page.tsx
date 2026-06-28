@@ -101,7 +101,7 @@ export default async function ScanReportPage({
               <ConfirmSubmit
                 confirmLabel="Delete"
                 prompt="Delete permanently?"
-                className="text-danger hover:bg-danger/10"
+                className="text-danger-strong hover:bg-danger/10"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Delete

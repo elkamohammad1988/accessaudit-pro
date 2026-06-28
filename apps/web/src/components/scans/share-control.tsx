@@ -61,7 +61,7 @@ export function ShareControl({
           type="submit"
           variant="ghost"
           size="sm"
-          className="h-9 text-danger hover:bg-danger/10"
+          className="h-9 text-danger-strong hover:bg-danger/10"
         >
           Revoke
         </Button>

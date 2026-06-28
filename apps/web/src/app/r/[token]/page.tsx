@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { limitsFor, type PlanTier, type ScanStatus } from "@accessaudit/shared";
+import { effectivePlan, limitsFor, type ScanStatus } from "@accessaudit/shared";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseTotals } from "@/lib/scan-format";
 import { loadReportByToken } from "@/lib/load-report";
@@ -31,10 +31,16 @@ export default async function PublicReportPage({
       .select("name, logo_url, brand_color")
       .eq("id", scan.organization_id)
       .maybeSingle(),
-    admin.from("subscriptions").select("plan").eq("organization_id", scan.organization_id).maybeSingle(),
+    admin
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", scan.organization_id)
+      .maybeSingle(),
   ]);
 
-  const plan: PlanTier = sub?.plan ?? "free";
+  // Use the EFFECTIVE plan (canceled/unpaid → free) so a lapsed paid org doesn't
+  // keep white-label removal on its public links indefinitely.
+  const plan = effectivePlan(sub?.plan, sub?.status);
   const showPoweredBy = !limitsFor(plan).removePoweredBy;
   const brandColor = org?.brand_color ?? "#4F46E5";
 

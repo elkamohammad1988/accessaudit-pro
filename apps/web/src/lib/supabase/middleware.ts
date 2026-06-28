@@ -3,15 +3,16 @@ import { NextResponse, type NextRequest } from "next/server";
 import { publicEnv } from "@/lib/env";
 
 /** Routes reachable without a session. Everything else requires auth.
- *  `/api` routes authenticate themselves (e.g. the Stripe webhook verifies its
- *  signature) and must not be redirected to /login. */
+ *  We allow-list the specific self-authenticating endpoints (the Stripe webhook
+ *  verifies its own signature) rather than the whole `/api` tree, so a future
+ *  `/api/*` route isn't public-by-default — it must opt in here explicitly. */
 const PUBLIC_PREFIXES = [
   "/login",
   "/signup",
   "/reset",
   "/auth",
   "/r",
-  "/api",
+  "/api/stripe/webhook",
   "/terms",
   "/privacy",
   "/accessibility",
