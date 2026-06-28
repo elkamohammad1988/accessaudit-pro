@@ -5,6 +5,7 @@ import {
   PLAN_LIMITS,
   PLAN_TIERS,
   formatLimit,
+  yearlySavings,
   type PlanLimits,
   type PlanTier,
 } from "@accessaudit/shared";
@@ -13,7 +14,7 @@ import { ButtonLink, buttonVariants } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Agency-friendly pricing for WCAG 2.2 accessibility audits. Start free, no card required. Compare Free, Starter, Agency and Scale plans.",
+    "Agency-friendly pricing for WCAG 2.2 accessibility audits — built for European Accessibility Act (EAA) compliance. Start free, no card. Monthly or annual (2 months free).",
   alternates: { canonical: "/pricing" },
 };
 
@@ -83,7 +84,22 @@ export default function PricingPage() {
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
           Start free — no credit card. Move up when you take on more clients or need white-label
-          deliverables. Cancel anytime.
+          deliverables. Monthly or annual (2 months free). Cancel anytime.
+        </p>
+      </div>
+
+      {/* EAA urgency — the active buying trigger for agencies serving EU clients. */}
+      <div className="mx-auto mt-8 max-w-2xl rounded-xl border border-brand/30 bg-brand/5 px-5 py-4 text-center text-sm">
+        <p className="font-medium">
+          The European Accessibility Act is in force.
+        </p>
+        <p className="mt-1 text-muted-foreground">
+          Businesses selling to EU consumers must meet WCAG-based accessibility requirements or risk
+          penalties. Audit every client site and ship proof in minutes —{" "}
+          <Link href="/guides/european-accessibility-act" className="font-medium text-brand underline-offset-4 hover:underline">
+            read the EAA guide
+          </Link>
+          .
         </p>
       </div>
 
@@ -116,6 +132,11 @@ export default function PricingPage() {
                         /mo
                       </span>
                     </span>
+                    {p.priceMonthly > 0 ? (
+                      <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                        or ${p.priceYearly}/yr · save ${yearlySavings(tier)}
+                      </span>
+                    ) : null}
                     {popular && (
                       <span className="mt-1 block text-xs font-medium text-brand">Most popular</span>
                     )}
@@ -168,6 +189,22 @@ export default function PricingPage() {
         still required — protecting you and your clients. Workspaces are single-user in this release;
         team seats are on the roadmap.
       </p>
+
+      {/* FAQ structured data → eligible for FAQ rich results in search. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: BILLING_FAQS.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        }}
+      />
 
       {/* Billing FAQ */}
       <section aria-labelledby="billing-faq" className="mt-16 border-t pt-16">

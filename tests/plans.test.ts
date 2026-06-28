@@ -6,6 +6,8 @@ import {
   isWithinLimit,
   limitsFor,
   pagesWithinScanLimit,
+  priceForInterval,
+  yearlySavings,
   UNLIMITED,
 } from "@accessaudit/shared";
 
@@ -43,6 +45,22 @@ describe("plan limits", () => {
     expect(pagesWithinScanLimit("starter", 25)).toBe(true); // boundary is allowed
     expect(pagesWithinScanLimit("starter", 26)).toBe(false);
     expect(pagesWithinScanLimit("scale", 500)).toBe(true);
+  });
+});
+
+describe("billing intervals", () => {
+  it("annual price is 10 months (2 months free) of the monthly price", () => {
+    expect(priceForInterval("agency", "monthly")).toBe(79);
+    expect(priceForInterval("agency", "yearly")).toBe(790);
+    expect(priceForInterval("starter", "yearly")).toBe(290);
+    expect(priceForInterval("scale", "yearly")).toBe(1990);
+  });
+
+  it("yearlySavings equals two months of the monthly price", () => {
+    expect(yearlySavings("starter")).toBe(29 * 2);
+    expect(yearlySavings("agency")).toBe(79 * 2);
+    expect(yearlySavings("scale")).toBe(199 * 2);
+    expect(yearlySavings("free")).toBe(0);
   });
 });
 

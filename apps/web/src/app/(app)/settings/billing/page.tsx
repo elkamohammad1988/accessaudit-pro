@@ -1,23 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CreditCard } from "lucide-react";
-import {
-  PLAN_LIMITS,
-  PLAN_TIERS,
-  effectivePlan,
-  formatLimit,
-  limitsFor,
-  type PlanTier,
-} from "@accessaudit/shared";
+import { effectivePlan, formatLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { startOfMonthIso } from "@/lib/dates";
+import { annualPricingConfigured } from "@/lib/stripe-plan";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { NoticeBanner } from "@/components/ui/notice-banner";
-import { startCheckout, openPortal } from "./actions";
+import { PlanGrid } from "@/components/settings/plan-grid";
+import { openPortal } from "./actions";
 
 export const metadata: Metadata = { title: "Billing" };
 
@@ -182,59 +177,11 @@ export default async function BillingPage({
         </Card>
       ) : null}
 
-      <section aria-label="Plans" className="space-y-3">
-        <h2 className="text-lg font-medium">Plans</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PLAN_TIERS.map((tier) => {
-            const p = PLAN_LIMITS[tier];
-            const isCurrent = tier === actualPlan;
-            return (
-              <Card
-                key={tier}
-                className={`flex flex-col p-5 ${isCurrent ? "border-brand ring-1 ring-brand" : ""}`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-semibold">{p.label}</p>
-                  {isCurrent ? <Badge>Current</Badge> : null}
-                </div>
-                <p className="mt-1 text-2xl font-bold tracking-tight">
-                  ${p.priceMonthly}
-                  <span className="text-sm font-normal text-muted-foreground">/mo</span>
-                </p>
-                <ul className="mt-3 flex-1 space-y-1 text-sm text-muted-foreground">
-                  <li>{formatLimit(p.clients)} clients</li>
-                  <li>{formatLimit(p.projects)} projects</li>
-                  <li>{formatLimit(p.scansPerMonth)} scans/mo</li>
-                  <li>{formatLimit(p.pagesPerScan)} pages/scan</li>
-                  <li>{p.whiteLabelPdf ? "White-label PDF" : "No white-label"}</li>
-                </ul>
-                <div className="mt-4">
-                  {isCurrent ? (
-                    <span className="text-xs text-muted-foreground">Your plan</span>
-                  ) : tier === "free" ? (
-                    hasPaid ? (
-                      <span className="text-xs text-muted-foreground">Downgrade via portal</span>
-                    ) : null
-                  ) : hasPaid ? (
-                    <span className="text-xs text-muted-foreground">Switch via portal</span>
-                  ) : (
-                    <form action={startCheckout}>
-                      <input type="hidden" name="plan" value={tier} />
-                      <Button type="submit" size="sm" className="w-full">
-                        Choose {p.label}
-                      </Button>
-                    </form>
-                  )}
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Limits are enforced as you create clients, projects, and scans. Prices billed monthly via
-          Stripe. Workspaces are single-user in this release — team seats are on the roadmap.
-        </p>
-      </section>
+      <PlanGrid
+        actualPlan={actualPlan}
+        hasPaid={hasPaid}
+        annualAvailable={annualPricingConfigured()}
+      />
     </div>
   );
 }

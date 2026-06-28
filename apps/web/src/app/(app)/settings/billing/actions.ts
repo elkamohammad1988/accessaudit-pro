@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { appBaseUrl } from "@/lib/env";
+import type { BillingInterval } from "@accessaudit/shared";
 import { getStripe, priceIdForPlan } from "@/lib/stripe";
 
 const planSchema = z.enum(["starter", "agency", "scale"]);
@@ -16,6 +17,8 @@ export async function startCheckout(formData: FormData): Promise<void> {
     redirect("/settings/billing?status=error");
   }
   const plan = parsed.data;
+  // Anything other than an explicit "yearly" defaults to monthly (safe fallback).
+  const interval: BillingInterval = formData.get("interval") === "yearly" ? "yearly" : "monthly";
 
   const { organization } = await requireOrg();
   const admin = createAdminClient();
@@ -47,7 +50,7 @@ export async function startCheckout(formData: FormData): Promise<void> {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
-      line_items: [{ price: priceIdForPlan(plan), quantity: 1 }],
+      line_items: [{ price: priceIdForPlan(plan, interval), quantity: 1 }],
       client_reference_id: organization.id,
       metadata: { organization_id: organization.id },
       subscription_data: { metadata: { organization_id: organization.id } },

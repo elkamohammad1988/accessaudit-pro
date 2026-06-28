@@ -13,10 +13,16 @@ export type PlanTier = (typeof PLAN_TIERS)[number];
 
 export const UNLIMITED = Number.POSITIVE_INFINITY;
 
+/** Billing cadence. Yearly is billed for `YEARLY_MONTHS_BILLED` months (2 free). */
+export type BillingInterval = "monthly" | "yearly";
+export const YEARLY_MONTHS_BILLED = 10;
+
 export interface PlanLimits {
   /** Display name + monthly price (USD). priceMonthly 0 = free. */
   readonly label: string;
   readonly priceMonthly: number;
+  /** Annual price (USD/year). Set to `priceMonthly * YEARLY_MONTHS_BILLED`. */
+  readonly priceYearly: number;
   /** Hard caps. UNLIMITED for unbounded tiers. */
   readonly clients: number;
   readonly projects: number;
@@ -34,6 +40,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   free: {
     label: "Free",
     priceMonthly: 0,
+    priceYearly: 0,
     clients: 1,
     projects: 2,
     scansPerMonth: 10,
@@ -47,6 +54,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   starter: {
     label: "Starter",
     priceMonthly: 29,
+    priceYearly: 290,
     clients: 5,
     projects: 25,
     scansPerMonth: 150,
@@ -60,6 +68,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   agency: {
     label: "Agency",
     priceMonthly: 79,
+    priceYearly: 790,
     clients: UNLIMITED,
     projects: UNLIMITED,
     scansPerMonth: 750,
@@ -73,6 +82,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   scale: {
     label: "Scale",
     priceMonthly: 199,
+    priceYearly: 1990,
     clients: UNLIMITED,
     projects: UNLIMITED,
     scansPerMonth: 3000,
@@ -87,6 +97,16 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
 
 export function limitsFor(plan: PlanTier): PlanLimits {
   return PLAN_LIMITS[plan];
+}
+
+/** Price (USD) for a plan at a given billing cadence. */
+export function priceForInterval(plan: PlanTier, interval: BillingInterval): number {
+  return interval === "yearly" ? PLAN_LIMITS[plan].priceYearly : PLAN_LIMITS[plan].priceMonthly;
+}
+
+/** Dollars saved per year by paying annually instead of 12× monthly. */
+export function yearlySavings(plan: PlanTier): number {
+  return PLAN_LIMITS[plan].priceMonthly * 12 - PLAN_LIMITS[plan].priceYearly;
 }
 
 /** Subscription lifecycle states, mirrored from the `subscription_status` enum. */
