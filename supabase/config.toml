@@ -47,7 +47,14 @@ public = true
 [auth]
 enabled = true
 site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000", "http://localhost:3000/auth/callback"]
+# Allow-list every localhost auth redirect target. `/**` covers /auth/callback
+# and /auth/confirm. Keep these in sync with the hosted dashboard's Redirect URLs.
+additional_redirect_urls = [
+  "http://localhost:3000",
+  "http://localhost:3000/**",
+  "http://localhost:3000/auth/callback",
+  "http://localhost:3000/auth/confirm",
+]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
@@ -60,6 +67,27 @@ double_confirm_changes = true
 enable_confirmations = true
 # Magic-link + password are both supported by the product.
 secure_password_change = true
+# Email link / OTP validity (seconds). 1 hour is long enough to click a fresh
+# link yet short enough to satisfy Supabase's security advisory (<= 1h).
+otp_expiry = 3600
+# Min gap between transactional emails to the same address. Short for local
+# testing of the resend flow; the hosted project enforces its own rate limits.
+max_frequency = "20s"
+
+# Email templates use a token_hash link to the app's own /auth/confirm route
+# (verifyOtp), NOT the default {{ .ConfirmationURL }} — see the template files
+# for why. content_path is resolved from the project root.
+[auth.email.template.confirmation]
+subject = "Confirm your AccessAudit Pro email"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Reset your AccessAudit Pro password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Sign in to AccessAudit Pro"
+content_path = "./supabase/templates/magic_link.html"
 
 # OAuth providers are deferred to v1.1 (see PRD §9.2). Left disabled.
 [auth.external.google]

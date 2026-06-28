@@ -25,7 +25,7 @@ export default function RootError({
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
-      <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-danger/10 text-danger ring-1 ring-inset ring-danger/20">
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/20">
         <AlertTriangle className="h-6 w-6" aria-hidden="true" />
       </span>
       <h1 className="mt-4 text-2xl font-semibold tracking-tight">Something went wrong</h1>

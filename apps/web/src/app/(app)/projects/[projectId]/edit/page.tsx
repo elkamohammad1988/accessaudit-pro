@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ProjectForm } from "@/components/projects/project-form";
@@ -41,11 +42,15 @@ export default async function EditProjectPage({
       <div>
         <Link
           href={`/projects/${project.id}`}
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
-          ← {project.name}
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+          {project.name}
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold">Edit project</h1>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">Edit project</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Update this project&apos;s name, URL, or client assignment.
+        </p>
       </div>
       <ProjectForm
         action={updateProjectRecord}

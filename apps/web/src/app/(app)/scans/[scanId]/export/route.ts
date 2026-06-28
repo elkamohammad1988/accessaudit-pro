@@ -1,6 +1,6 @@
 import { effectivePlan, limitsFor } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
-import { loadReportByScan } from "@/lib/load-report";
+import { fetchAllViolationsForExport, loadReportByScan } from "@/lib/load-report";
 import { parseNodes } from "@/lib/report";
 import { rowsToCsv } from "@/lib/csv";
 
@@ -42,7 +42,11 @@ export async function GET(
   ];
   const rows: string[][] = [header];
 
-  for (const v of report.violations) {
+  // Export the complete record (paginated past the row cap), not the capped
+  // on-screen set — the CSV is the authoritative deliverable.
+  const allViolations = await fetchAllViolationsForExport(supabase, [...report.pageUrlById.keys()]);
+
+  for (const v of allViolations) {
     const pageUrl = report.pageUrlById.get(v.scan_page_id) ?? "";
     const wcag = (v.wcag_criteria ?? []).join(" ");
     const nodes = parseNodes(v.nodes);

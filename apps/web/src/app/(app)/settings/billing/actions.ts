@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { publicEnv } from "@/lib/env";
+import { appBaseUrl } from "@/lib/env";
 import { getStripe, priceIdForPlan } from "@/lib/stripe";
 
 const planSchema = z.enum(["starter", "agency", "scale"]);
@@ -51,8 +51,8 @@ export async function startCheckout(formData: FormData): Promise<void> {
       client_reference_id: organization.id,
       metadata: { organization_id: organization.id },
       subscription_data: { metadata: { organization_id: organization.id } },
-      success_url: `${publicEnv.appUrl}/settings/billing?status=success`,
-      cancel_url: `${publicEnv.appUrl}/settings/billing?status=cancel`,
+      success_url: `${appBaseUrl()}/settings/billing?status=success`,
+      cancel_url: `${appBaseUrl()}/settings/billing?status=cancel`,
       allow_promotion_codes: true,
     });
 
@@ -87,7 +87,7 @@ export async function openPortal(): Promise<void> {
     const stripe = getStripe();
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${publicEnv.appUrl}/settings/billing`,
+      return_url: `${appBaseUrl()}/settings/billing`,
     });
     destination = session.url;
   } catch (err) {

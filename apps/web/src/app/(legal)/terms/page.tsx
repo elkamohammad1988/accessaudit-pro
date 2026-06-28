@@ -7,11 +7,12 @@ export const metadata: Metadata = {
 };
 
 // Effective date is fixed (the date these terms were published), not the render
-// date. Bump it whenever the terms change. The bracketed placeholders below must
-// be filled with your real legal entity, jurisdiction, and contact before launch.
-const EFFECTIVE_DATE = "24 June 2026";
-const COMPANY = "[Company Legal Name]";
-const JURISDICTION = "[Jurisdiction, e.g. England and Wales]";
+// date. Bump it whenever the terms change.
+// NOTE FOR THE OPERATOR: confirm the trading entity and governing-law jurisdiction
+// with counsel and adjust the two constants below to your registered details.
+const EFFECTIVE_DATE = "28 June 2026";
+const COMPANY = "AccessAudit Pro";
+const JURISDICTION = "England and Wales";
 const CONTACT_EMAIL = "legal@accessaudit.pro";
 
 export default function TermsPage() {

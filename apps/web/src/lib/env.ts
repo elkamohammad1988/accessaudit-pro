@@ -7,8 +7,28 @@
 export const publicEnv = {
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
 };
+
+/**
+ * The app's public origin — used for canonical URLs, OG tags, the sitemap,
+ * Stripe redirect URLs, and auth email links. `NEXT_PUBLIC_APP_URL` is inlined
+ * at build time, so a missing value silently poisons every absolute URL with
+ * `localhost`. We therefore FAIL LOUDLY in production rather than fall back: a
+ * misconfigured deploy should break the build, not ship an un-indexable site
+ * with broken billing redirects. In dev it falls back to localhost.
+ */
+export function appBaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (url) return url.replace(/\/$/, "");
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "NEXT_PUBLIC_APP_URL is required in production. Set it to the deployed origin " +
+        "(e.g. https://app.accessauditpro.com); it backs canonical URLs, OG tags, the " +
+        "sitemap, Stripe redirects, and auth email links.",
+    );
+  }
+  return "http://localhost:3000";
+}
 
 export function assertPublicEnv(): { supabaseUrl: string; supabaseAnonKey: string } {
   if (!publicEnv.supabaseUrl || !publicEnv.supabaseAnonKey) {

@@ -69,6 +69,8 @@ export default async function PublicReportPage({
           errorReason={scan.error_reason}
           pages={report.pages}
           groups={report.groups}
+          totalViolationRows={report.totalViolationRows}
+          truncated={report.truncated}
         />
       </div>
 

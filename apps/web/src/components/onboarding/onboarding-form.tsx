@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { createOrganization, type OnboardingState } from "@/app/onboarding/actions";
 import { Input } from "@/components/ui/input";
+import { ColorInput } from "@/components/ui/color-input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormError } from "@/components/ui/form-error";
@@ -22,12 +23,10 @@ export function OnboardingForm() {
       <div className="space-y-2">
         <Label htmlFor="brandColor">Brand color</Label>
         <div className="flex items-center gap-3">
-          <input
+          <ColorInput
             id="brandColor"
             name="brandColor"
-            type="color"
             defaultValue="#4F46E5"
-            className="h-10 w-14 cursor-pointer rounded-md border border-input bg-background p-1 shadow-xs transition-colors hover:border-foreground/25 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0"
             aria-describedby="brandColor-hint"
           />
           <span id="brandColor-hint" className="text-sm text-muted-foreground">

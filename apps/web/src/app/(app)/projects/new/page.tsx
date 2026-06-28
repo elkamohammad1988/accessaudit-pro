@@ -38,6 +38,9 @@ export default async function NewProjectPage({
           Projects
         </Link>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight">New project</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Point AccessAudit at a client&apos;s website. You can re-scan it any time.
+        </p>
       </div>
 
       {clients && clients.length > 0 ? (

@@ -19,9 +19,13 @@ async function syncFromSubscription(
   const priceId = subscription.items.data[0]?.price?.id ?? null;
   const plan: PlanTier = deleted ? "free" : (planForPriceId(priceId) ?? "free");
   const status = deleted ? "canceled" : mapStripeStatus(subscription.status);
-  const currentPeriodEnd = subscription.current_period_end
-    ? new Date(subscription.current_period_end * 1000).toISOString()
-    : null;
+  // `current_period_end` is top-level on the API version we pin; read the
+  // subscription-item fallback too so a future API-version move doesn't null it.
+  const periodEndUnix =
+    subscription.current_period_end ??
+    (subscription.items.data[0] as { current_period_end?: number } | undefined)?.current_period_end ??
+    null;
+  const currentPeriodEnd = periodEndUnix ? new Date(periodEndUnix * 1000).toISOString() : null;
 
   const patch = {
     plan,
@@ -34,11 +38,36 @@ async function syncFromSubscription(
   // Throw on a DB error so POST returns 500 and Stripe retries — swallowing it
   // would ack the event (200) and leave the subscription row permanently stale.
   if (orgId) {
+    // Trust boundary: never rebind a customer that already belongs to a DIFFERENT
+    // org. Without this, divergent metadata (e.g. a portal/out-of-band customer)
+    // could mis-attribute a subscription, or trip the stripe_customer_id UNIQUE
+    // constraint and 500-loop the webhook forever.
+    if (customerId) {
+      const { data: existing } = await admin
+        .from("subscriptions")
+        .select("organization_id")
+        .eq("stripe_customer_id", customerId)
+        .maybeSingle();
+      if (existing && existing.organization_id !== orgId) {
+        console.error(
+          `Stripe customer ${customerId} is already bound to org ${existing.organization_id}; refusing to rebind to ${orgId}.`,
+        );
+        return; // non-retryable: ack the event, don't loop
+      }
+    }
     const { error } = await admin
       .from("subscriptions")
       .update({ ...patch, stripe_customer_id: customerId })
       .eq("organization_id", orgId);
-    if (error) throw error;
+    if (error) {
+      // Unique-constraint conflict is a data condition, not a transient failure —
+      // log and ack rather than 500-looping Stripe retries.
+      if (error.code === "23505") {
+        console.error(`Customer/subscription uniqueness conflict for org ${orgId}:`, error.message);
+        return;
+      }
+      throw error;
+    }
   } else if (customerId) {
     const { error } = await admin
       .from("subscriptions")

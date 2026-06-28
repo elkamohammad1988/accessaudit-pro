@@ -7,7 +7,7 @@ export function FormSuccess({ message }: { message: string | null }) {
   return (
     <p
       role="status"
-      className="flex animate-fade-in items-center gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-sm text-success"
+      className="flex animate-fade-in items-center gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-sm text-success-strong"
     >
       <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
       {message}
@@ -25,7 +25,7 @@ export function FormError({ error, upgrade }: { error: string | null; upgrade?: 
   return (
     <div
       role="alert"
-      className="animate-fade-in space-y-1 rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger"
+      className="animate-fade-in space-y-1 rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger-strong"
     >
       <p>{error}</p>
       {upgrade ? (

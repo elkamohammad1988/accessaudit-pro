@@ -33,24 +33,39 @@
   --accent: 210 40% 96.5%;
   --accent-foreground: 222 47% 11%;
 
-  /* Lines & controls */
+  /* Lines & controls. `--border` is decorative (dividers/cards, exempt from
+   * 1.4.11); `--input` is the interactive control boundary, so it must clear
+   * 3:1 against the background per WCAG 1.4.11. */
   --border: 214 32% 91%;
-  --input: 214 32% 87%;
+  --input: 214 16% 53%;
   --ring: 243 75% 59%;
 
-  /* Accessibility-impact scale (axe taxonomy) — the product's core semantics */
+  /* Accessibility-impact scale (axe taxonomy) — the product's core semantics.
+   * The bright values are used as FILLS (bars, dots, rings, tints). */
   --sev-critical: 0 72% 51%;
   --sev-serious: 22 90% 48%;
   --sev-moderate: 38 92% 45%;
   --sev-minor: 199 89% 42%;
 
+  /* AA text variants — used wherever the severity color is rendered as TEXT
+   * (badges, pills, legends). Darkened so the foreground clears 4.5:1 on white
+   * and on the /10 tints behind the badges. We sell WCAG conformance; the UI
+   * that communicates it must itself pass. */
+  --sev-critical-strong: 0 72% 42%;
+  --sev-serious-strong: 22 88% 36%;
+  --sev-moderate-strong: 33 92% 31%;
+  --sev-minor-strong: 200 92% 32%;
+
   /* Status */
   --success: 142 71% 40%;
   --success-foreground: 0 0% 100%;
+  --success-strong: 142 72% 29%;
   --warning: 38 92% 45%;
   --warning-foreground: 0 0% 100%;
-  --danger: 0 72% 51%;
+  --warning-strong: 30 90% 33%;
+  --danger: 0 72% 45%;
   --danger-foreground: 0 0% 100%;
+  --danger-strong: 0 72% 42%;
 
   --radius: 0.625rem;
 
@@ -84,7 +99,8 @@
   --accent-foreground: 210 40% 98%;
 
   --border: 217 33% 18%;
-  --input: 217 33% 22%;
+  /* Interactive boundary lifted to clear 3:1 against the dark surface (1.4.11). */
+  --input: 216 16% 44%;
   --ring: 243 80% 70%;
 
   --sev-critical: 0 84% 64%;
@@ -92,12 +108,23 @@
   --sev-moderate: 41 96% 58%;
   --sev-minor: 199 92% 60%;
 
+  /* On dark surfaces the bright severity values already clear 4.5:1 as text, so
+   * the strong variants stay bright (not darkened, unlike the light theme). */
+  --sev-critical-strong: 0 90% 72%;
+  --sev-serious-strong: 25 95% 64%;
+  --sev-moderate-strong: 41 96% 62%;
+  --sev-minor-strong: 199 92% 64%;
+
   --success: 142 66% 50%;
   --success-foreground: 222 47% 6%;
+  --success-strong: 142 66% 58%;
   --warning: 41 96% 58%;
   --warning-foreground: 222 47% 6%;
-  --danger: 0 84% 64%;
+  --warning-strong: 41 96% 62%;
+  /* Danger fill darkened enough that white labels clear 4.5:1 in dark mode. */
+  --danger: 0 72% 47%;
   --danger-foreground: 0 0% 100%;
+  --danger-strong: 0 90% 74%;
 
   /* Dark surfaces don't read shadows well — lean on near-black, larger spreads. */
   --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.30);
@@ -132,11 +159,12 @@
     letter-spacing: -0.02em;
   }
 
-  /* One consistent, accessible focus ring everywhere — we sell accessibility. */
+  /* One consistent, accessible focus ring everywhere — we sell accessibility.
+   * No border-radius override: the outline follows each element's own shape, so
+   * rounded controls don't square off when focused. */
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
-    border-radius: 2px;
   }
 
   ::selection {
@@ -249,10 +277,19 @@
     --accent: 210 40% 96.5%;
     --accent-foreground: 222 47% 11%;
     --border: 214 32% 91%;
-    --input: 214 32% 88%;
+    --input: 214 16% 53%;
     --sev-critical: 0 72% 51%;
     --sev-serious: 22 90% 48%;
     --sev-moderate: 38 92% 45%;
     --sev-minor: 199 89% 42%;
+    /* Reset the text variants to the dark-on-white values so a dark-mode user
+     * exporting a PDF still gets AA-contrast severity text on paper. */
+    --sev-critical-strong: 0 72% 42%;
+    --sev-serious-strong: 22 88% 36%;
+    --sev-moderate-strong: 33 92% 31%;
+    --sev-minor-strong: 200 92% 32%;
+    --success-strong: 142 72% 29%;
+    --warning-strong: 30 90% 33%;
+    --danger-strong: 0 72% 42%;
   }
 }

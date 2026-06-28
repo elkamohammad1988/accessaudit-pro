@@ -1,0 +1,23 @@
+<!--
+  AccessAudit Pro — "Confirm signup" email.
+
+  CRITICAL: this links to the app's own /auth/confirm route with a token_hash,
+  NOT the default {{ .ConfirmationURL }}. The default URL routes through
+  Supabase's /auth/v1/verify endpoint, which is INCOMPATIBLE with the PKCE flow
+  used by @supabase/ssr and surfaces as `?error=access_denied&error_code=otp_expired`.
+  The token_hash + verifyOtp() flow below is the SSR-recommended path and works
+  across browsers/devices (it does not need the PKCE code-verifier cookie).
+
+  Paste this same HTML into Supabase Dashboard → Authentication → Email Templates
+  → "Confirm signup" for the hosted project. {{ .SiteURL }} resolves to the
+  project's configured Site URL.
+-->
+<h2>Confirm your email</h2>
+<p>Welcome to AccessAudit Pro. Confirm your email address to activate your workspace:</p>
+<p>
+  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/dashboard">
+    Confirm your email
+  </a>
+</p>
+<p>This link can be used once and expires after a short time. If it stops working, sign in and request a fresh link.</p>
+<p>If you didn&rsquo;t create an AccessAudit Pro account, you can safely ignore this email.</p>

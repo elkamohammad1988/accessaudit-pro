@@ -13,6 +13,11 @@ const DOT_BG: Record<ImpactLevel, string> = SEGMENT_BG;
 /** Stacked distribution of violations by impact, with a counted legend. */
 export function SeverityBar({ totals }: { totals: ImpactTotals }) {
   const total = totalViolations(totals);
+  // Convey the per-segment counts in the accessible name — color alone is not
+  // perceivable, and the segment `title`s aren't read by assistive tech.
+  const distributionLabel = IMPACT_LEVELS.filter((l) => totals[l] > 0)
+    .map((l) => `${totals[l]} ${IMPACT_LABEL[l].toLowerCase()}`)
+    .join(", ");
 
   if (total === 0) {
     return (
@@ -31,7 +36,7 @@ export function SeverityBar({ totals }: { totals: ImpactTotals }) {
       <div
         className="flex h-2 w-full origin-left animate-bar-grow overflow-hidden rounded-full bg-muted"
         role="img"
-        aria-label="Violation severity distribution"
+        aria-label={`Violation severity distribution: ${distributionLabel}`}
       >
         {IMPACT_LEVELS.map((level) =>
           totals[level] > 0 ? (

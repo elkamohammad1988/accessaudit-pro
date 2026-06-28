@@ -41,9 +41,28 @@ export function isPrivateIp(ip: string): boolean {
     const lower = ip.toLowerCase();
     if (lower === "::1" || lower === "::") return true; // loopback / unspecified
     if (lower.startsWith("fe80")) return true; // link-local
+    if (lower.startsWith("fec0")) return true; // deprecated site-local
     if (lower.startsWith("fc") || lower.startsWith("fd")) return true; // unique local
-    const mapped = lower.match(/::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
-    if (mapped && mapped[1]) return isPrivateIp(mapped[1]); // IPv4-mapped IPv6
+    if (lower.startsWith("ff")) return true; // multicast
+
+    // Any embedded IPv4 in dotted form (::ffff:1.2.3.4, ::1.2.3.4, 64:ff9b::1.2.3.4).
+    const dotted = lower.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
+    if (dotted && dotted[1]) return isPrivateIp(dotted[1]);
+
+    // IPv4-mapped carried as hex (::ffff:7f00:1 → 127.0.0.1).
+    const hexMapped = lower.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+    if (hexMapped && hexMapped[1] && hexMapped[2]) {
+      const hi = parseInt(hexMapped[1], 16);
+      const lo = parseInt(hexMapped[2], 16);
+      return isPrivateIp(`${(hi >> 8) & 255}.${hi & 255}.${(lo >> 8) & 255}.${lo & 255}`);
+    }
+
+    // Transition prefixes that wrap an IPv4 we may not have decoded above: NAT64
+    // (64:ff9b::/96) and 6to4 (2002::/16) can smuggle a private v4. We never need
+    // to scan a target addressed this way, so block the prefixes outright.
+    if (lower.startsWith("64:ff9b:") || lower.startsWith("64:ff9b::")) return true;
+    if (lower.startsWith("2002:")) return true;
+
     return false;
   }
 

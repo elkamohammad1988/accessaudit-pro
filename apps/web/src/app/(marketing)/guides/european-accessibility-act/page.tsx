@@ -160,18 +160,24 @@ export default function EaaGuidePage() {
 
       {/* CTA lives outside the prose wrapper so its button colors aren't overridden
           by the [&_a] descendant rule. */}
-      <div className="mt-10 flex flex-col items-center gap-4 rounded-xl border bg-muted px-6 py-10 text-center">
-        <p className="text-lg font-bold text-[hsl(var(--foreground))]">
-          Run a WCAG 2.2 audit on a client site — free
-        </p>
-        <p className="max-w-md text-sm text-muted-foreground">
-          See the prioritized, client-ready report AccessAudit Pro produces. No credit card.
-        </p>
-        <div className="flex items-center gap-3">
-          <ButtonLink href="/signup">Start free</ButtonLink>
-          <Link href="/sample" className="text-sm font-medium underline-offset-4 hover:underline">
-            See a sample report
-          </Link>
+      <div className="relative mt-10 overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-10 text-center shadow-md">
+        <div
+          aria-hidden="true"
+          className="bg-dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_50%,black,transparent)]"
+        />
+        <div className="relative flex flex-col items-center gap-4">
+          <p className="text-lg font-bold text-[hsl(var(--foreground))]">
+            Run a WCAG 2.2 audit on a client site — free
+          </p>
+          <p className="max-w-md text-sm text-muted-foreground">
+            See the prioritized, client-ready report AccessAudit Pro produces. No credit card.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <ButtonLink href="/signup">Start free</ButtonLink>
+            <ButtonLink href="/sample" variant="secondary">
+              See a sample report
+            </ButtonLink>
+          </div>
         </div>
       </div>
 

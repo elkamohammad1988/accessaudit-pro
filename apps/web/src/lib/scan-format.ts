@@ -37,10 +37,10 @@ export const IMPACT_LABEL: Record<ImpactLevel, string> = {
  * the severity tokens so they read correctly in both light and dark mode.
  */
 export const IMPACT_BADGE: Record<ImpactLevel, string> = {
-  critical: "bg-critical/10 text-critical ring-1 ring-inset ring-critical/25",
-  serious: "bg-serious/10 text-serious ring-1 ring-inset ring-serious/25",
-  moderate: "bg-moderate/10 text-moderate ring-1 ring-inset ring-moderate/25",
-  minor: "bg-minor/10 text-minor ring-1 ring-inset ring-minor/25",
+  critical: "bg-critical/10 text-critical-strong ring-1 ring-inset ring-critical/25",
+  serious: "bg-serious/10 text-serious-strong ring-1 ring-inset ring-serious/25",
+  moderate: "bg-moderate/10 text-moderate-strong ring-1 ring-inset ring-moderate/25",
+  minor: "bg-minor/10 text-minor-strong ring-1 ring-inset ring-minor/25",
 };
 
 export interface StatusMeta {
@@ -56,16 +56,16 @@ export interface StatusMeta {
 export const STATUS_META: Record<ScanStatus, StatusMeta> = {
   queued: { label: "Queued", className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", dot: "bg-muted-foreground", terminal: false },
   running: { label: "Running", className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", dot: "bg-brand", terminal: false },
-  completed: { label: "Completed", className: "bg-success/10 text-success ring-1 ring-inset ring-success/25", dot: "bg-success", terminal: true },
-  partial: { label: "Partial", className: "bg-warning/10 text-warning ring-1 ring-inset ring-warning/25", dot: "bg-warning", terminal: true },
-  failed: { label: "Failed", className: "bg-danger/10 text-danger ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
+  completed: { label: "Completed", className: "bg-success/10 text-success-strong ring-1 ring-inset ring-success/25", dot: "bg-success", terminal: true },
+  partial: { label: "Partial", className: "bg-warning/10 text-warning-strong ring-1 ring-inset ring-warning/25", dot: "bg-warning", terminal: true },
+  failed: { label: "Failed", className: "bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
 };
 
 /** Color the numeric score by band (good / needs work / poor). */
 export function scoreClassName(score: number | null): string {
   const { tone } = scoreBand(score);
-  if (tone === "success") return "text-success";
-  if (tone === "warning") return "text-warning";
-  if (tone === "danger") return "text-danger";
+  if (tone === "success") return "text-success-strong";
+  if (tone === "warning") return "text-warning-strong";
+  if (tone === "danger") return "text-danger-strong";
   return "text-muted-foreground";
 }

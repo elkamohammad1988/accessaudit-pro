@@ -11,6 +11,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
+import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { ScanStatusBadge } from "@/components/scans/scan-status-badge";
 import { archiveProjectRecord, restoreProjectRecord } from "../actions";
 
@@ -105,14 +106,13 @@ export default async function ProjectDetailPage({
             ) : (
               <form action={archiveProjectRecord}>
                 <input type="hidden" name="id" value={project.id} />
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="sm"
-                  className="text-danger hover:bg-danger/10"
+                <ConfirmSubmit
+                  confirmLabel="Archive project"
+                  prompt="Archive this project?"
+                  className="text-danger-strong hover:bg-danger/10"
                 >
                   Archive
-                </Button>
+                </ConfirmSubmit>
               </form>
             )}
           </div>

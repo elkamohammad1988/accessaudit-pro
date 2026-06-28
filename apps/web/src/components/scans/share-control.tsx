@@ -57,7 +57,12 @@ export function ShareControl({
       <form action={setScanShare}>
         <input type="hidden" name="scanId" value={scanId} />
         <input type="hidden" name="share" value="off" />
-        <Button type="submit" variant="secondary" size="sm" className="h-9 text-danger">
+        <Button
+          type="submit"
+          variant="ghost"
+          size="sm"
+          className="h-9 text-danger hover:bg-danger/10"
+        >
           Revoke
         </Button>
       </form>

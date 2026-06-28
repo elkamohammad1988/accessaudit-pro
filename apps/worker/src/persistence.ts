@@ -1,4 +1,4 @@
-import type { ImpactTotals } from "@accessaudit/shared";
+import type { ImpactTotals, ScanStatus } from "@accessaudit/shared";
 import { EMPTY_TOTALS, scoreFromPages, scoreFromTotals, sumTotals } from "@accessaudit/shared";
 import { supabase } from "./supabase";
 import { criteriaFromTags } from "./wcag";
@@ -46,48 +46,63 @@ function pagePayload(page: PageScanResult, totals: ImpactTotals) {
 }
 
 /**
- * Write a scan's pages + violations and return a rollup the caller uses to
- * finalize the scan row. The whole write goes through `persist_scan_results`,
- * a single transactional RPC that does a delete-then-insert — so a retried scan
- * can't leave duplicated or half-written results. organization_id comes only
- * from the claimed scan, never from page content.
+ * Roll up scanned pages into the scan-level summary. Pure (no DB) — derived
+ * entirely from the in-memory results — so the caller can decide the terminal
+ * status (and whether to persist at all) BEFORE writing.
  */
-export async function persistResults(
-  scan: { id: string; organization_id: string },
-  pages: PageScanResult[],
-): Promise<ScanSummary> {
+export function summarize(pages: PageScanResult[]): ScanSummary {
   const okPageTotals: ImpactTotals[] = [];
   let okCount = 0;
   let firstError: string | null = null;
 
-  const payload = pages.map((page) => {
-    const totals = totalsFromViolations(page.violations);
+  for (const page of pages) {
     if (page.ok) {
-      okPageTotals.push(totals);
+      okPageTotals.push(totalsFromViolations(page.violations));
       okCount += 1;
     } else if (!firstError) {
       firstError = page.error ?? "Page could not be scanned.";
     }
-    return pagePayload(page, totals);
-  });
-
-  const { error } = await supabase.rpc("persist_scan_results", {
-    p_scan_id: scan.id,
-    p_org_id: scan.organization_id,
-    p_pages: payload,
-  });
-  if (error) {
-    throw new Error(`Failed to persist scan results: ${error.message}`);
   }
 
   return {
     totals: sumTotals(okPageTotals),
     // Overall score is normalized per page (not the raw sum) so a large site is
-    // judged on typical page health. Per-page scores stay un-normalized above.
+    // judged on typical page health. Per-page scores stay un-normalized.
     score: scoreFromPages(okPageTotals),
     pagesScanned: okCount,
     allFailed: okCount === 0,
     anyFailed: okCount !== pages.length,
     firstError,
   };
+}
+
+/**
+ * Write a scan's pages + violations AND finalize the scan row in ONE transaction
+ * via `persist_scan_results`. The RPC is guarded on status='running' (with a row
+ * lock), so a stale worker can't resurrect a scan the reaper already took over;
+ * it returns false in that case. organization_id comes only from the claimed
+ * scan, never from page content. Returns true when the write was applied.
+ */
+export async function persistAndFinalize(
+  scan: { id: string; organization_id: string },
+  pages: PageScanResult[],
+  status: Extract<ScanStatus, "completed" | "partial">,
+  summary: ScanSummary,
+): Promise<boolean> {
+  const payload = pages.map((page) => pagePayload(page, totalsFromViolations(page.violations)));
+
+  const { data, error } = await supabase.rpc("persist_scan_results", {
+    p_scan_id: scan.id,
+    p_org_id: scan.organization_id,
+    p_pages: payload,
+    p_status: status,
+    p_score: summary.score,
+    p_totals: summary.totals,
+    p_pages_scanned: summary.pagesScanned,
+    p_error_reason: null,
+  });
+  if (error) {
+    throw new Error(`Failed to persist scan results: ${error.message}`);
+  }
+  return data ?? false;
 }

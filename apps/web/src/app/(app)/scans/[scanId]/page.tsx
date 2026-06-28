@@ -5,7 +5,7 @@ import { ArrowLeft, FileDown, RotateCw, Table2, Trash2 } from "lucide-react";
 import { effectivePlan, limitsFor, type ScanStatus } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { publicEnv } from "@/lib/env";
+import { appBaseUrl } from "@/lib/env";
 import { formatDateTime } from "@/lib/dates";
 import { STATUS_META, parseTotals } from "@/lib/scan-format";
 import { loadReportByScan } from "@/lib/load-report";
@@ -16,6 +16,7 @@ import { ScanLive } from "@/components/scans/scan-live";
 import { ScanStatusBadge } from "@/components/scans/scan-status-badge";
 import { ShareControl } from "@/components/scans/share-control";
 import { NoticeBanner } from "@/components/ui/notice-banner";
+import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { rescanScan, deleteScan } from "../actions";
 
 export const metadata: Metadata = { title: "Scan report" };
@@ -86,7 +87,7 @@ export default async function ScanReportPage({
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <form action={rescanScan}>
               <input type="hidden" name="scanId" value={scan.id} />
               <Button type="submit" variant="secondary" size="sm">
@@ -97,10 +98,14 @@ export default async function ScanReportPage({
             <form action={deleteScan}>
               <input type="hidden" name="scanId" value={scan.id} />
               <input type="hidden" name="projectId" value={scan.project_id} />
-              <Button type="submit" variant="ghost" size="sm" className="text-danger hover:bg-danger/10">
+              <ConfirmSubmit
+                confirmLabel="Delete"
+                prompt="Delete permanently?"
+                className="text-danger hover:bg-danger/10"
+              >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 Delete
-              </Button>
+              </ConfirmSubmit>
             </form>
           </div>
         </header>
@@ -120,7 +125,7 @@ export default async function ScanReportPage({
               scanId={scan.id}
               isPublic={scan.is_public}
               shareToken={scan.share_token}
-              appUrl={publicEnv.appUrl}
+              appUrl={appBaseUrl()}
             />
             <div className="flex items-center gap-2">
               {limits.whiteLabelPdf ? (
@@ -166,6 +171,8 @@ export default async function ScanReportPage({
         errorReason={scan.error_reason}
         pages={report.pages}
         groups={report.groups}
+        totalViolationRows={report.totalViolationRows}
+        truncated={report.truncated}
       />
     </div>
   );

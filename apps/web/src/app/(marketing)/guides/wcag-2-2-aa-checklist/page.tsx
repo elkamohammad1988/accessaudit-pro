@@ -174,18 +174,24 @@ export default function WcagChecklistPage() {
       </div>
 
       {/* CTA outside the prose wrapper (see note in the EAA guide). */}
-      <div className="mt-10 flex flex-col items-center gap-4 rounded-xl border bg-muted px-6 py-10 text-center">
-        <p className="text-lg font-bold text-[hsl(var(--foreground))]">
-          Clear the automatable half in seconds
-        </p>
-        <p className="max-w-md text-sm text-muted-foreground">
-          Run a free WCAG 2.2 AA scan and get a prioritized, client-ready report with fix guidance.
-        </p>
-        <div className="flex items-center gap-3">
-          <ButtonLink href="/signup">Start free</ButtonLink>
-          <Link href="/sample" className="text-sm font-medium underline-offset-4 hover:underline">
-            See a sample report
-          </Link>
+      <div className="relative mt-10 overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-10 text-center shadow-md">
+        <div
+          aria-hidden="true"
+          className="bg-dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_50%,black,transparent)]"
+        />
+        <div className="relative flex flex-col items-center gap-4">
+          <p className="text-lg font-bold text-[hsl(var(--foreground))]">
+            Clear the automatable half in seconds
+          </p>
+          <p className="max-w-md text-sm text-muted-foreground">
+            Run a free WCAG 2.2 AA scan and get a prioritized, client-ready report with fix guidance.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <ButtonLink href="/signup">Start free</ButtonLink>
+            <ButtonLink href="/sample" variant="secondary">
+              See a sample report
+            </ButtonLink>
+          </div>
         </div>
       </div>
 

@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 type NoticeTone = "warning" | "error" | "success" | "info";
 
 const TONES: Record<NoticeTone, { className: string; Icon: typeof AlertTriangle }> = {
-  warning: { className: "border-warning/30 bg-warning/10 text-warning", Icon: AlertTriangle },
-  error: { className: "border-danger/30 bg-danger/10 text-danger", Icon: AlertTriangle },
-  success: { className: "border-success/30 bg-success/10 text-success", Icon: CheckCircle2 },
+  warning: { className: "border-warning/30 bg-warning/10 text-warning-strong", Icon: AlertTriangle },
+  error: { className: "border-danger/30 bg-danger/10 text-danger-strong", Icon: AlertTriangle },
+  success: { className: "border-success/30 bg-success/10 text-success-strong", Icon: CheckCircle2 },
   info: { className: "border-brand/30 bg-brand/10 text-brand", Icon: Info },
 };
 

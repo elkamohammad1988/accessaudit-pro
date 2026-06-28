@@ -8,13 +8,19 @@ import Link from "next/link";
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-brand-fg"
+      >
+        Skip to content
+      </a>
       <header className="mb-8">
         <Link href="/" className="text-sm font-semibold">
           AccessAudit<span className="text-brand"> Pro</span>
         </Link>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <article className="space-y-4 text-sm leading-relaxed text-[hsl(var(--foreground))] [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:mt-4 [&_h3]:font-medium [&_a]:text-brand [&_a]:underline-offset-4 hover:[&_a]:underline [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_p]:text-muted-foreground [&_li]:text-muted-foreground">
           {children}
         </article>

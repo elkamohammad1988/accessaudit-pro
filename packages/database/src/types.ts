@@ -386,8 +386,29 @@ export interface Database {
         Returns: boolean;
       };
       persist_scan_results: {
-        Args: { p_scan_id: string; p_org_id: string; p_pages: Json };
-        Returns: undefined;
+        Args: {
+          p_scan_id: string;
+          p_org_id: string;
+          p_pages: Json;
+          p_status: Database["public"]["Enums"]["scan_status"];
+          p_score: number | null;
+          p_totals: Json;
+          p_pages_scanned: number;
+          p_error_reason: string | null;
+        };
+        Returns: boolean;
+      };
+      create_scan_if_within_quota: {
+        Args: {
+          p_org_id: string;
+          p_project_id: string;
+          p_scan_type: Database["public"]["Enums"]["scan_type"];
+          p_target_urls: Json;
+          p_wcag_level: Database["public"]["Enums"]["wcag_level"];
+          p_monthly_limit: number;
+          p_period_start: string;
+        };
+        Returns: string | null;
       };
     };
     Enums: {

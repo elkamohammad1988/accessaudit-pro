@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { publicEnv } from "@/lib/env";
+import { appBaseUrl } from "@/lib/env";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = publicEnv.appUrl.replace(/\/$/, "");
+  const base = appBaseUrl();
   return {
     rules: {
       userAgent: "*",
@@ -17,6 +17,10 @@ export default function robots(): MetadataRoute.Robots {
         "/onboarding",
         "/r/",
         "/api/",
+        "/login",
+        "/signup",
+        "/reset",
+        "/update-password",
       ],
     },
     sitemap: `${base}/sitemap.xml`,

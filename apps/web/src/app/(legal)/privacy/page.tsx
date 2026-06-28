@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-// Fixed publication date; bump on change. Fill the bracketed placeholders with
-// your real legal entity and contact before launch.
-const EFFECTIVE_DATE = "24 June 2026";
-const COMPANY = "[Company Legal Name]";
+// Fixed publication date; bump on change.
+// NOTE FOR THE OPERATOR: confirm and substitute your registered trading entity.
+const EFFECTIVE_DATE = "28 June 2026";
+const COMPANY = "AccessAudit Pro";
 const CONTACT_EMAIL = "privacy@accessaudit.pro";
 
 export default function PrivacyPage() {

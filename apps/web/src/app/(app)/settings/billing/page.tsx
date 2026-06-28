@@ -16,30 +16,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { NoticeBanner } from "@/components/ui/notice-banner";
 import { startCheckout, openPortal } from "./actions";
 
 export const metadata: Metadata = { title: "Billing" };
 
-const STATUS_BANNER: Record<string, { text: string; className: string }> = {
+/** Human labels for the raw Stripe subscription statuses we never want to show. */
+const STATUS_LABEL: Record<string, string> = {
+  active: "Active",
+  trialing: "Trial",
+  past_due: "Payment past due",
+  canceled: "Canceled",
+  incomplete: "Incomplete",
+};
+const statusLabel = (status: string | null | undefined): string =>
+  status ? (STATUS_LABEL[status] ?? status) : "No active subscription";
+
+type BannerTone = "success" | "warning" | "error" | "info";
+
+const STATUS_BANNER: Record<string, { text: string; tone: BannerTone }> = {
   success: {
     text: "Subscription updated. It can take a few seconds to reflect here.",
-    className: "border-success/30 bg-success/10 text-success",
+    tone: "success",
   },
   cancel: {
     text: "Checkout canceled — no changes were made.",
-    className: "border-warning/30 bg-warning/10 text-warning",
+    tone: "warning",
   },
   error: {
     text: "Something went wrong with billing. Please try again.",
-    className: "border-danger/30 bg-danger/10 text-danger",
+    tone: "error",
   },
   "no-customer": {
     text: "No billing account yet — pick a plan to get started.",
-    className: "border-warning/30 bg-warning/10 text-warning",
+    tone: "warning",
   },
   "scan-limit": {
     text: "You've reached your plan's scan limit for this month. Upgrade to run more.",
-    className: "border-warning/30 bg-warning/10 text-warning",
+    tone: "warning",
   },
 };
 
@@ -109,7 +123,7 @@ export default async function BillingPage({
           <Badge variant={hasPaid ? "default" : "secondary"}>{actualLimits.label} plan</Badge>
         </header>
         <p className="mt-1 text-sm text-muted-foreground">
-          {hasPaid && sub?.status ? `${sub.status}` : "No active subscription"}
+          {hasPaid ? statusLabel(sub?.status) : "No active subscription"}
           {hasPaid && sub?.current_period_end
             ? ` · renews ${new Date(sub.current_period_end).toLocaleDateString()}`
             : ""}
@@ -117,21 +131,14 @@ export default async function BillingPage({
       </div>
 
       {downgraded ? (
-        <p
-          role="status"
-          className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning"
-        >
-          Your {actualLimits.label} subscription is {sub?.status ?? "inactive"}, so{" "}
+        <NoticeBanner tone="warning">
+          Your {actualLimits.label} subscription is {statusLabel(sub?.status).toLowerCase()}, so{" "}
           {limits.label}-plan limits currently apply. Update your payment method in the billing
           portal to restore full access.
-        </p>
+        </NoticeBanner>
       ) : null}
 
-      {banner ? (
-        <p role="status" className={`rounded-lg border p-3 text-sm ${banner.className}`}>
-          {banner.text}
-        </p>
-      ) : null}
+      {banner ? <NoticeBanner tone={banner.tone}>{banner.text}</NoticeBanner> : null}
 
       <section aria-label="Usage" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {usage.map((u) => {

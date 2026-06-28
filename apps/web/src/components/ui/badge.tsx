@@ -17,14 +17,14 @@ const variantClasses: Record<BadgeVariant, string> = {
   default: "border-transparent bg-brand/10 text-brand",
   secondary: "border-transparent bg-muted text-muted-foreground",
   outline: "border-border text-foreground",
-  success: "border-transparent bg-success/10 text-success ring-1 ring-inset ring-success/20",
-  warning: "border-transparent bg-warning/10 text-warning ring-1 ring-inset ring-warning/25",
-  danger: "border-transparent bg-danger/10 text-danger ring-1 ring-inset ring-danger/20",
+  success: "border-transparent bg-success/10 text-success-strong ring-1 ring-inset ring-success/20",
+  warning: "border-transparent bg-warning/10 text-warning-strong ring-1 ring-inset ring-warning/25",
+  danger: "border-transparent bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/20",
   // Accessibility-impact scale — shared by report views and badges.
-  critical: "border-transparent bg-critical/10 text-critical ring-1 ring-inset ring-critical/25",
-  serious: "border-transparent bg-serious/10 text-serious ring-1 ring-inset ring-serious/25",
-  moderate: "border-transparent bg-moderate/10 text-moderate ring-1 ring-inset ring-moderate/25",
-  minor: "border-transparent bg-minor/10 text-minor ring-1 ring-inset ring-minor/25",
+  critical: "border-transparent bg-critical/10 text-critical-strong ring-1 ring-inset ring-critical/25",
+  serious: "border-transparent bg-serious/10 text-serious-strong ring-1 ring-inset ring-serious/25",
+  moderate: "border-transparent bg-moderate/10 text-moderate-strong ring-1 ring-inset ring-moderate/25",
+  minor: "border-transparent bg-minor/10 text-minor-strong ring-1 ring-inset ring-minor/25",
 };
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {

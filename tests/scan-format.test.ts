@@ -25,10 +25,10 @@ describe("totalViolations", () => {
 });
 
 describe("scoreClassName", () => {
-  it("bands the score by semantic tone", () => {
-    expect(scoreClassName(95)).toBe("text-success");
-    expect(scoreClassName(75)).toBe("text-warning");
-    expect(scoreClassName(40)).toBe("text-danger");
+  it("bands the score by semantic tone (AA-contrast `-strong` text variants)", () => {
+    expect(scoreClassName(95)).toBe("text-success-strong");
+    expect(scoreClassName(75)).toBe("text-warning-strong");
+    expect(scoreClassName(40)).toBe("text-danger-strong");
     expect(scoreClassName(null)).toBe("text-muted-foreground");
   });
 });

@@ -4,11 +4,23 @@ import { supabase } from "./supabase";
 
 /**
  * Tiny HTTP server exposing worker/queue observability:
- *   GET /health   → 200 {"status":"ok"} liveness probe (no DB hit)
+ *   GET /health   → 200 if the poll loop is alive; 503 if it has stalled (no DB hit)
  *   GET /metrics  → queue depth, running scans, oldest-queued age, recent failures
  * Bound to WORKER_HEALTH_PORT (set to 0 to disable). Kept dependency-free
  * (node:http) so it never competes with Chromium for resources.
  */
+
+// Liveness: the poll loop bumps this each iteration. If it goes stale the loop is
+// wedged (a hung scan, a deadlock) even though the process is up — so /health
+// returns 503 and the orchestrator restarts us, instead of a static 200 that
+// can't tell a healthy worker from a stuck one.
+let lastAliveAt = Date.now();
+const LIVENESS_STALE_MS = 180_000; // 3 min — far longer than a normal poll cycle.
+
+/** Called by the worker loop each iteration to prove it's still cycling. */
+export function markAlive(): void {
+  lastAliveAt = Date.now();
+}
 
 export interface QueueMetrics {
   queued: number;
@@ -58,8 +70,10 @@ export function startHealthServer(): () => Promise<void> {
     const url = req.url ?? "/";
 
     if (url === "/health" || url === "/") {
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ status: "ok" }));
+      const ageMs = Date.now() - lastAliveAt;
+      const alive = ageMs <= LIVENESS_STALE_MS;
+      res.writeHead(alive ? 200 : 503, { "content-type": "application/json" });
+      res.end(JSON.stringify({ status: alive ? "ok" : "stale", lastAliveAgeMs: ageMs }));
       return;
     }
 

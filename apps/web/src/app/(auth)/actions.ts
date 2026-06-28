@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { publicEnv } from "@/lib/env";
+import { appBaseUrl } from "@/lib/env";
 import { safeNextPath } from "@/lib/utils";
 import { allowByIp } from "@/lib/rate-limit";
 
@@ -31,7 +31,7 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   // Throttle password guessing per source IP before touching the auth server.
-  if (!(await allowByIp("auth:signin", { max: 10, windowSeconds: 60 }))) {
+  if (!(await allowByIp("auth:signin", { max: 10, windowSeconds: 60, failClosed: true }))) {
     return { error: TOO_MANY, message: null };
   }
 
@@ -62,14 +62,17 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
 
   // Cap sign-ups per IP to blunt automated account creation / email-bombing.
-  if (!(await allowByIp("auth:signup", { max: 5, windowSeconds: 60 }))) {
+  if (!(await allowByIp("auth:signup", { max: 5, windowSeconds: 60, failClosed: true }))) {
     return { error: TOO_MANY, message: null };
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     ...parsed.data,
-    options: { emailRedirectTo: `${publicEnv.appUrl}/auth/callback` },
+    // The confirmation email links to /auth/confirm with a token_hash (see the
+    // email templates). This `emailRedirectTo` must be an allow-listed Redirect
+    // URL in the Supabase dashboard.
+    options: { emailRedirectTo: `${appBaseUrl()}/auth/confirm` },
   });
 
   if (error) {
@@ -98,6 +101,39 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   redirect("/dashboard");
 }
 
+/**
+ * Re-send the signup confirmation email. Surfaced on /login when a confirmation
+ * link has expired or was already used (`?error=expired_link`). Always returns
+ * the same neutral copy so it can't be used to probe which emails have accounts.
+ */
+export async function resendConfirmation(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const email = z.string().email().safeParse(formData.get("email"));
+  if (!email.success) {
+    return { error: "Enter a valid email address.", message: null };
+  }
+
+  const neutral: AuthState = {
+    error: null,
+    message: "If that email needs confirming, a fresh link is on its way.",
+  };
+
+  // Throttle to blunt inbox spam; still return the neutral copy on the limit.
+  if (!(await allowByIp("auth:resend", { max: 3, windowSeconds: 300, failClosed: true }))) {
+    return neutral;
+  }
+
+  const supabase = await createClient();
+  // A no-op for already-confirmed or unknown emails — Supabase does not error,
+  // which keeps this from being an account-enumeration oracle.
+  await supabase.auth.resend({
+    type: "signup",
+    email: email.data,
+    options: { emailRedirectTo: `${appBaseUrl()}/auth/confirm` },
+  });
+
+  return neutral;
+}
+
 export async function requestPasswordReset(
   _prev: AuthState,
   formData: FormData,
@@ -109,7 +145,7 @@ export async function requestPasswordReset(
 
   // Throttle reset emails per IP (prevents using us to spam a victim's inbox).
   // Still returns the same neutral copy on the limit so it isn't an oracle.
-  if (!(await allowByIp("auth:reset", { max: 5, windowSeconds: 300 }))) {
+  if (!(await allowByIp("auth:reset", { max: 5, windowSeconds: 300, failClosed: true }))) {
     return {
       error: null,
       message: "If that email has an account, a reset link is on its way.",
@@ -120,7 +156,7 @@ export async function requestPasswordReset(
   // Always return the same neutral message regardless of whether the email exists
   // or the call errored — never confirm account existence (enumeration guard).
   await supabase.auth.resetPasswordForEmail(email.data, {
-    redirectTo: `${publicEnv.appUrl}/auth/callback?next=/update-password`,
+    redirectTo: `${appBaseUrl()}/auth/confirm?next=/update-password`,
   });
 
   return {

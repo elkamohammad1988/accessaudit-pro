@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { NoticeBanner } from "@/components/ui/notice-banner";
 import { restoreClientRecord } from "./actions";
 
 export const metadata: Metadata = { title: "Clients" };
@@ -17,7 +18,7 @@ export default async function ClientsPage() {
   if (!organization) return null;
 
   const supabase = await createClient();
-  const [{ data: clients }, { data: sub }] = await Promise.all([
+  const [{ data: clients, error: clientsError }, { data: sub }] = await Promise.all([
     supabase
       .from("clients")
       .select("id, name, contact_email, archived_at, created_at")
@@ -49,7 +50,12 @@ export default async function ClientsPage() {
         </ButtonLink>
       </header>
 
-      {active.length > 0 ? (
+      {clientsError ? (
+        <NoticeBanner tone="error">
+          We couldn&apos;t load your clients just now. Refresh the page to try again — if it keeps
+          happening, the issue is on our side, not yours.
+        </NoticeBanner>
+      ) : active.length > 0 ? (
         <Card className="overflow-hidden">
           <ul className="divide-y">
             {active.map((client) => (
@@ -108,7 +114,7 @@ export default async function ClientsPage() {
                 <span className="text-sm text-muted-foreground">{client.name}</span>
                 <form action={restoreClientRecord}>
                   <input type="hidden" name="id" value={client.id} />
-                  <Button type="submit" variant="link" size="sm" className="h-auto p-0">
+                  <Button type="submit" variant="ghost" size="sm">
                     Restore
                   </Button>
                 </form>

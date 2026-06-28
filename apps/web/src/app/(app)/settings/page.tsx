@@ -53,14 +53,16 @@ export default async function SettingsPage() {
 
       <section
         aria-labelledby="billing-heading"
-        className="space-y-3 rounded-xl border bg-card p-6 shadow-sm"
+        className="space-y-4 rounded-xl border bg-card p-6 shadow-sm"
       >
-        <h2 id="billing-heading" className="text-lg font-semibold tracking-tight">
-          Billing
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Manage your plan, usage, and payment method.
-        </p>
+        <div>
+          <h2 id="billing-heading" className="text-lg font-semibold tracking-tight">
+            Billing
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your plan, usage, and payment method.
+          </p>
+        </div>
         <ButtonLink href="/settings/billing" variant="secondary" className="w-fit">
           Go to billing
         </ButtonLink>
@@ -68,15 +70,17 @@ export default async function SettingsPage() {
 
       <section
         aria-labelledby="team-heading"
-        className="space-y-2 rounded-xl border bg-card p-6 shadow-sm"
+        className="space-y-4 rounded-xl border bg-card p-6 shadow-sm"
       >
-        <h2 id="team-heading" className="text-lg font-semibold tracking-tight">
-          Team
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          AccessAudit Pro is single-owner in this release. Multi-seat teams and roles arrive with
-          a later update.
-        </p>
+        <div>
+          <h2 id="team-heading" className="text-lg font-semibold tracking-tight">
+            Team
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            AccessAudit Pro is single-owner in this release. Multi-seat teams and roles arrive with
+            a later update.
+          </p>
+        </div>
       </section>
     </div>
   );

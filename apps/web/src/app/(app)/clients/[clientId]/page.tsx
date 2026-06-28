@@ -8,6 +8,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
+import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { archiveClientRecord, restoreClientRecord } from "../actions";
 
 export const metadata: Metadata = { title: "Client" };
@@ -82,14 +83,13 @@ export default async function ClientDetailPage({
             ) : (
               <form action={archiveClientRecord}>
                 <input type="hidden" name="id" value={client.id} />
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="sm"
-                  className="text-danger hover:bg-danger/10"
+                <ConfirmSubmit
+                  confirmLabel="Archive client"
+                  prompt="Archive this client?"
+                  className="text-danger-strong hover:bg-danger/10"
                 >
                   Archive
-                </Button>
+                </ConfirmSubmit>
               </form>
             )}
           </div>
@@ -101,9 +101,7 @@ export default async function ClientDetailPage({
       {client.notes ? (
         <Card>
           <section aria-label="Notes" className="p-5">
-            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Notes
-            </h2>
+            <h2 className="mb-1.5 text-base font-semibold tracking-tight">Notes</h2>
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{client.notes}</p>
           </section>
         </Card>
@@ -128,7 +126,7 @@ export default async function ClientDetailPage({
                     className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/50"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/15 to-brand-2/10 text-brand ring-1 ring-inset ring-brand/15">
                         <Globe className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <div className="min-w-0">

@@ -8,9 +8,17 @@ import type { Scan } from "@accessaudit/database";
 import type { WcagLevel } from "@accessaudit/shared";
 import { env } from "./env";
 import { supabase } from "./supabase";
-import { persistResults } from "./persistence";
+import { persistAndFinalize, summarize } from "./persistence";
 import { launchBrowser, scanPage, type PageScanResult } from "./scanner";
-import { startHealthServer } from "./health";
+import { markAlive, startHealthServer } from "./health";
+
+/**
+ * Hard ceiling on graceful drain. Orchestrators (Railway/K8s) send SIGTERM then
+ * SIGKILL after their own grace window (~30s). We force our own clean exit a few
+ * seconds inside that so Sentry flushes and the browser closes, rather than being
+ * SIGKILLed mid-write (which the reaper would then have to clean up).
+ */
+const SHUTDOWN_FORCE_MS = 25_000;
 
 let shuttingDown = false;
 let browser: Browser | null = null;
@@ -169,6 +177,8 @@ async function failOrRetry(scan: Scan, reason: string, retryable: boolean): Prom
     error_reason: retryable ? `${reason} (gave up after ${attempts} attempts)` : reason,
     finished_at: new Date().toISOString(),
   });
+  // Dead-letter — surface to Sentry so we're not blind to scans that never succeed.
+  captureError(new Error(reason), { scanId: scan.id, scope: "deadLetter", attempts: String(attempts) });
 }
 
 /**
@@ -192,7 +202,10 @@ async function scanAllPages(
       if (index >= urls.length) return;
       const url = urls[index]!;
       let result = await scanPage(await getBrowser(), url, level, scanOpts);
-      if (!result.ok && result.httpStatus === null) {
+      // Retry a hard, response-less failure ONCE — but not while shutting down
+      // (a second ~60s page scan can blow past the orchestrator's kill window).
+      if (!result.ok && result.httpStatus === null && !shuttingDown) {
+        await heartbeat(scan.id);
         result = await scanPage(await getBrowser(), url, level, scanOpts);
       }
       results[index] = result;
@@ -227,25 +240,28 @@ async function processScan(scan: Scan): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     await failOrRetry(scan, `Browser error: ${message}`, true);
     console.error(`scan ${scan.id} browser error:`, message);
+    captureError(err, { scanId: scan.id, scope: "scanAllPages" });
     return;
   }
 
+  // Summary is derived from in-memory results, so we decide the terminal status
+  // (and whether to persist) before writing.
+  const summary = summarize(pages);
+  if (summary.allFailed) {
+    // Every page failed — often a transient target outage; retry then give up.
+    await failOrRetry(scan, summary.firstError ?? "All pages failed.", true);
+    return;
+  }
+
+  const status = summary.anyFailed ? "partial" : "completed";
   try {
-    const summary = await persistResults(scan, pages);
-    if (summary.allFailed) {
-      // Every page failed — often a transient target outage; retry then give up.
-      await failOrRetry(scan, summary.firstError ?? "All pages failed.", true);
+    // One atomic RPC writes the results AND finalizes the scan row; returns false
+    // if the reaper already took the scan over, in which case we leave it alone.
+    const applied = await persistAndFinalize(scan, pages, status, summary);
+    if (!applied) {
+      console.log(`scan ${scan.id} no longer running (reaper took over); skipped persist.`);
       return;
     }
-    const status = summary.anyFailed ? "partial" : "completed";
-    await finalize(scan.id, {
-      status,
-      score: summary.score,
-      totals: summary.totals,
-      pages_scanned: summary.pagesScanned,
-      error_reason: null,
-      finished_at: new Date().toISOString(),
-    });
     console.log(
       `scan ${scan.id} → ${status} (${summary.pagesScanned}/${pages.length} pages, score ${summary.score})`,
     );
@@ -254,13 +270,14 @@ async function processScan(scan: Scan): Promise<void> {
     // DB write failures are usually transient — requeue, dead-letter on exhaustion.
     await failOrRetry(scan, message, true);
     console.error(`scan ${scan.id} persistence error:`, message);
-    captureError(err, { scanId: scan.id, scope: "persistResults" });
+    captureError(err, { scanId: scan.id, scope: "persistAndFinalize" });
   }
 }
 
 async function loop(): Promise<void> {
   console.log("AccessAudit scan worker started. Polling for queued scans…");
   while (!shuttingDown) {
+    markAlive(); // liveness heartbeat for /health
     await reapStaleScans();
 
     const scan = await claimScan();
@@ -283,10 +300,23 @@ async function loop(): Promise<void> {
   console.log("Worker stopped cleanly.");
 }
 
+let forceExitTimer: NodeJS.Timeout | null = null;
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => {
+    if (shuttingDown) {
+      // Second signal — operator wants out now.
+      console.log(`\n${signal} again — forcing immediate exit.`);
+      process.exit(0);
+    }
     console.log(`\n${signal} received — finishing the current job, then exiting.`);
     shuttingDown = true;
+    // Hard deadline: never let "graceful" drain exceed the orchestrator's kill
+    // window. A scan still running at the deadline is left for the reaper.
+    forceExitTimer = setTimeout(() => {
+      console.error(`Graceful shutdown exceeded ${SHUTDOWN_FORCE_MS}ms — forcing exit.`);
+      void flushSentry().finally(() => process.exit(0));
+    }, SHUTDOWN_FORCE_MS);
+    forceExitTimer.unref?.();
   });
 }
 
@@ -295,7 +325,9 @@ const stopHealthServer = startHealthServer();
 
 loop()
   .then(async () => {
+    if (forceExitTimer) clearTimeout(forceExitTimer);
     await stopHealthServer();
+    await flushSentry();
   })
   .catch(async (err) => {
     console.error("Fatal worker error:", err);

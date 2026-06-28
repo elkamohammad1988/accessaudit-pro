@@ -17,7 +17,16 @@ function required(name: string): string {
   return value;
 }
 
-/** Server-only Stripe client. Uses the SDK's pinned API version. */
+/**
+ * Stripe API version this code is written against. Pinned explicitly so a future
+ * `pnpm update` of the SDK can't silently change the default API version (and the
+ * shape of webhook payloads) underneath us. Bump deliberately, with testing.
+ */
+export const STRIPE_API_VERSION = "2024-12-18.acacia" as const;
+
+/** Server-only Stripe client, pinned to an explicit API version. */
 export function getStripe(): Stripe {
-  return new Stripe(required("STRIPE_SECRET_KEY"));
+  return new Stripe(required("STRIPE_SECRET_KEY"), {
+    apiVersion: STRIPE_API_VERSION as Stripe.StripeConfig["apiVersion"],
+  });
 }

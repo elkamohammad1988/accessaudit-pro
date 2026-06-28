@@ -38,20 +38,36 @@ const config: Config = {
         success: {
           DEFAULT: "hsl(var(--success) / <alpha-value>)",
           foreground: "hsl(var(--success-foreground) / <alpha-value>)",
+          strong: "hsl(var(--success-strong) / <alpha-value>)",
         },
         warning: {
           DEFAULT: "hsl(var(--warning) / <alpha-value>)",
           foreground: "hsl(var(--warning-foreground) / <alpha-value>)",
+          strong: "hsl(var(--warning-strong) / <alpha-value>)",
         },
         danger: {
           DEFAULT: "hsl(var(--danger) / <alpha-value>)",
           foreground: "hsl(var(--danger-foreground) / <alpha-value>)",
+          strong: "hsl(var(--danger-strong) / <alpha-value>)",
         },
-        // Accessibility-impact severity scale (axe taxonomy).
-        critical: "hsl(var(--sev-critical) / <alpha-value>)",
-        serious: "hsl(var(--sev-serious) / <alpha-value>)",
-        moderate: "hsl(var(--sev-moderate) / <alpha-value>)",
-        minor: "hsl(var(--sev-minor) / <alpha-value>)",
+        // Accessibility-impact severity scale (axe taxonomy). `DEFAULT` is the
+        // bright fill; `strong` is the AA-contrast text variant.
+        critical: {
+          DEFAULT: "hsl(var(--sev-critical) / <alpha-value>)",
+          strong: "hsl(var(--sev-critical-strong) / <alpha-value>)",
+        },
+        serious: {
+          DEFAULT: "hsl(var(--sev-serious) / <alpha-value>)",
+          strong: "hsl(var(--sev-serious-strong) / <alpha-value>)",
+        },
+        moderate: {
+          DEFAULT: "hsl(var(--sev-moderate) / <alpha-value>)",
+          strong: "hsl(var(--sev-moderate-strong) / <alpha-value>)",
+        },
+        minor: {
+          DEFAULT: "hsl(var(--sev-minor) / <alpha-value>)",
+          strong: "hsl(var(--sev-minor-strong) / <alpha-value>)",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
@@ -87,6 +103,10 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        "progress-indeterminate": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(300%)" },
+        },
         "bar-grow": {
           from: { transform: "scaleX(0)" },
           to: { transform: "scaleX(1)" },
@@ -108,6 +128,8 @@ const config: Config = {
         "fade-up": "fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both",
         "scale-in": "scale-in 0.18s ease-out both",
         shimmer: "shimmer 1.6s infinite",
+        // Indeterminate bar for the live-scan "auditing…" state.
+        "progress-indeterminate": "progress-indeterminate 1.4s ease-in-out infinite",
         "bar-grow": "bar-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
         // Circular score gauge sweeps from empty to its value on mount.
         "draw-ring": "draw-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",

@@ -1,0 +1,17 @@
+<!--
+  AccessAudit Pro — "Reset password" email.
+
+  Links to /auth/confirm with a token_hash and type=recovery, then forwards to
+  /update-password once the session is established (see completeAuthRedirect).
+  Paste into Supabase Dashboard → Authentication → Email Templates → "Reset
+  password" for the hosted project.
+-->
+<h2>Reset your password</h2>
+<p>We received a request to reset the password for your AccessAudit Pro account.</p>
+<p>
+  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/update-password">
+    Reset your password
+  </a>
+</p>
+<p>This link can be used once and expires after a short time.</p>
+<p>If you didn&rsquo;t request this, you can ignore this email &mdash; your password won&rsquo;t change.</p>

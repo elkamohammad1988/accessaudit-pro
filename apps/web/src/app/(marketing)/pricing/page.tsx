@@ -135,25 +135,30 @@ export default function PricingPage() {
             </tr>
           </thead>
           <tbody>
-            {ROWS.map((row) => (
-              <tr key={row.label} className="border-t">
-                <th scope="row" className="px-3 py-3 text-left font-normal">
-                  {row.label}
-                </th>
-                {PLAN_TIERS.map((tier) => {
-                  const result = row.cell(PLAN_LIMITS[tier]);
-                  const popular = tier === POPULAR;
-                  return (
-                    <td
-                      key={tier}
-                      className={`px-3 py-3 text-center ${popular ? "bg-muted" : ""}`}
-                    >
-                      {"text" in result ? result.text : result.bool ? <Check /> : <Dash />}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
+            {ROWS.map((row, i) => {
+              const last = i === ROWS.length - 1;
+              return (
+                <tr key={row.label} className="border-t transition-colors hover:bg-muted/40">
+                  <th scope="row" className="px-3 py-3 text-left font-normal">
+                    {row.label}
+                  </th>
+                  {PLAN_TIERS.map((tier) => {
+                    const result = row.cell(PLAN_LIMITS[tier]);
+                    const popular = tier === POPULAR;
+                    return (
+                      <td
+                        key={tier}
+                        className={`px-3 py-3 text-center ${popular ? "bg-muted" : ""} ${
+                          popular && last ? "rounded-b-lg" : ""
+                        }`}
+                      >
+                        {"text" in result ? result.text : result.bool ? <Check /> : <Dash />}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

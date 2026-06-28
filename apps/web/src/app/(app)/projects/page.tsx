@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { NoticeBanner } from "@/components/ui/notice-banner";
 import { restoreProjectRecord } from "./actions";
 
 export const metadata: Metadata = { title: "Projects" };
@@ -17,7 +18,7 @@ export default async function ProjectsPage() {
   if (!organization) return null;
 
   const supabase = await createClient();
-  const [{ data: projects }, { data: clients }, { data: sub }] = await Promise.all([
+  const [{ data: projects, error: projectsError }, { data: clients }, { data: sub }] = await Promise.all([
     supabase
       .from("projects")
       .select("id, name, base_url, client_id, archived_at, created_at")
@@ -52,7 +53,12 @@ export default async function ProjectsPage() {
         </ButtonLink>
       </header>
 
-      {active.length > 0 ? (
+      {projectsError ? (
+        <NoticeBanner tone="error">
+          We couldn&apos;t load your projects just now. Refresh the page to try again — if it keeps
+          happening, the issue is on our side, not yours.
+        </NoticeBanner>
+      ) : active.length > 0 ? (
         <Card className="overflow-hidden">
           <ul className="divide-y">
             {active.map((project) => (
@@ -117,7 +123,7 @@ export default async function ProjectsPage() {
                 <span className="text-sm text-muted-foreground">{project.name}</span>
                 <form action={restoreProjectRecord}>
                   <input type="hidden" name="id" value={project.id} />
-                  <Button type="submit" variant="link" size="sm" className="h-auto p-0">
+                  <Button type="submit" variant="ghost" size="sm">
                     Restore
                   </Button>
                 </form>

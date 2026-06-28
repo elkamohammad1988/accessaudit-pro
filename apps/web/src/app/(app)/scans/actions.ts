@@ -7,9 +7,11 @@ import { z } from "zod";
 import {
   effectivePlan,
   formatLimit,
-  isWithinLimit,
+  isUnlimited,
   limitsFor,
   pagesWithinScanLimit,
+  type PlanLimits,
+  type PlanTier,
 } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { startOfMonthIso } from "@/lib/dates";
@@ -32,34 +34,23 @@ const schema = z.object({
   urlList: z.string().max(MAX_URL_LIST_CHARS, "That URL list is too large.").optional(),
 });
 
-/** Shared quota gate. Returns an error string, or null if a scan may proceed. */
-async function checkScanQuota(
+/** The plan whose limits currently apply to an org (canceled/unpaid → free). */
+async function planLimits(
   supabase: Awaited<ReturnType<typeof requireOrg>>["supabase"],
   organizationId: string,
-  pageCount: number,
-): Promise<string | null> {
-  const [{ data: sub }, { count }] = await Promise.all([
-    supabase
-      .from("subscriptions")
-      .select("plan, status")
-      .eq("organization_id", organizationId)
-      .maybeSingle(),
-    supabase
-      .from("scans")
-      .select("id", { count: "exact", head: true })
-      .eq("organization_id", organizationId)
-      .gte("created_at", startOfMonthIso()),
-  ]);
-  // Effective plan: an unpaid/canceled subscription reverts to free limits.
+): Promise<{ plan: PlanTier; limits: PlanLimits }> {
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("plan, status")
+    .eq("organization_id", organizationId)
+    .maybeSingle();
   const plan = effectivePlan(sub?.plan, sub?.status);
-  const limits = limitsFor(plan);
-  if (!isWithinLimit(plan, "scansPerMonth", count ?? 0)) {
-    return `You've used all ${formatLimit(limits.scansPerMonth)} scans on the ${limits.label} plan this month. Upgrade for more.`;
-  }
-  if (!pagesWithinScanLimit(plan, pageCount)) {
-    return `Your ${limits.label} plan allows ${formatLimit(limits.pagesPerScan)} page(s) per scan. Remove some URLs or upgrade.`;
-  }
-  return null;
+  return { plan, limits: limitsFor(plan) };
+}
+
+/** Monthly limit as the RPC wants it: -1 for unlimited (Infinity isn't a SQL int). */
+function monthlyScanLimit(limits: PlanLimits): number {
+  return isUnlimited(limits.scansPerMonth) ? -1 : limits.scansPerMonth;
 }
 
 export async function createScan(_prev: NewScanState, formData: FormData): Promise<NewScanState> {
@@ -74,7 +65,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
   }
 
-  const { supabase, organization, userId } = await requireOrg();
+  const { supabase, organization } = await requireOrg();
 
   // Per-org burst guard. The monthly plan quota is the real cap; this only stops
   // a script from flooding the queue faster than the worker can drain it.
@@ -118,28 +109,38 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     if (urls.length === 0) return { error: "Add at least one valid URL (one per line)." };
   }
 
-  const quotaError = await checkScanQuota(supabase, organization.id, urls.length);
-  if (quotaError) return { error: quotaError, upgrade: true };
+  const { plan, limits } = await planLimits(supabase, organization.id);
+  // Per-scan page cap is about input size, not a race — enforce it in-app for a
+  // clear message before we touch the DB.
+  if (!pagesWithinScanLimit(plan, urls.length)) {
+    return {
+      error: `Your ${limits.label} plan allows ${formatLimit(limits.pagesPerScan)} page(s) per scan. Remove some URLs or upgrade.`,
+      upgrade: true,
+    };
+  }
 
-  const { data, error } = await supabase
-    .from("scans")
-    .insert({
-      organization_id: organization.id,
-      project_id: project.id,
-      initiated_by: userId,
-      status: "queued",
-      scan_type: parsed.data.scanType,
-      target_urls: urls,
-      wcag_level: parsed.data.wcagLevel,
-    })
-    .select("id")
-    .single();
-
+  // The monthly quota is enforced atomically (count + insert in one transaction)
+  // so concurrent requests can't slip past the cap. NULL id ⇒ over quota.
+  const { data: newScanId, error } = await supabase.rpc("create_scan_if_within_quota", {
+    p_org_id: organization.id,
+    p_project_id: project.id,
+    p_scan_type: parsed.data.scanType,
+    p_target_urls: urls,
+    p_wcag_level: parsed.data.wcagLevel,
+    p_monthly_limit: monthlyScanLimit(limits),
+    p_period_start: startOfMonthIso(),
+  });
   if (error) return { error: genericWriteError("createScan", error) };
+  if (!newScanId) {
+    return {
+      error: `You've used all ${formatLimit(limits.scansPerMonth)} scans on the ${limits.label} plan this month. Upgrade for more.`,
+      upgrade: true,
+    };
+  }
 
   revalidatePath("/dashboard");
   revalidatePath(`/projects/${project.id}`);
-  redirect(`/scans/${data.id}`);
+  redirect(`/scans/${newScanId}`);
 }
 
 /** Re-run a scan with the same config. Limit-blocked re-scans route to billing. */
@@ -147,7 +148,7 @@ export async function rescanScan(formData: FormData): Promise<void> {
   const id = formData.get("scanId");
   if (typeof id !== "string" || !id) return;
 
-  const { supabase, organization, userId } = await requireOrg();
+  const { supabase, organization } = await requireOrg();
 
   // Same per-org burst guard as createScan — re-runs are scan creation too.
   if (
@@ -174,29 +175,26 @@ export async function rescanScan(formData: FormData): Promise<void> {
     : [];
   if (urls.length === 0) redirect(`/scans/${id}?notice=rescan-failed`);
 
-  const quotaError = await checkScanQuota(supabase, organization.id, urls.length);
-  if (quotaError) {
+  const { plan, limits } = await planLimits(supabase, organization.id);
+  if (!pagesWithinScanLimit(plan, urls.length)) {
     redirect("/settings/billing?status=scan-limit");
   }
 
-  const { data, error } = await supabase
-    .from("scans")
-    .insert({
-      organization_id: organization.id,
-      project_id: prev.project_id,
-      initiated_by: userId,
-      status: "queued",
-      scan_type: prev.scan_type,
-      target_urls: urls,
-      wcag_level: prev.wcag_level,
-    })
-    .select("id")
-    .single();
-  if (error || !data) redirect(`/scans/${id}?notice=rescan-failed`);
+  const { data: newScanId, error } = await supabase.rpc("create_scan_if_within_quota", {
+    p_org_id: organization.id,
+    p_project_id: prev.project_id,
+    p_scan_type: prev.scan_type,
+    p_target_urls: urls,
+    p_wcag_level: prev.wcag_level,
+    p_monthly_limit: monthlyScanLimit(limits),
+    p_period_start: startOfMonthIso(),
+  });
+  if (error) redirect(`/scans/${id}?notice=rescan-failed`);
+  if (!newScanId) redirect("/settings/billing?status=scan-limit");
 
   revalidatePath("/dashboard");
   revalidatePath(`/projects/${prev.project_id}`);
-  redirect(`/scans/${data.id}`);
+  redirect(`/scans/${newScanId}`);
 }
 
 /**

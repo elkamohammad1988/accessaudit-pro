@@ -26,6 +26,17 @@ COPY packages/database packages/database
 COPY apps/worker       apps/worker
 
 # Ensure the Chromium build matching the resolved playwright version is present.
+# Installs into /ms-playwright (the base image's PLAYWRIGHT_BROWSERS_PATH), which
+# the non-root pwuser can read.
 RUN pnpm --filter @accessaudit/worker exec playwright install chromium
+
+# Fail the image build on any type error rather than discovering it at runtime.
+RUN pnpm --filter @accessaudit/worker typecheck
+
+# Drop privileges. The worker renders arbitrary customer-supplied URLs in Chromium
+# (with --no-sandbox), so a renderer escape must NOT land as root. pwuser ships in
+# the Playwright base image.
+RUN chown -R pwuser:pwuser /app
+USER pwuser
 
 CMD ["pnpm", "--filter", "@accessaudit/worker", "start"]

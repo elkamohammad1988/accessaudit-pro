@@ -20,7 +20,7 @@ export default function SignupPage() {
         </p>
       </div>
 
-      <AuthForm action={signUp} submitLabel="Create account" />
+      <AuthForm action={signUp} submitLabel="Create account" passwordAutoComplete="new-password" />
 
       <p className="text-center text-sm">
         Already have an account?{" "}

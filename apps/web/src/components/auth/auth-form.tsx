@@ -25,11 +25,14 @@ export function AuthForm({
   action,
   submitLabel,
   includePassword = true,
+  passwordAutoComplete = "current-password",
   next,
 }: {
   action: AuthAction;
   submitLabel: string;
   includePassword?: boolean;
+  /** "new-password" on signup so managers generate (not autofill) a password. */
+  passwordAutoComplete?: "current-password" | "new-password";
   next?: string;
 }) {
   const [state, formAction] = useActionState(action, initialState);
@@ -57,11 +60,14 @@ export function AuthForm({
             id="password"
             name="password"
             type="password"
-            autoComplete="current-password"
+            autoComplete={passwordAutoComplete}
             minLength={8}
             required
-            placeholder="At least 8 characters"
+            aria-describedby="password-hint"
           />
+          <p id="password-hint" className="text-xs text-muted-foreground">
+            At least 8 characters.
+          </p>
         </div>
       ) : null}
 

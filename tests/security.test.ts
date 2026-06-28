@@ -32,6 +32,15 @@ describe("isPrivateIp (worker SSRF guard)", () => {
     expect(isPrivateIp("::ffff:127.0.0.1")).toBe(true);
   });
 
+  it("flags IPv6 transition/embedding bypasses (NAT64, 6to4, hex-mapped, site-local, multicast)", () => {
+    expect(isPrivateIp("::ffff:7f00:1")).toBe(true); // hex IPv4-mapped 127.0.0.1
+    expect(isPrivateIp("64:ff9b::a00:1")).toBe(true); // NAT64-wrapped 10.0.0.1
+    expect(isPrivateIp("64:ff9b::10.0.0.1")).toBe(true); // NAT64 dotted form
+    expect(isPrivateIp("2002:7f00:1::")).toBe(true); // 6to4 prefix
+    expect(isPrivateIp("fec0::1")).toBe(true); // deprecated site-local
+    expect(isPrivateIp("ff02::1")).toBe(true); // multicast
+  });
+
   it("allows public addresses", () => {
     expect(isPrivateIp("8.8.8.8")).toBe(false);
     expect(isPrivateIp("1.1.1.1")).toBe(false);

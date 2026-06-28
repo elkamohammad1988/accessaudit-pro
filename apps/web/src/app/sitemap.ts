@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { publicEnv } from "@/lib/env";
+import { appBaseUrl } from "@/lib/env";
 
 /** Public, indexable routes. App routes are auth-gated and intentionally omitted. */
 const PATHS = [
@@ -15,9 +15,13 @@ const PATHS = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = publicEnv.appUrl.replace(/\/$/, "");
+  const base = appBaseUrl();
+  // Build-time stamp so `lastModified` is concrete (Google uses it; it ignores
+  // changeFrequency/priority). Recomputed on each deploy.
+  const lastModified = new Date();
   return PATHS.map((path) => ({
     url: `${base}${path}`,
+    lastModified,
     changeFrequency: path.startsWith("/guides") ? "monthly" : "weekly",
     priority: path === "/" ? 1 : path.startsWith("/guides") ? 0.7 : 0.6,
   }));

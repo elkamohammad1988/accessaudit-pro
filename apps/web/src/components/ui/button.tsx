@@ -8,13 +8,13 @@ type Size = "sm" | "md" | "lg" | "icon";
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-brand text-brand-fg shadow-sm ring-1 ring-inset ring-brand-fg/15 hover:bg-brand/90 hover:shadow-brand",
+    "bg-brand text-brand-fg shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.2),var(--shadow-sm)] ring-1 ring-inset ring-brand-fg/15 hover:bg-brand/90 hover:shadow-brand",
   secondary:
     "border border-input bg-background shadow-xs hover:bg-muted hover:border-foreground/20 hover:shadow-sm",
   outline: "border border-input bg-transparent hover:bg-muted hover:border-foreground/20",
   ghost: "bg-transparent hover:bg-muted",
   destructive:
-    "bg-danger text-danger-foreground shadow-sm ring-1 ring-inset ring-white/15 hover:bg-danger/90 hover:shadow-md",
+    "bg-danger text-danger-foreground shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.18),var(--shadow-sm)] ring-1 ring-inset ring-white/15 hover:bg-danger/90 hover:shadow-md",
   link: "bg-transparent text-brand underline-offset-4 hover:underline",
 };
 
