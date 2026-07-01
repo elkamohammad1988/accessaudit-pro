@@ -44,3 +44,6 @@ Thumbs.db
 coverage/
 playwright-report/
 test-results/
+
+# Portfolio capture output (screenshots / covers / video are large binaries — kept local)
+portfolio/
