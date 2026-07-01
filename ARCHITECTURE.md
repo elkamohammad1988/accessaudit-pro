@@ -88,7 +88,7 @@ via Supabase Realtime, with polling as a fallback.
 
 ## Quality gates
 
-`pnpm typecheck`, `pnpm lint`, `pnpm test` (67 unit tests), and `pnpm build` all
+`pnpm typecheck`, `pnpm lint`, `pnpm test` (79 unit tests), and `pnpm build` all
 run in CI on every push/PR. The scoring, plan/billing, SSRF, CSV, and report
 logic are unit-tested; see [`SECURITY.md`](SECURITY.md) for the security posture
 and the test gaps that require a live database.

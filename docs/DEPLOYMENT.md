@@ -105,11 +105,13 @@ add `withSentryConfig` + a `SENTRY_AUTH_TOKEN` to upload source maps.
 
 ## Still TODO before a paid launch (Phase 5 tail)
 
-- **Fill the legal placeholders.** `/terms` and `/privacy` ship with real baseline
-  copy but bracketed placeholders — `[Company Legal Name]`, `[Jurisdiction]`, and
-  the `legal@` / `privacy@` contact emails (in `app/(legal)/terms/page.tsx` and
-  `privacy/page.tsx`). Fill these in, and have counsel confirm the
-  automated-vs-manual disclaimer wording.
+- **Confirm the legal copy with counsel.** `/terms` and `/privacy` are filled in
+  (no bracketed placeholders remain): the governing law is set to **England &
+  Wales** and the contacts are `legal@` / `privacy@accessaudit.pro` (in the
+  `i18n/messages/*/legal.json` catalogs). Before charging money, have counsel
+  confirm the governing-law choice is correct for your entity and sign off on the
+  automated-vs-manual accessibility disclaimer wording. Ensure the contact
+  mailboxes are provisioned and monitored.
 - Sentry is wired (web + worker) — just set the DSN (step 5). Add source-map
   upload (`withSentryConfig` + `SENTRY_AUTH_TOKEN`) if you want readable traces.
 - Playwright e2e tests for the core flow; load-test the scan queue.

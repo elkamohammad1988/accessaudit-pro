@@ -27,13 +27,13 @@ export async function SiteHeader() {
           </Link>
           <Link
             href="/pricing"
-            className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="hidden rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-block"
           >
             {t("marketing.pricing")}
           </Link>
           <Link
             href="/login"
-            className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="rounded-md px-2 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:px-3"
           >
             {t("marketing.signIn")}
           </Link>

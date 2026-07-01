@@ -208,6 +208,21 @@ export default async function LandingPage() {
 
       {/* FAQ */}
       <section aria-labelledby="faq-heading" className="border-t py-12 sm:py-16">
+        {/* FAQ structured data → eligible for FAQ rich results in search. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqs.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            }),
+          }}
+        />
         <div className="text-center">
           <h2 id="faq-heading" className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t("faq.heading")}

@@ -53,7 +53,8 @@ the README once captured.
 - **Accessible itself** — the product dogfoods WCAG 2.2 AA: keyboard paths,
   focus rings, landmarks, semantic HTML, contrast tokens, reduced-motion support.
 - **Premium, consistent UI** — a token-driven design system, polished light/dark
-  mode, skeletons, empty/error/success states, and subtle Framer Motion.
+  mode, skeletons, empty/error/success states, and subtle CSS-driven
+  micro-interactions (no animation library).
 
 ## 4. One-line pitch
 

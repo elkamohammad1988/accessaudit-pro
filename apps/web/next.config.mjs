@@ -62,6 +62,9 @@ const nextConfig = {
   // Workspace packages ship raw TS; let Next transpile them.
   transpilePackages: ["@accessaudit/shared", "@accessaudit/database"],
   typedRoutes: true,
+  // Barrel-optimize the icon set so only used glyphs compile (faster dev builds,
+  // guards against an accidental full-set pull); named imports already tree-shake.
+  experimental: { optimizePackageImports: ["lucide-react"] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

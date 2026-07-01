@@ -17,7 +17,7 @@ client-ready, white-labeled deliverable.
 ![typecheck](https://img.shields.io/badge/typecheck-passing-2EAD33)
 ![lint](https://img.shields.io/badge/lint-passing-2EAD33)
 ![build](https://img.shields.io/badge/build-passing-2EAD33)
-![tests](https://img.shields.io/badge/tests-67%20passing-2EAD33)
+![tests](https://img.shields.io/badge/tests-79%20passing-2EAD33)
 
 </div>
 
