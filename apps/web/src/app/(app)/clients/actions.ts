@@ -3,31 +3,36 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaudit/shared";
+import { effectivePlan, isWithinLimit, limitsFor, rpcQuotaLimit } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { genericWriteError } from "@/lib/errors";
+import { getTranslations } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
+import type { Translator } from "@/i18n/translate";
 
 export type ClientFormState = { error: string | null; upgrade?: boolean };
 
-const clientSchema = z.object({
-  name: z.string().trim().min(2, "Client name must be at least 2 characters.").max(80),
-  contactEmail: z
-    .string()
-    .trim()
-    .max(160)
-    .email("Enter a valid contact email.")
-    .optional()
-    .or(z.literal("")),
-  notes: z.string().trim().max(500, "Notes must be 500 characters or fewer.").optional(),
-});
+function clientSchema(t: Translator) {
+  return z.object({
+    name: z.string().trim().min(2, t("messages.nameMin")).max(80),
+    contactEmail: z
+      .string()
+      .trim()
+      .max(160)
+      .email(t("messages.contactEmail"))
+      .optional()
+      .or(z.literal("")),
+    notes: z.string().trim().max(500, t("messages.notesMax")).optional(),
+  });
+}
 
 const emptyToNull = (value?: string | null): string | null => {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
 };
 
-function parse(formData: FormData) {
-  return clientSchema.safeParse({
+function parse(formData: FormData, t: Translator) {
+  return clientSchema(t).safeParse({
     name: formData.get("name"),
     contactEmail: (formData.get("contactEmail") as string | null) ?? "",
     notes: (formData.get("notes") as string | null) ?? "",
@@ -38,9 +43,11 @@ export async function createClientRecord(
   _prev: ClientFormState,
   formData: FormData,
 ): Promise<ClientFormState> {
-  const parsed = parse(formData);
+  const t = await getTranslations("clients");
+  const tp = await getTranslations("plans");
+  const parsed = parse(formData, t);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? t("messages.invalidInput") };
   }
 
   const { supabase, organization } = await requireOrg();
@@ -59,43 +66,43 @@ export async function createClientRecord(
       .is("archived_at", null),
   ]);
   const plan = effectivePlan(sub?.plan, sub?.status);
-  if (!isWithinLimit(plan, "clients", count ?? 0)) {
-    const limits = limitsFor(plan);
-    return {
-      error: `Your ${limits.label} plan allows ${formatLimit(limits.clients)} client(s). Archive one or upgrade to add more.`,
-      upgrade: true,
-    };
-  }
+  const limits = limitsFor(plan);
+  const quotaError = (): ClientFormState => ({
+    error: t("messages.quota", { plan: limits.label, limit: displayLimit(limits.clients, tp) }),
+    upgrade: true,
+  });
+  // Friendly pre-check for the common case; the RPC below is the atomic guard.
+  if (!isWithinLimit(plan, "clients", count ?? 0)) return quotaError();
 
-  const { data, error } = await supabase
-    .from("clients")
-    .insert({
-      organization_id: organization.id,
-      name: parsed.data.name,
-      contact_email: emptyToNull(parsed.data.contactEmail),
-      notes: emptyToNull(parsed.data.notes),
-    })
-    .select("id")
-    .single();
-
-  if (error) return { error: genericWriteError("createClient", error) };
+  // Atomic create: counts active clients and inserts under a row lock, so two
+  // concurrent requests can't both slip past the cap. NULL id ⇒ over quota.
+  const { data: newId, error } = await supabase.rpc("create_client_if_within_quota", {
+    p_org_id: organization.id,
+    p_name: parsed.data.name,
+    p_contact_email: emptyToNull(parsed.data.contactEmail),
+    p_notes: emptyToNull(parsed.data.notes),
+    p_limit: rpcQuotaLimit(limits.clients),
+  });
+  if (error) return { error: genericWriteError("createClient", error, t("messages.saveFailed")) };
+  if (!newId) return quotaError();
 
   revalidatePath("/clients");
   revalidatePath("/dashboard");
-  redirect(`/clients/${data.id}`);
+  redirect(`/clients/${newId}`);
 }
 
 export async function updateClientRecord(
   _prev: ClientFormState,
   formData: FormData,
 ): Promise<ClientFormState> {
+  const t = await getTranslations("clients");
   const id = formData.get("id");
   if (typeof id !== "string" || !id) {
-    return { error: "Missing client id." };
+    return { error: t("messages.missingId") };
   }
-  const parsed = parse(formData);
+  const parsed = parse(formData, t);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? t("messages.invalidInput") };
   }
 
   const { supabase, organization } = await requireOrg();
@@ -110,7 +117,7 @@ export async function updateClientRecord(
     .eq("id", id)
     .eq("organization_id", organization.id);
 
-  if (error) return { error: genericWriteError("updateClient", error) };
+  if (error) return { error: genericWriteError("updateClient", error, t("messages.saveFailed")) };
 
   revalidatePath("/clients");
   revalidatePath(`/clients/${id}`);

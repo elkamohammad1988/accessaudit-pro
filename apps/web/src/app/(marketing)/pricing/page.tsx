@@ -4,19 +4,22 @@ import { ArrowRight } from "lucide-react";
 import {
   PLAN_LIMITS,
   PLAN_TIERS,
-  formatLimit,
   yearlySavings,
   type PlanLimits,
   type PlanTier,
 } from "@accessaudit/shared";
 import { ButtonLink, buttonVariants } from "@/components/ui/button";
+import { getTranslations } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
 
-export const metadata: Metadata = {
-  title: "Pricing",
-  description:
-    "Agency-friendly pricing for WCAG 2.2 accessibility audits — built for European Accessibility Act (EAA) compliance. Start free, no card. Monthly or annual (2 months free).",
-  alternates: { canonical: "/pricing" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marketing.pricing");
+  return {
+    title: t("meta.title"),
+    description: t("meta.description"),
+    alternates: { canonical: "/pricing" },
+  };
+}
 
 const POPULAR: PlanTier = "agency";
 
@@ -26,93 +29,70 @@ type Row = {
   cell: (p: PlanLimits) => { text: string } | { bool: boolean };
 };
 
-const ROWS: Row[] = [
-  { label: "Clients", cell: (p) => ({ text: formatLimit(p.clients) }) },
-  { label: "Projects", cell: (p) => ({ text: formatLimit(p.projects) }) },
-  { label: "Scans / month", cell: (p) => ({ text: formatLimit(p.scansPerMonth) }) },
-  { label: "Pages / scan", cell: (p) => ({ text: formatLimit(p.pagesPerScan) }) },
-  { label: "Public shareable links", cell: () => ({ bool: true }) },
-  { label: "White-label PDF reports", cell: (p) => ({ bool: p.whiteLabelPdf }) },
-  { label: "CSV / JSON export", cell: (p) => ({ bool: p.dataExport }) },
-  { label: 'Remove "Powered by" branding', cell: (p) => ({ bool: p.removePoweredBy }) },
-  { label: "Priority scan queue", cell: (p) => ({ bool: p.priorityQueue }) },
-];
-
-const BILLING_FAQS = [
-  {
-    q: "Can I start without a credit card?",
-    a: "Yes. The Free plan needs no card — sign up, create your workspace, and run your first scan in minutes.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. Manage or cancel your subscription from the Stripe billing portal. Cancellation takes effect at the end of the current period; you keep access until then.",
-  },
-  {
-    q: "What happens when I upgrade or downgrade?",
-    a: "Upgrades take effect immediately and your new limits apply right away. Downgrades apply at the next billing period. Billing is prorated by Stripe.",
-  },
-  {
-    q: "Do you offer refunds?",
-    a: "Except where required by law, payments are non-refundable and we don't charge for unused scans — so the Free plan lets you evaluate the product fully before paying.",
-  },
-];
-
-function Check() {
+function Check({ label }: { label: string }) {
   return (
     <span className="text-brand">
       <span aria-hidden>✓</span>
-      <span className="sr-only">Included</span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 }
 
-function Dash() {
+function Dash({ label }: { label: string }) {
   return (
     <span className="text-muted-foreground">
       <span aria-hidden>—</span>
-      <span className="sr-only">Not included</span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const t = await getTranslations("marketing.pricing");
+  const tp = await getTranslations("plans");
+  const tc = await getTranslations("common");
+
+  const rows: Row[] = [
+    { label: tp("rows.clients"), cell: (p) => ({ text: displayLimit(p.clients, tp) }) },
+    { label: tp("rows.projects"), cell: (p) => ({ text: displayLimit(p.projects, tp) }) },
+    { label: tp("rows.scansPerMonth"), cell: (p) => ({ text: displayLimit(p.scansPerMonth, tp) }) },
+    { label: tp("rows.pagesPerScan"), cell: (p) => ({ text: displayLimit(p.pagesPerScan, tp) }) },
+    { label: tp("rows.publicLinks"), cell: () => ({ bool: true }) },
+    { label: tp("rows.whiteLabelPdf"), cell: (p) => ({ bool: p.whiteLabelPdf }) },
+    { label: tp("rows.dataExport"), cell: (p) => ({ bool: p.dataExport }) },
+    { label: tp("rows.removePoweredBy"), cell: (p) => ({ bool: p.removePoweredBy }) },
+    { label: tp("rows.priorityQueue"), cell: (p) => ({ bool: p.priorityQueue }) },
+  ];
+
+  const faqs = t.raw("faq") as { q: string; a: string }[];
+
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
+    <div className="mx-auto max-w-5xl px-6 py-12">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Pricing that scales with your client list
-        </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          Start free — no credit card. Move up when you take on more clients or need white-label
-          deliverables. Monthly or annual (2 months free). Cancel anytime.
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("heading")}</h1>
+        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">{t("subheading")}</p>
       </div>
 
       {/* EAA urgency — the active buying trigger for agencies serving EU clients. */}
-      <div className="mx-auto mt-8 max-w-2xl rounded-xl border border-brand/30 bg-brand/5 px-5 py-4 text-center text-sm">
-        <p className="font-medium">
-          The European Accessibility Act is in force.
-        </p>
+      <div className="mx-auto mt-6 max-w-2xl rounded-xl border border-brand/30 bg-brand/5 px-5 py-4 text-center text-sm">
+        <p className="font-medium">{t("eaaTitle")}</p>
         <p className="mt-1 text-muted-foreground">
-          Businesses selling to EU consumers must meet WCAG-based accessibility requirements or risk
-          penalties. Audit every client site and ship proof in minutes —{" "}
+          {t("eaaBody")}{" "}
           <Link href="/guides/european-accessibility-act" className="font-medium text-brand underline-offset-4 hover:underline">
-            read the EAA guide
+            {t("eaaLink")}
           </Link>
           .
         </p>
       </div>
 
       {/* Comparison table */}
-      <div className="mt-12 overflow-x-auto">
+      <div className="mt-10 overflow-x-auto">
         <table className="w-full min-w-[640px] border-collapse text-sm">
-          <caption className="sr-only">
-            Feature comparison across the Free, Starter, Agency, and Scale plans
-          </caption>
+          <caption className="sr-only">{t("tableCaption")}</caption>
           <thead>
             <tr>
-              <th scope="col" className="w-[28%] px-3 py-3 text-left align-bottom">
-                <span className="sr-only">Feature</span>
+              <th scope="col" className="w-[28%] px-3 py-3 text-start align-bottom">
+                <span className="sr-only">{t("feature")}</span>
               </th>
               {PLAN_TIERS.map((tier) => {
                 const p = PLAN_LIMITS[tier];
@@ -129,16 +109,18 @@ export default function PricingPage() {
                     <span className="mt-1 block text-lg font-bold">
                       ${p.priceMonthly}
                       <span className="text-xs font-normal text-muted-foreground">
-                        /mo
+                        {tc("units.perMonth")}
                       </span>
                     </span>
                     {p.priceMonthly > 0 ? (
                       <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                        or ${p.priceYearly}/yr · save ${yearlySavings(tier)}
+                        {t("perYear", { yearly: p.priceYearly, savings: yearlySavings(tier) })}
                       </span>
                     ) : null}
                     {popular && (
-                      <span className="mt-1 block text-xs font-medium text-brand">Most popular</span>
+                      <span className="mt-1 block text-xs font-medium text-brand">
+                        {t("mostPopular")}
+                      </span>
                     )}
                     <Link
                       href="/signup"
@@ -148,7 +130,7 @@ export default function PricingPage() {
                         className: "mt-2",
                       })}
                     >
-                      {p.priceMonthly === 0 ? "Get started" : "Choose"}
+                      {p.priceMonthly === 0 ? t("getStarted") : t("choose")}
                     </Link>
                   </th>
                 );
@@ -156,11 +138,11 @@ export default function PricingPage() {
             </tr>
           </thead>
           <tbody>
-            {ROWS.map((row, i) => {
-              const last = i === ROWS.length - 1;
+            {rows.map((row, i) => {
+              const last = i === rows.length - 1;
               return (
                 <tr key={row.label} className="border-t transition-colors hover:bg-muted/40">
-                  <th scope="row" className="px-3 py-3 text-left font-normal">
+                  <th scope="row" className="px-3 py-3 text-start font-normal">
                     {row.label}
                   </th>
                   {PLAN_TIERS.map((tier) => {
@@ -173,7 +155,13 @@ export default function PricingPage() {
                           popular && last ? "rounded-b-lg" : ""
                         }`}
                       >
-                        {"text" in result ? result.text : result.bool ? <Check /> : <Dash />}
+                        {"text" in result ? (
+                          result.text
+                        ) : result.bool ? (
+                          <Check label={t("included")} />
+                        ) : (
+                          <Dash label={t("notIncluded")} />
+                        )}
                       </td>
                     );
                   })}
@@ -184,10 +172,8 @@ export default function PricingPage() {
         </table>
       </div>
 
-      <p className="mx-auto mt-6 max-w-2xl text-center text-xs text-muted-foreground">
-        Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review is
-        still required — protecting you and your clients. Workspaces are single-user in this release;
-        team seats are on the roadmap.
+      <p className="mx-auto mt-5 max-w-2xl text-center text-xs text-muted-foreground">
+        {t("disclaimer")}
       </p>
 
       {/* FAQ structured data → eligible for FAQ rich results in search. */}
@@ -197,7 +183,7 @@ export default function PricingPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: BILLING_FAQS.map((f) => ({
+            mainEntity: faqs.map((f) => ({
               "@type": "Question",
               name: f.q,
               acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -207,18 +193,18 @@ export default function PricingPage() {
       />
 
       {/* Billing FAQ */}
-      <section aria-labelledby="billing-faq" className="mt-16 border-t pt-16">
+      <section aria-labelledby="billing-faq" className="mt-12 border-t pt-16">
         <h2 id="billing-faq" className="text-center text-2xl font-bold">
-          Billing questions
+          {t("faqHeading")}
         </h2>
-        <div className="mx-auto mt-8 max-w-2xl space-y-3">
-          {BILLING_FAQS.map((item) => (
+        <div className="mx-auto mt-6 max-w-2xl space-y-3">
+          {faqs.map((item) => (
             <details
               key={item.q}
               className="group rounded-lg border bg-card p-5 transition-colors hover:border-foreground/15"
             >
               <summary className="cursor-pointer list-none font-medium [&::-webkit-details-marker]:hidden">
-                <span className="flex items-center justify-between gap-4">
+                <span className="flex items-center justify-between gap-3">
                   {item.q}
                   <span
                     aria-hidden
@@ -235,33 +221,17 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section className="mt-16 border-t pt-16">
-        <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-14 text-center shadow-lg">
-          <div
-            aria-hidden="true"
-            className="bg-dot-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(70%_60%_at_50%_50%,black,transparent)]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/20 blur-3xl"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-brand-2/15 blur-3xl"
-          />
-          <div className="relative">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              Try it free — no card required
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-              Run a real WCAG audit and see the report your clients would get, before you pay a cent.
-            </p>
-            <div className="mt-6 flex justify-center">
-              <ButtonLink href="/signup" size="lg">
-                Start free
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </ButtonLink>
-            </div>
+      <section className="mt-12 border-t pt-16">
+        <div className="rounded-2xl border bg-muted/30 px-6 py-10 text-center">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("ctaHeading")}</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+            {t("ctaBody")}
+          </p>
+          <div className="mt-5 flex justify-center">
+            <ButtonLink href="/signup" size="lg">
+              {t("ctaButton")}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </ButtonLink>
           </div>
         </div>
       </section>

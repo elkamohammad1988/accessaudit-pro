@@ -1,0 +1,30 @@
+{
+  "unlimited": "Illimité",
+  "highlights": {
+    "scansUnlimited": "Analyses illimitées / mois",
+    "scansPerMonth": "{count} analyses / mois",
+    "singlePageScans": "Analyses page par page",
+    "pagesPerScan": "Jusqu'à {count} pages / analyse",
+    "clientsOne": "{count} client",
+    "clientsOther": "{count} clients",
+    "clientsUnlimited": "Clients illimités",
+    "projects": "{count} projets",
+    "projectsUnlimited": "Projets illimités",
+    "whiteLabelPdf": "Rapports PDF en marque blanche",
+    "brandedLinks": "Liens de partage à la marque AccessAudit",
+    "dataExport": "Export CSV / JSON",
+    "removePoweredBy": "Retirer la mention « Propulsé par »",
+    "priorityQueue": "File d'analyse prioritaire"
+  },
+  "rows": {
+    "clients": "Clients",
+    "projects": "Projets",
+    "scansPerMonth": "Analyses / mois",
+    "pagesPerScan": "Pages / analyse",
+    "publicLinks": "Liens publics partageables",
+    "whiteLabelPdf": "Rapports PDF en marque blanche",
+    "dataExport": "Export CSV / JSON",
+    "removePoweredBy": "Retirer la mention « Propulsé par »",
+    "priorityQueue": "File d'analyse prioritaire"
+  }
+}

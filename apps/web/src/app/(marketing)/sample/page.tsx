@@ -3,37 +3,41 @@ import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { ReportView } from "@/components/scans/report-view";
 import { SAMPLE_BRAND, SAMPLE_REPORT } from "@/lib/sample-report";
+import { getTranslations } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Sample accessibility report",
-  description:
-    "See exactly what an AccessAudit Pro report looks like — a scored, WCAG 2.2 audit with prioritized violations and fix guidance, ready to hand to a client.",
-  alternates: { canonical: "/sample" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marketing.sample");
+  return {
+    title: t("meta.title"),
+    description: t("meta.description"),
+    alternates: { canonical: "/sample" },
+  };
+}
 
-export default function SampleReportPage() {
+export default async function SampleReportPage() {
+  const t = await getTranslations("marketing.sample");
+
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="mx-auto max-w-3xl px-6 py-8">
       {/* Conversion banner */}
       <div className="flex flex-col gap-3 rounded-lg border border-brand/30 bg-brand/5 p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm">
-          <span className="font-semibold">This is a sample report.</span> It&rsquo;s exactly what
-          your clients receive — run a real one on any site, free.
+          <span className="font-semibold">{t("bannerStrong")}</span> {t("bannerRest")}
         </p>
         <ButtonLink href="/signup" size="sm" className="h-9 shrink-0">
-          Audit my site
+          {t("bannerCta")}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </ButtonLink>
       </div>
 
       {/* Branded report (mirrors the public /r/[token] deliverable) */}
-      <div className="mt-8">
+      <div className="mt-6">
         <div
           className="h-1.5 w-full rounded-full"
           style={{ backgroundColor: SAMPLE_BRAND.brandColor }}
         />
 
-        <header className="mt-6 flex items-center gap-4">
+        <header className="mt-5 flex items-center gap-3">
           <div
             aria-hidden
             className="flex h-10 w-10 items-center justify-center rounded-md text-sm font-bold text-white"
@@ -49,36 +53,28 @@ export default function SampleReportPage() {
           </div>
         </header>
 
-        <h1 className="mt-8 text-2xl font-semibold">Accessibility audit</h1>
+        <h1 className="mt-6 text-2xl font-semibold">{t("reportTitle")}</h1>
 
-        <div className="mt-6">
+        <div className="mt-5">
           <ReportView {...SAMPLE_REPORT} />
         </div>
 
-        <footer className="mt-10 border-t pt-4 text-center text-xs text-muted-foreground">
-          Powered by AccessAudit Pro
+        <footer className="mt-8 border-t pt-4 text-center text-xs text-muted-foreground">
+          {t("poweredBy")}
         </footer>
       </div>
 
       {/* Closing CTA */}
-      <div className="relative mt-10 overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/10 via-card to-card px-6 py-12 text-center shadow-sm">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand/15 blur-3xl"
-        />
-        <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
-          Generate a report like this for your client
-        </h2>
-        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-          Free to start — no card. Add your logo and brand color, then export a PDF or share a link.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-8 rounded-2xl border bg-muted/30 px-6 py-10 text-center">
+        <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{t("ctaHeading")}</h2>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{t("ctaBody")}</p>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
           <ButtonLink href="/signup" size="lg">
-            Start free
+            {t("ctaPrimary")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </ButtonLink>
           <ButtonLink href="/pricing" size="lg" variant="secondary">
-            See pricing
+            {t("ctaSecondary")}
           </ButtonLink>
         </div>
       </div>

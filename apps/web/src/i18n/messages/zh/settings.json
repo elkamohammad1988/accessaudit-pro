@@ -1,0 +1,49 @@
+{
+  "metaTitle": "设置",
+  "title": "设置",
+  "subtitle": "管理您的账户、工作区品牌、账单和团队。",
+  "profile": {
+    "heading": "个人资料",
+    "description": "您的个人账户详情。",
+    "emailLabel": "邮箱",
+    "emailHint": "登录邮箱——请从您的身份验证提供商处更改。",
+    "fullNameLabel": "全名",
+    "fullNamePlaceholder": "张三",
+    "avatarUrlLabel": "头像 URL",
+    "avatarUrlPlaceholder": "https://…/avatar.png",
+    "submit": "保存个人资料",
+    "saved": "个人资料已保存。"
+  },
+  "workspace": {
+    "heading": "工作区与品牌",
+    "description": "名称、URL 以及应用于报告的品牌设置。",
+    "nameLabel": "代理机构名称",
+    "slugLabel": "工作区 URL slug",
+    "slugHint": "小写字母、数字和连字符。用于链接和公开报告。",
+    "brandColorLabel": "品牌颜色",
+    "brandColorHint": "应用于您的白标报告。",
+    "logoUrlLabel": "徽标 URL",
+    "logoUrlPlaceholder": "https://…/logo.png",
+    "logoUrlHint": "显示在带品牌标识的报告上。粘贴一个已托管的图片 URL。",
+    "submit": "保存工作区",
+    "saved": "工作区已保存。"
+  },
+  "billing": {
+    "heading": "账单",
+    "description": "管理您的套餐、用量和付款方式。",
+    "goToBilling": "前往账单"
+  },
+  "team": {
+    "heading": "团队",
+    "description": "本版本的 AccessAudit Pro 为单一所有者模式。多席位团队和角色将在后续更新中推出。"
+  },
+  "messages": {
+    "invalidInput": "输入无效。",
+    "nameMin": "代理机构名称至少需要 2 个字符。",
+    "slugMin": "Slug 至少需要 2 个字符。",
+    "slugFormat": "Slug 只能包含小写字母、数字和连字符。",
+    "brandColorHex": "品牌颜色必须是十六进制值，如 #A24425。",
+    "slugTaken": "该工作区 URL 已被占用——请选择其他 slug。",
+    "saveFailed": "保存更改时出现问题，请重试。"
+  }
+}

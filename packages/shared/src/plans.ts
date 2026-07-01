@@ -28,7 +28,6 @@ export interface PlanLimits {
   readonly projects: number;
   readonly scansPerMonth: number;
   readonly pagesPerScan: number;
-  readonly teamSeats: number;
   /** Feature flags. */
   readonly whiteLabelPdf: boolean;
   readonly removePoweredBy: boolean;
@@ -45,7 +44,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     projects: 2,
     scansPerMonth: 10,
     pagesPerScan: 1,
-    teamSeats: 1,
     whiteLabelPdf: false,
     removePoweredBy: false,
     dataExport: false,
@@ -59,7 +57,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     projects: 25,
     scansPerMonth: 150,
     pagesPerScan: 25,
-    teamSeats: 3,
     whiteLabelPdf: true,
     removePoweredBy: false,
     dataExport: true,
@@ -73,7 +70,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     projects: UNLIMITED,
     scansPerMonth: 750,
     pagesPerScan: 100,
-    teamSeats: 10,
     whiteLabelPdf: true,
     removePoweredBy: true,
     dataExport: true,
@@ -87,7 +83,6 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     projects: UNLIMITED,
     scansPerMonth: 3000,
     pagesPerScan: 500,
-    teamSeats: 25,
     whiteLabelPdf: true,
     removePoweredBy: true,
     dataExport: true,
@@ -137,7 +132,7 @@ export function effectivePlan(
 }
 
 /** Numeric-limit keys you can gate a "create" action on. */
-export type QuotaKey = "clients" | "projects" | "scansPerMonth" | "pagesPerScan" | "teamSeats";
+export type QuotaKey = "clients" | "projects" | "scansPerMonth" | "pagesPerScan";
 
 /**
  * Would creating one more of `key` stay within the plan?
@@ -158,6 +153,15 @@ export function pagesWithinScanLimit(plan: PlanTier, pageCount: number): boolean
 
 export function isUnlimited(value: number): boolean {
   return !Number.isFinite(value);
+}
+
+/**
+ * A plan limit as the atomic-quota Postgres RPCs expect it: `-1` for unlimited,
+ * since SQL integers have no `Infinity`. The functions treat any negative value
+ * as "no cap" (see create_*_if_within_quota).
+ */
+export function rpcQuotaLimit(value: number): number {
+  return isUnlimited(value) ? -1 : value;
 }
 
 /** Human label for a limit value, e.g. for usage meters. */

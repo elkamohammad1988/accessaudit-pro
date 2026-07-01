@@ -1,0 +1,30 @@
+{
+  "unlimited": "无限",
+  "highlights": {
+    "scansUnlimited": "每月无限次扫描",
+    "scansPerMonth": "每月 {count} 次扫描",
+    "singlePageScans": "单页扫描",
+    "pagesPerScan": "每次扫描最多 {count} 个页面",
+    "clientsOne": "{count} 个客户",
+    "clientsOther": "{count} 个客户",
+    "clientsUnlimited": "无限客户",
+    "projects": "{count} 个项目",
+    "projectsUnlimited": "无限项目",
+    "whiteLabelPdf": "白标 PDF 报告",
+    "brandedLinks": "AccessAudit 品牌分享链接",
+    "dataExport": "CSV / JSON 导出",
+    "removePoweredBy": "移除「Powered by」品牌标识",
+    "priorityQueue": "优先扫描队列"
+  },
+  "rows": {
+    "clients": "客户",
+    "projects": "项目",
+    "scansPerMonth": "每月扫描次数",
+    "pagesPerScan": "每次扫描页面数",
+    "publicLinks": "公开可分享链接",
+    "whiteLabelPdf": "白标 PDF 报告",
+    "dataExport": "CSV / JSON 导出",
+    "removePoweredBy": "移除「Powered by」品牌标识",
+    "priorityQueue": "优先扫描队列"
+  }
+}

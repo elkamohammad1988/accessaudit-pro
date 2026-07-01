@@ -7,32 +7,31 @@ import { createClient } from "@/lib/supabase/server";
 import { appBaseUrl } from "@/lib/env";
 import { safeNextPath } from "@/lib/utils";
 import { allowByIp } from "@/lib/rate-limit";
+import { getTranslations } from "@/i18n/server";
 
 export type AuthState = { error: string | null; message: string | null };
 
-const TOO_MANY = "Too many attempts. Please wait a minute and try again.";
-
-const credentials = z.object({
-  email: z.string().email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-});
-
-function readCredentials(formData: FormData) {
-  return credentials.safeParse({
-    email: formData.get("email"),
-    password: formData.get("password"),
+function credentialsSchema(email: string, password: string) {
+  return z.object({
+    email: z.string().email(email),
+    password: z.string().min(8, password),
   });
 }
 
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  const parsed = readCredentials(formData);
+  const t = await getTranslations("auth.messages");
+  const v = await getTranslations("validation");
+  const parsed = credentialsSchema(v("email"), v("passwordMin")).safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
+    return { error: parsed.error.issues[0]?.message ?? t("invalidInput"), message: null };
   }
 
   // Throttle password guessing per source IP before touching the auth server.
   if (!(await allowByIp("auth:signin", { max: 10, windowSeconds: 60, failClosed: true }))) {
-    return { error: TOO_MANY, message: null };
+    return { error: t("tooManyAttempts"), message: null };
   }
 
   const supabase = await createClient();
@@ -46,7 +45,7 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
     });
     // Generic, non-enumerating message — never reveal whether the email exists
     // or echo a backend error string.
-    return { error: "Incorrect email or password.", message: null };
+    return { error: t("incorrectCredentials"), message: null };
   }
 
   revalidatePath("/", "layout");
@@ -56,14 +55,19 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
 }
 
 export async function signUp(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  const parsed = readCredentials(formData);
+  const t = await getTranslations("auth.messages");
+  const v = await getTranslations("validation");
+  const parsed = credentialsSchema(v("email"), v("passwordMin")).safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
+    return { error: parsed.error.issues[0]?.message ?? t("invalidInput"), message: null };
   }
 
   // Cap sign-ups per IP to blunt automated account creation / email-bombing.
   if (!(await allowByIp("auth:signup", { max: 5, windowSeconds: 60, failClosed: true }))) {
-    return { error: TOO_MANY, message: null };
+    return { error: t("tooManyAttempts"), message: null };
   }
 
   const supabase = await createClient();
@@ -83,18 +87,12 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
     });
     // Don't echo backend specifics (e.g. "User already registered") — that's an
     // account-enumeration oracle. Keep it generic.
-    return {
-      error: "We couldn't create that account. Try a different email, or sign in.",
-      message: null,
-    };
+    return { error: t("signupFailed"), message: null };
   }
 
   // When email confirmation is on, no session is returned yet.
   if (data.user && !data.session) {
-    return {
-      error: null,
-      message: "Check your inbox to confirm your email, then sign in.",
-    };
+    return { error: null, message: t("confirmEmail") };
   }
 
   revalidatePath("/", "layout");
@@ -107,15 +105,13 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
  * the same neutral copy so it can't be used to probe which emails have accounts.
  */
 export async function resendConfirmation(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const t = await getTranslations("auth.messages");
   const email = z.string().email().safeParse(formData.get("email"));
   if (!email.success) {
-    return { error: "Enter a valid email address.", message: null };
+    return { error: t("invalidEmail"), message: null };
   }
 
-  const neutral: AuthState = {
-    error: null,
-    message: "If that email needs confirming, a fresh link is on its way.",
-  };
+  const neutral: AuthState = { error: null, message: t("resendNeutral") };
 
   // Throttle to blunt inbox spam; still return the neutral copy on the limit.
   if (!(await allowByIp("auth:resend", { max: 3, windowSeconds: 300, failClosed: true }))) {
@@ -138,18 +134,16 @@ export async function requestPasswordReset(
   _prev: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
+  const t = await getTranslations("auth.messages");
   const email = z.string().email().safeParse(formData.get("email"));
   if (!email.success) {
-    return { error: "Enter a valid email address.", message: null };
+    return { error: t("invalidEmail"), message: null };
   }
 
   // Throttle reset emails per IP (prevents using us to spam a victim's inbox).
   // Still returns the same neutral copy on the limit so it isn't an oracle.
   if (!(await allowByIp("auth:reset", { max: 5, windowSeconds: 300, failClosed: true }))) {
-    return {
-      error: null,
-      message: "If that email has an account, a reset link is on its way.",
-    };
+    return { error: null, message: t("resetNeutral") };
   }
 
   const supabase = await createClient();
@@ -159,21 +153,18 @@ export async function requestPasswordReset(
     redirectTo: `${appBaseUrl()}/auth/confirm?next=/update-password`,
   });
 
-  return {
-    error: null,
-    message: "If that email has an account, a reset link is on its way.",
-  };
+  return { error: null, message: t("resetNeutral") };
 }
-
-const newPassword = z.object({
-  password: z.string().min(8, "Password must be at least 8 characters."),
-});
 
 /** Set a new password for the currently-authenticated user (post reset-link). */
 export async function updatePassword(_prev: AuthState, formData: FormData): Promise<AuthState> {
-  const parsed = newPassword.safeParse({ password: formData.get("password") });
+  const t = await getTranslations("auth.messages");
+  const v = await getTranslations("validation");
+  const parsed = z
+    .object({ password: z.string().min(8, v("passwordMin")) })
+    .safeParse({ password: formData.get("password") });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input.", message: null };
+    return { error: parsed.error.issues[0]?.message ?? t("invalidInput"), message: null };
   }
 
   const supabase = await createClient();
@@ -181,15 +172,12 @@ export async function updatePassword(_prev: AuthState, formData: FormData): Prom
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return { error: "Your reset link has expired. Request a new one.", message: null };
+    return { error: t("resetLinkExpired"), message: null };
   }
 
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) {
-    return {
-      error: "Couldn't update your password. Request a new reset link and try again.",
-      message: null,
-    };
+    return { error: t("updateFailed"), message: null };
   }
 
   revalidatePath("/", "layout");

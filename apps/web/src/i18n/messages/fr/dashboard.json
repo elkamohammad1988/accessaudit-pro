@@ -1,0 +1,30 @@
+{
+  "metaTitle": "Tableau de bord",
+  "title": "Tableau de bord",
+  "planBadge": "Forfait {plan}",
+  "newScan": "Nouvelle analyse",
+  "avgScore": "Score d'accessibilité moyen",
+  "scoreTrendLabel": "Évolution du score sur {count} analyses",
+  "trendEmpty": "Lancez quelques analyses pour voir l'évolution de votre score ici.",
+  "trendCaption": {
+    "one": "Sur votre dernière analyse terminée ({count})",
+    "other": "Sur vos {count} dernières analyses terminées"
+  },
+  "usageTitle": "Utilisation ce mois-ci",
+  "meters": {
+    "scans": "Analyses",
+    "clients": "Clients",
+    "projects": "Projets",
+    "aria": "Utilisation : {label}"
+  },
+  "pagesPerScan": "Pages / analyse",
+  "severityHeading": "Problèmes par gravité",
+  "recentHeading": "Analyses récentes",
+  "pagesCount": {
+    "one": "{count} page",
+    "other": "{count} pages"
+  },
+  "emptyTitle": "Pas encore d'analyse",
+  "emptyDescription": "Lancez votre premier audit d'accessibilité pour voir ici vos scores, vos tendances et vos problèmes.",
+  "emptyAction": "Lancer votre première analyse"
+}

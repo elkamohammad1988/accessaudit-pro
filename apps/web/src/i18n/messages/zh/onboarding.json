@@ -1,0 +1,18 @@
+{
+  "metaTitle": "创建您的工作区",
+  "title": "创建您的工作区",
+  "subtitle": "这是您代理机构的大本营。品牌设置稍后可更改。",
+  "agencyName": "代理机构名称",
+  "agencyNamePlaceholder": "Pixel & Pine Studio",
+  "brandColor": "品牌颜色",
+  "brandColorHint": "用于您的白标报告。",
+  "submit": "创建工作区",
+  "creating": "创建中…",
+  "messages": {
+    "invalidInput": "输入无效。",
+    "nameMin": "代理机构名称至少需要 2 个字符。",
+    "brandColorHex": "品牌颜色必须是十六进制值，如 #A24425。",
+    "createFailed": "无法创建您的工作区。请重试。",
+    "slugFailed": "无法生成唯一的工作区 URL。请尝试其他名称。"
+  }
+}

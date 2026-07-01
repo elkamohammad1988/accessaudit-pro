@@ -4,10 +4,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "@/i18n/server";
 import { ProjectForm } from "@/components/projects/project-form";
 import { updateProjectRecord } from "../../actions";
 
-export const metadata: Metadata = { title: "Edit project" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("projects");
+  return { title: t("metaEdit") };
+}
 
 export default async function EditProjectPage({
   params,
@@ -15,6 +19,7 @@ export default async function EditProjectPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
+  const t = await getTranslations("projects");
   const { organization } = await requireSession();
   if (!organization) return null;
 
@@ -38,7 +43,7 @@ export default async function EditProjectPage({
     .order("name", { ascending: true });
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
+    <div className="mx-auto max-w-lg space-y-5">
       <div>
         <Link
           href={`/projects/${project.id}`}
@@ -47,16 +52,14 @@ export default async function EditProjectPage({
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
           {project.name}
         </Link>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">Edit project</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Update this project&apos;s name, URL, or client assignment.
-        </p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t("metaEdit")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("editIntro")}</p>
       </div>
       <ProjectForm
         action={updateProjectRecord}
         clients={clients ?? []}
         project={project}
-        submitLabel="Save changes"
+        submitLabel={t("editSubmit")}
       />
     </div>
   );

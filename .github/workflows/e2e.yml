@@ -1,0 +1,79 @@
+name: E2E
+
+# Runs the Playwright suite against a real local Supabase (migrations + seed + auth).
+# Deliberately NOT on every pull_request: it's heavier than the static gate, and the
+# authenticated-flow selectors should be validated once against real infra before
+# being relied on as a PR blocker (see docs/RELEASE_CHECKLIST.md). It runs on merges
+# to main and on demand. The public suite needs no DB; the authenticated specs use
+# the seeded user.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrations:
+    name: Migrations apply cleanly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Apply all migrations to a fresh local database
+        run: supabase start
+
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+      - name: Start Supabase (applies migrations + seed)
+        run: supabase start
+
+      - name: Export local Supabase credentials to the environment
+        run: |
+          supabase status -o env > supabase.env
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$(grep -E '^API_URL=' supabase.env | cut -d= -f2- | tr -d '\"')"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(grep -E '^ANON_KEY=' supabase.env | cut -d= -f2- | tr -d '\"')"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$(grep -E '^SERVICE_ROLE_KEY=' supabase.env | cut -d= -f2- | tr -d '\"')"
+            echo "NEXT_PUBLIC_APP_URL=http://localhost:3000"
+          } >> "$GITHUB_ENV"
+
+      - name: Install Playwright browser
+        run: pnpm --filter @accessaudit/web exec playwright install --with-deps chromium
+
+      - name: Build web app
+        run: pnpm --filter @accessaudit/web build
+
+      - name: Run E2E tests
+        run: pnpm --filter @accessaudit/web e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7

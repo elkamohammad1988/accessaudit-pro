@@ -5,8 +5,9 @@ import { useFormStatus } from "react-dom";
 import type { AuthState } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingField } from "@/components/ui/floating-field";
 import { FormError, FormSuccess } from "@/components/ui/form-error";
+import { useTranslations } from "@/i18n/provider";
 
 const initialState: AuthState = { error: null, message: null };
 
@@ -14,9 +15,10 @@ type AuthAction = (prev: AuthState, formData: FormData) => Promise<AuthState>;
 
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
+  const t = useTranslations("auth.form");
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? "Working…" : label}
+      {pending ? t("working") : label}
     </Button>
   );
 }
@@ -36,39 +38,26 @@ export function AuthForm({
   next?: string;
 }) {
   const [state, formAction] = useActionState(action, initialState);
+  const t = useTranslations("auth.form");
 
   return (
     <form action={formAction} className="space-y-4">
       {next ? <input type="hidden" name="next" value={next} /> : null}
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          placeholder="you@agency.com"
-        />
-      </div>
+      <FloatingField id="email" label={t("email")}>
+        <Input name="email" type="email" autoComplete="email" required />
+      </FloatingField>
 
       {includePassword ? (
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+        <FloatingField id="password" label={t("password")} hint={t("passwordHint")}>
           <Input
-            id="password"
             name="password"
             type="password"
             autoComplete={passwordAutoComplete}
             minLength={8}
             required
-            aria-describedby="password-hint"
           />
-          <p id="password-hint" className="text-xs text-muted-foreground">
-            At least 8 characters.
-          </p>
-        </div>
+        </FloatingField>
       ) : null}
 
       <FormError error={state.error} />

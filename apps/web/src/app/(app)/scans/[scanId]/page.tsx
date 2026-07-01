@@ -9,6 +9,7 @@ import { appBaseUrl } from "@/lib/env";
 import { formatDateTime } from "@/lib/dates";
 import { STATUS_META, parseTotals } from "@/lib/scan-format";
 import { loadReportByScan } from "@/lib/load-report";
+import { getTranslations, getLocale } from "@/i18n/server";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ReportView } from "@/components/scans/report-view";
@@ -19,15 +20,10 @@ import { NoticeBanner } from "@/components/ui/notice-banner";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { rescanScan, deleteScan } from "../actions";
 
-export const metadata: Metadata = { title: "Scan report" };
-
-// Feedback for the redirect-only actions on this page (re-scan / delete / share).
-const NOTICE: Record<string, string> = {
-  "rate-limited": "You're starting scans too quickly. Wait a moment and try again.",
-  "rescan-failed": "Couldn't start the re-scan. Please try again.",
-  "delete-failed": "Couldn't delete this scan. Please try again.",
-  "share-failed": "Couldn't update the share link. Please try again.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("scans.detail");
+  return { title: t("metaTitle") };
+}
 
 export default async function ScanReportPage({
   params,
@@ -38,9 +34,21 @@ export default async function ScanReportPage({
 }) {
   const { scanId } = await params;
   const { notice } = await searchParams;
-  const noticeMessage = notice ? NOTICE[notice] : undefined;
   const { organization } = await requireSession();
   if (!organization) return null;
+
+  const t = await getTranslations("scans");
+  const tc = await getTranslations("common.actions");
+  const locale = await getLocale();
+
+  // Feedback for the redirect-only actions on this page (re-scan / delete / share).
+  const NOTICE: Record<string, string> = {
+    "rate-limited": t("detail.notices.rateLimited"),
+    "rescan-failed": t("detail.notices.rescanFailed"),
+    "delete-failed": t("detail.notices.deleteFailed"),
+    "share-failed": t("detail.notices.shareFailed"),
+  };
+  const noticeMessage = notice ? NOTICE[notice] : undefined;
 
   const supabase = await createClient();
   const [report, { data: sub }] = await Promise.all([
@@ -62,7 +70,7 @@ export default async function ScanReportPage({
   const canExport = status === "completed" || status === "partial";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         {report.projectId ? (
           <Link
@@ -74,16 +82,16 @@ export default async function ScanReportPage({
           </Link>
         ) : null}
 
-        <header className="mt-3 flex flex-wrap items-start justify-between gap-4">
+        <header className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold tracking-tight">Scan report</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">{t("detail.title")}</h1>
               <ScanStatusBadge status={status} />
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
               {report.clientName ? `${report.clientName} · ` : ""}
-              {scan.scan_type === "single" ? "Single page" : "URL list"} · WCAG {scan.wcag_level} ·{" "}
-              {formatDateTime(scan.created_at)}
+              {scan.scan_type === "single" ? t("new.form.singlePageTitle") : t("new.form.urlListTitle")} ·{" "}
+              {t("wcagShort", { level: scan.wcag_level })} · {formatDateTime(scan.created_at, locale)}
             </p>
           </div>
 
@@ -92,19 +100,19 @@ export default async function ScanReportPage({
               <input type="hidden" name="scanId" value={scan.id} />
               <Button type="submit" variant="secondary" size="sm">
                 <RotateCw className="h-3.5 w-3.5" aria-hidden="true" />
-                Re-scan
+                {t("detail.rescan")}
               </Button>
             </form>
             <form action={deleteScan}>
               <input type="hidden" name="scanId" value={scan.id} />
               <input type="hidden" name="projectId" value={scan.project_id} />
               <ConfirmSubmit
-                confirmLabel="Delete"
-                prompt="Delete permanently?"
+                confirmLabel={tc("delete")}
+                prompt={t("detail.deletePrompt")}
                 className="text-danger-strong hover:bg-danger/10"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                Delete
+                {tc("delete")}
               </ConfirmSubmit>
             </form>
           </div>
@@ -118,7 +126,7 @@ export default async function ScanReportPage({
       {canExport ? (
         <Card>
           <section
-            aria-label="Share & export"
+            aria-label={t("detail.shareExportAria")}
             className="flex flex-wrap items-center justify-between gap-3 p-4"
           >
             <ShareControl
@@ -136,7 +144,7 @@ export default async function ScanReportPage({
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <FileDown className="h-3.5 w-3.5" aria-hidden="true" />
-                  Export PDF
+                  {t("detail.exportPdf")}
                 </a>
               ) : null}
               {limits.dataExport ? (
@@ -145,7 +153,7 @@ export default async function ScanReportPage({
                   className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   <Table2 className="h-3.5 w-3.5" aria-hidden="true" />
-                  Export CSV
+                  {t("detail.exportCsv")}
                 </a>
               ) : null}
               {!limits.whiteLabelPdf && !limits.dataExport ? (
@@ -153,7 +161,7 @@ export default async function ScanReportPage({
                   href="/settings/billing"
                   className="text-sm font-medium text-brand underline-offset-4 hover:underline"
                 >
-                  Upgrade to export branded PDF &amp; CSV
+                  {t("detail.upgradeExport")}
                 </Link>
               ) : null}
             </div>

@@ -250,6 +250,8 @@ export const SAMPLE_REPORT: ReportViewProps = {
 export const SAMPLE_BRAND = {
   agencyName: "Northwind Studio",
   clientName: "Northwind Coffee Co.",
-  brandColor: "#4F46E5",
+  // A cool evergreen — deliberately unlike our warm clay brand, to show the
+  // white-label report taking on each agency's own brand color.
+  brandColor: "#1F6E4A",
   date: "20 June 2026",
 };

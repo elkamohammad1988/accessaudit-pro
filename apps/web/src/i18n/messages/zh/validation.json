@@ -1,0 +1,10 @@
+{
+  "required": "{field}为必填项。",
+  "tooLong": "{field}过长。",
+  "invalidUrl": "{field}必须是有效的 URL。",
+  "httpsUrl": "{field}必须以 https:// 开头。",
+  "email": "请输入有效的邮箱地址。",
+  "passwordMin": "密码至少需要 8 个字符。",
+  "generic": "请检查表单后重试。",
+  "unexpected": "出现问题，请重试。"
+}

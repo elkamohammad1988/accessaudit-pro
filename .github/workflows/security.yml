@@ -1,0 +1,48 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Supply-chain advisories. Gated on CRITICAL: the one current `high` is a
+  # build-time transitive (rollup, via @sentry/nextjs's webpack plugin) that never
+  # ships to runtime and has no clean override — so it's reported, not blocking.
+  # Critical advisories fail the pipeline.
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      - name: Audit production dependencies (fail on critical)
+        run: pnpm audit --prod --audit-level critical
+      - name: Report high/moderate (non-blocking visibility)
+        if: ${{ always() }}
+        run: pnpm audit --prod --audit-level high || true
+
+  # Secret scanning. The .gitleaks.toml allowlist excludes documented placeholders
+  # (.env.example) and test fixtures so benign content can't false-positive.
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

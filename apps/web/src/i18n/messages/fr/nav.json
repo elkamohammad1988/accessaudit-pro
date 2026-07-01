@@ -1,0 +1,33 @@
+{
+  "skipToContent": "Aller au contenu",
+  "primary": "Principal",
+  "footer": "Pied de page",
+  "marketing": {
+    "guides": "Guides",
+    "pricing": "Tarifs",
+    "signIn": "Se connecter",
+    "startFree": "Commencer gratuitement"
+  },
+  "app": {
+    "dashboard": "Tableau de bord",
+    "clients": "Clients",
+    "projects": "Projets",
+    "settings": "Paramètres",
+    "signOut": "Se déconnecter"
+  },
+  "mobile": {
+    "open": "Ouvrir le menu de navigation",
+    "close": "Fermer le menu de navigation",
+    "label": "Navigation"
+  },
+  "footerLinks": {
+    "pricing": "Tarifs",
+    "sample": "Exemple de rapport",
+    "guides": "Guides",
+    "terms": "Conditions",
+    "privacy": "Confidentialité",
+    "accessibility": "Accessibilité",
+    "signIn": "Se connecter"
+  },
+  "copyright": "© {year} AccessAudit Pro · Audits d'accessibilité WCAG 2.2 pour les agences"
+}

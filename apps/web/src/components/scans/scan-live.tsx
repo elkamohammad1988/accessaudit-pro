@@ -1,58 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import type { ScanStatus } from "@accessaudit/shared";
-import { STATUS_META } from "@/lib/scan-format";
-import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "@/i18n/provider";
 
-const TERMINAL: ReadonlySet<ScanStatus> = new Set(["completed", "partial", "failed"]);
+// The realtime/polling engine pulls in the Supabase Realtime client (~40 kB of
+// WebSocket machinery). It only matters for an in-progress scan, so load it lazily
+// and client-side only — terminal scans (the common view) never download it, and
+// even non-terminal views ship it as a separate, deferred chunk.
+const ScanSync = dynamic(() => import("./scan-sync").then((m) => m.ScanSync), {
+  ssr: false,
+});
 
 /**
- * Keeps a non-terminal scan page in sync. Subscribes to Realtime updates on the
- * scan row AND polls as a fallback (Realtime requires the table to be in the
- * supabase_realtime publication; the poll guarantees progress either way).
- * Because Realtime is primary, the poll backs off (4s → 20s) and stops after a
- * hard ceiling instead of hammering a full page refetch forever. Renders an
- * sr-only live region so a screen-reader user hears queued → running → done.
+ * Keeps a non-terminal scan page in sync and announces status to assistive tech.
+ * The visible-to-SR live region renders immediately (it needs no network code);
+ * the heavy sync engine is deferred (see {@link ScanSync}). Renders nothing for a
+ * terminal scan — callers already gate on that, but we double-guard here so the
+ * deferred chunk is never even requested for a finished scan.
  */
 export function ScanLive({ scanId, status }: { scanId: string; status: ScanStatus }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (TERMINAL.has(status)) return;
-
-    const supabase = createClient();
-    const channel = supabase
-      .channel(`scan-${scanId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "scans", filter: `id=eq.${scanId}` },
-        () => router.refresh(),
-      )
-      .subscribe();
-
-    let delay = 4000;
-    const MAX_DELAY = 20_000;
-    const deadline = Date.now() + 15 * 60_000; // give up polling after 15 minutes
-    let timer: ReturnType<typeof setTimeout>;
-    const tick = () => {
-      if (Date.now() > deadline) return;
-      router.refresh();
-      delay = Math.min(Math.round(delay * 1.5), MAX_DELAY);
-      timer = setTimeout(tick, delay);
-    };
-    timer = setTimeout(tick, delay);
-
-    return () => {
-      clearTimeout(timer);
-      void supabase.removeChannel(channel);
-    };
-  }, [scanId, status, router]);
+  const t = useTranslations("scans");
+  const terminal = status === "completed" || status === "partial" || status === "failed";
 
   return (
-    <p role="status" aria-live="polite" className="sr-only">
-      Scan status: {STATUS_META[status].label}.
-    </p>
+    <>
+      {!terminal ? <ScanSync scanId={scanId} /> : null}
+      <p role="status" aria-live="polite" className="sr-only">
+        {t("detail.liveStatus", { status: t("status." + status) })}
+      </p>
+    </>
   );
 }

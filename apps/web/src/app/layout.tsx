@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { appBaseUrl } from "@/lib/env";
 import { themeScript } from "@/lib/theme-script";
+import { directionOf, htmlLangOf } from "@/i18n/config";
+import { getLocale, getMessages } from "@/i18n/server";
 
 // Self-hosted, preloaded, swap — bound to the `--font-sans` token the design
 // system references. Without this the "Inter" in globals.css never loads and the
@@ -88,9 +90,20 @@ function structuredData(): string {
   });
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The active locale is known server-side from the cookie (set by middleware on
+  // first visit, by the switcher thereafter), so `lang`/`dir` are rendered
+  // correctly on the first byte — no client flip, no RTL flash.
+  const locale = await getLocale();
+  const messages = await getMessages(locale);
+
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang={htmlLangOf(locale)}
+      dir={directionOf(locale)}
+      className={inter.variable}
+      suppressHydrationWarning
+    >
       <body className="min-h-screen">
         {/* Set the theme class before paint to avoid a flash of the wrong theme. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -98,7 +111,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData() }}
         />
-        <Providers>{children}</Providers>
+        <Providers locale={locale} messages={messages}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

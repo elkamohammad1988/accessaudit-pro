@@ -8,14 +8,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     <input
       ref={ref}
       type={type}
-      className={cn(
-        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs",
-        "transition-[color,border-color,box-shadow] placeholder:text-muted-foreground hover:border-foreground/25",
-        "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20",
-        "aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/20",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        className,
-      )}
+      // Surface, depth, focus bloom, ink typography, caret, selection and
+      // autofill all come from the shared `.field` class (see globals.css);
+      // only sizing/shape lives here so callers can still override it.
+      className={cn("field flex h-11 w-full rounded-2xl px-3.5 text-sm", className)}
       {...props}
     />
   ),

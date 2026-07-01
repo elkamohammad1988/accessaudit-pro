@@ -1,0 +1,39 @@
+version: 2
+
+# Keeps dependencies current so the codebase doesn't rot between releases. Grouped
+# to reduce PR noise; the CI gate (typecheck/lint/test/build) and the dependency
+# audit are the safety net that blocks any bump introducing a high/critical advisory.
+# Major bumps to framework-critical packages are reviewed one at a time (see
+# docs/RELEASE_CHECKLIST.md → "Dependency & upgrade strategy").
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      # Routine, low-risk updates batched into a single PR.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Framework-critical: bump deliberately, with the migration guide + staging E2E.
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
+      - dependency-name: stripe
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@supabase/*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5

@@ -1,0 +1,24 @@
+{
+  "generic": {
+    "title": "Algo salió mal",
+    "body": "Se produjo un error inesperado. El equipo ha sido notificado; inténtalo de nuevo.",
+    "retry": "Reintentar",
+    "home": "Volver al inicio"
+  },
+  "app": {
+    "title": "Esta página tuvo un problema",
+    "body": "No pudimos cargar esta vista. Inténtalo de nuevo o vuelve a tu panel.",
+    "dashboard": "Ir al panel"
+  },
+  "global": {
+    "title": "Algo salió mal",
+    "body": "Se produjo un error crítico y la página no se pudo mostrar. Por favor, vuelve a cargarla.",
+    "reload": "Recargar"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "body": "La página que buscas no existe o puede haber cambiado de ubicación.",
+    "home": "Volver al inicio",
+    "dashboard": "Ir al panel"
+  }
+}

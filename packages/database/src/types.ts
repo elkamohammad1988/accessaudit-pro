@@ -410,6 +410,26 @@ export interface Database {
         };
         Returns: string | null;
       };
+      create_client_if_within_quota: {
+        Args: {
+          p_org_id: string;
+          p_name: string;
+          p_contact_email: string | null;
+          p_notes: string | null;
+          p_limit: number;
+        };
+        Returns: string | null;
+      };
+      create_project_if_within_quota: {
+        Args: {
+          p_org_id: string;
+          p_client_id: string;
+          p_name: string;
+          p_base_url: string;
+          p_limit: number;
+        };
+        Returns: string | null;
+      };
     };
     Enums: {
       scan_status: "queued" | "running" | "completed" | "failed" | "partial";

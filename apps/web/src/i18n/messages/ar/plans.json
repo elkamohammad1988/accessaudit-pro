@@ -1,0 +1,30 @@
+{
+  "unlimited": "غير محدود",
+  "highlights": {
+    "scansUnlimited": "فحوصات غير محدودة / الشهر",
+    "scansPerMonth": "{count} فحص / الشهر",
+    "singlePageScans": "فحوصات صفحة واحدة",
+    "pagesPerScan": "حتى {count} صفحة / فحص",
+    "clientsOne": "{count} عميل",
+    "clientsOther": "{count} عميل",
+    "clientsUnlimited": "عدد غير محدود من العملاء",
+    "projects": "{count} مشروع",
+    "projectsUnlimited": "عدد غير محدود من المشاريع",
+    "whiteLabelPdf": "تقارير PDF بعلامتك التجارية",
+    "brandedLinks": "روابط مشاركة بعلامة AccessAudit",
+    "dataExport": "تصدير CSV / JSON",
+    "removePoweredBy": "إزالة علامة \"Powered by\"",
+    "priorityQueue": "قائمة انتظار فحص ذات أولوية"
+  },
+  "rows": {
+    "clients": "العملاء",
+    "projects": "المشاريع",
+    "scansPerMonth": "الفحوصات / الشهر",
+    "pagesPerScan": "الصفحات / الفحص",
+    "publicLinks": "روابط عامة قابلة للمشاركة",
+    "whiteLabelPdf": "تقارير PDF بعلامتك التجارية",
+    "dataExport": "تصدير CSV / JSON",
+    "removePoweredBy": "إزالة علامة \"Powered by\"",
+    "priorityQueue": "قائمة انتظار فحص ذات أولوية"
+  }
+}

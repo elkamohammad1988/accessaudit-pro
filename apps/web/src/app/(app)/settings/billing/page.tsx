@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CreditCard } from "lucide-react";
-import { effectivePlan, formatLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, limitsFor, type PlanTier } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { startOfMonthIso } from "@/lib/dates";
 import { annualPricingConfigured } from "@/lib/stripe-plan";
+import { getTranslations, getLocale } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,43 +16,12 @@ import { NoticeBanner } from "@/components/ui/notice-banner";
 import { PlanGrid } from "@/components/settings/plan-grid";
 import { openPortal } from "./actions";
 
-export const metadata: Metadata = { title: "Billing" };
-
-/** Human labels for the raw Stripe subscription statuses we never want to show. */
-const STATUS_LABEL: Record<string, string> = {
-  active: "Active",
-  trialing: "Trial",
-  past_due: "Payment past due",
-  canceled: "Canceled",
-  incomplete: "Incomplete",
-};
-const statusLabel = (status: string | null | undefined): string =>
-  status ? (STATUS_LABEL[status] ?? status) : "No active subscription";
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("billing");
+  return { title: t("metaTitle") };
+}
 
 type BannerTone = "success" | "warning" | "error" | "info";
-
-const STATUS_BANNER: Record<string, { text: string; tone: BannerTone }> = {
-  success: {
-    text: "Subscription updated. It can take a few seconds to reflect here.",
-    tone: "success",
-  },
-  cancel: {
-    text: "Checkout canceled — no changes were made.",
-    tone: "warning",
-  },
-  error: {
-    text: "Something went wrong with billing. Please try again.",
-    tone: "error",
-  },
-  "no-customer": {
-    text: "No billing account yet — pick a plan to get started.",
-    tone: "warning",
-  },
-  "scan-limit": {
-    text: "You've reached your plan's scan limit for this month. Upgrade to run more.",
-    tone: "warning",
-  },
-};
 
 export default async function BillingPage({
   searchParams,
@@ -60,6 +31,29 @@ export default async function BillingPage({
   const { status } = await searchParams;
   const { organization } = await requireSession();
   if (!organization) return null;
+
+  const t = await getTranslations("billing");
+  const tp = await getTranslations("plans");
+  const locale = await getLocale();
+
+  // Human labels for the raw Stripe subscription statuses we never want to show.
+  const STATUS_LABEL: Record<string, string> = {
+    active: t("status.active"),
+    trialing: t("status.trialing"),
+    past_due: t("status.pastDue"),
+    canceled: t("status.canceled"),
+    incomplete: t("status.incomplete"),
+  };
+  const statusLabel = (s: string | null | undefined): string =>
+    s ? (STATUS_LABEL[s] ?? s) : t("status.none");
+
+  const STATUS_BANNER: Record<string, { text: string; tone: BannerTone }> = {
+    success: { text: t("banner.success"), tone: "success" },
+    cancel: { text: t("banner.cancel"), tone: "warning" },
+    error: { text: t("banner.error"), tone: "error" },
+    "no-customer": { text: t("banner.noCustomer"), tone: "warning" },
+    "scan-limit": { text: t("banner.scanLimit"), tone: "warning" },
+  };
 
   const supabase = await createClient();
   const [{ data: sub }, { count: scansThisMonth }, { count: clientsCount }, { count: projectsCount }] =
@@ -98,44 +92,48 @@ export default async function BillingPage({
   const banner = status ? STATUS_BANNER[status] : undefined;
 
   const usage = [
-    { label: "Scans this month", used: scansThisMonth ?? 0, limit: limits.scansPerMonth },
-    { label: "Clients", used: clientsCount ?? 0, limit: limits.clients },
-    { label: "Projects", used: projectsCount ?? 0, limit: limits.projects },
+    { label: t("usage.scansThisMonth"), used: scansThisMonth ?? 0, limit: limits.scansPerMonth },
+    { label: t("usage.clients"), used: clientsCount ?? 0, limit: limits.clients },
+    { label: t("usage.projects"), used: projectsCount ?? 0, limit: limits.projects },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         <Link
           href="/settings"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          Settings
+          {t("backToSettings")}
         </Link>
         <header className="mt-3 flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
-          <Badge variant={hasPaid ? "default" : "secondary"}>{actualLimits.label} plan</Badge>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <Badge variant={hasPaid ? "default" : "secondary"}>
+            {t("planBadge", { plan: actualLimits.label })}
+          </Badge>
         </header>
         <p className="mt-1 text-sm text-muted-foreground">
-          {hasPaid ? statusLabel(sub?.status) : "No active subscription"}
+          {hasPaid ? statusLabel(sub?.status) : t("status.none")}
           {hasPaid && sub?.current_period_end
-            ? ` · renews ${new Date(sub.current_period_end).toLocaleDateString()}`
+            ? ` · ${t("renewsOn", { date: new Date(sub.current_period_end).toLocaleDateString(locale) })}`
             : ""}
         </p>
       </div>
 
       {downgraded ? (
         <NoticeBanner tone="warning">
-          Your {actualLimits.label} subscription is {statusLabel(sub?.status).toLowerCase()}, so{" "}
-          {limits.label}-plan limits currently apply. Update your payment method in the billing
-          portal to restore full access.
+          {t("downgradeNotice", {
+            plan: actualLimits.label,
+            status: statusLabel(sub?.status).toLowerCase(),
+            effectivePlan: limits.label,
+          })}
         </NoticeBanner>
       ) : null}
 
       {banner ? <NoticeBanner tone={banner.tone}>{banner.text}</NoticeBanner> : null}
 
-      <section aria-label="Usage" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section aria-label={t("usage.aria")} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {usage.map((u) => {
           const overEighty = Number.isFinite(u.limit) && u.limit > 0 && u.used / u.limit >= 0.8;
           return (
@@ -145,7 +143,7 @@ export default async function BillingPage({
                 {u.used}
                 <span className="text-base font-normal text-muted-foreground">
                   {" "}
-                  / {formatLimit(u.limit)}
+                  / {displayLimit(u.limit, tp)}
                 </span>
               </p>
               <Progress
@@ -153,7 +151,7 @@ export default async function BillingPage({
                 value={u.used}
                 max={u.limit}
                 tone={overEighty ? "warning" : "brand"}
-                label={`${u.label} usage`}
+                label={t("usage.meter", { label: u.label })}
               />
             </Card>
           );
@@ -162,15 +160,13 @@ export default async function BillingPage({
 
       {hasPaid ? (
         <Card>
-          <section aria-label="Manage subscription" className="p-6">
-            <h2 className="text-lg font-medium">Manage subscription</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Change plan, update payment method, view invoices, or cancel.
-            </p>
+          <section aria-label={t("manage.aria")} className="p-5">
+            <h2 className="text-lg font-medium">{t("manage.heading")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("manage.description")}</p>
             <form action={openPortal} className="mt-4">
               <Button type="submit">
                 <CreditCard className="h-4 w-4" aria-hidden="true" />
-                Open billing portal
+                {t("manage.openPortal")}
               </Button>
             </form>
           </section>

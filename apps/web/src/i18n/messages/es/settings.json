@@ -1,0 +1,49 @@
+{
+  "metaTitle": "Configuración",
+  "title": "Configuración",
+  "subtitle": "Gestiona tu cuenta, la marca del espacio de trabajo, la facturación y el equipo.",
+  "profile": {
+    "heading": "Perfil",
+    "description": "Los datos de tu cuenta personal.",
+    "emailLabel": "Correo electrónico",
+    "emailHint": "Correo de inicio de sesión: cámbialo desde tu proveedor de autenticación.",
+    "fullNameLabel": "Nombre completo",
+    "fullNamePlaceholder": "Jane Doe",
+    "avatarUrlLabel": "URL del avatar",
+    "avatarUrlPlaceholder": "https://…/avatar.png",
+    "submit": "Guardar perfil",
+    "saved": "Perfil guardado."
+  },
+  "workspace": {
+    "heading": "Espacio de trabajo y marca",
+    "description": "Nombre, URL y la marca aplicada a tus informes.",
+    "nameLabel": "Nombre de la agencia",
+    "slugLabel": "Slug de la URL del espacio de trabajo",
+    "slugHint": "Letras minúsculas, números y guiones. Se usa en los enlaces y los informes públicos.",
+    "brandColorLabel": "Color de marca",
+    "brandColorHint": "Se aplica a tus informes de marca blanca.",
+    "logoUrlLabel": "URL del logotipo",
+    "logoUrlPlaceholder": "https://…/logo.png",
+    "logoUrlHint": "Se muestra en los informes con tu marca. Pega la URL de una imagen alojada.",
+    "submit": "Guardar espacio de trabajo",
+    "saved": "Espacio de trabajo guardado."
+  },
+  "billing": {
+    "heading": "Facturación",
+    "description": "Gestiona tu plan, tu uso y tu método de pago.",
+    "goToBilling": "Ir a facturación"
+  },
+  "team": {
+    "heading": "Equipo",
+    "description": "En esta versión, AccessAudit Pro es de propietario único. Los equipos con varios puestos y los roles llegarán en una actualización posterior."
+  },
+  "messages": {
+    "invalidInput": "Entrada no válida.",
+    "nameMin": "El nombre de la agencia debe tener al menos 2 caracteres.",
+    "slugMin": "El slug debe tener al menos 2 caracteres.",
+    "slugFormat": "El slug solo puede contener letras minúsculas, números y guiones.",
+    "brandColorHex": "El color de marca debe ser un valor hexadecimal como #A24425.",
+    "slugTaken": "Esa URL de espacio de trabajo ya está ocupada; elige otro slug.",
+    "saveFailed": "Algo salió mal al guardar tus cambios. Inténtalo de nuevo."
+  }
+}

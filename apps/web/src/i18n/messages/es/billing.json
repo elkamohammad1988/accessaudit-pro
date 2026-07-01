@@ -1,0 +1,54 @@
+{
+  "metaTitle": "Facturación",
+  "title": "Facturación",
+  "backToSettings": "Configuración",
+  "planBadge": "Plan {plan}",
+  "renewsOn": "se renueva el {date}",
+  "downgradeNotice": "Tu suscripción {plan} está {status}, por lo que actualmente se aplican los límites del plan {effectivePlan}. Actualiza tu método de pago en el portal de facturación para recuperar el acceso completo.",
+  "status": {
+    "active": "Activa",
+    "trialing": "Prueba",
+    "pastDue": "Pago vencido",
+    "canceled": "Cancelada",
+    "incomplete": "Incompleta",
+    "none": "Sin suscripción activa"
+  },
+  "banner": {
+    "success": "Suscripción actualizada. Puede tardar unos segundos en reflejarse aquí.",
+    "cancel": "Pago cancelado: no se realizó ningún cambio.",
+    "error": "Algo salió mal con la facturación. Inténtalo de nuevo.",
+    "noCustomer": "Aún no tienes cuenta de facturación: elige un plan para empezar.",
+    "scanLimit": "Has alcanzado el límite de análisis de tu plan para este mes. Mejora tu plan para ejecutar más."
+  },
+  "usage": {
+    "aria": "Uso",
+    "scansThisMonth": "Análisis este mes",
+    "clients": "Clientes",
+    "projects": "Proyectos",
+    "meter": "Uso de {label}"
+  },
+  "manage": {
+    "aria": "Gestionar suscripción",
+    "heading": "Gestionar suscripción",
+    "description": "Cambia de plan, actualiza el método de pago, consulta facturas o cancela.",
+    "openPortal": "Abrir portal de facturación"
+  },
+  "plan": {
+    "heading": "Planes",
+    "intervalGroup": "Intervalo de facturación",
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "annualNote": "· 2 meses gratis",
+    "current": "Actual",
+    "perMonth": "/mes",
+    "perYear": "/año",
+    "savePerYear": "Ahorra {amount} $ al año",
+    "noWhiteLabel": "Sin marca blanca",
+    "yourPlan": "Tu plan",
+    "downgradeViaPortal": "Reducir desde el portal",
+    "switchViaPortal": "Cambiar desde el portal",
+    "choose": "Elegir {plan}",
+    "footerMonthly": "Los límites se aplican a medida que creas clientes, proyectos y análisis. Facturación mensual a través de Stripe. En esta versión los espacios de trabajo son de un solo usuario; los puestos de equipo están en la hoja de ruta.",
+    "footerAnnual": "Los límites se aplican a medida que creas clientes, proyectos y análisis. Facturación mensual o anual a través de Stripe. En esta versión los espacios de trabajo son de un solo usuario; los puestos de equipo están en la hoja de ruta."
+  }
+}

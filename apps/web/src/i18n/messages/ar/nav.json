@@ -1,0 +1,33 @@
+{
+  "skipToContent": "تخطَّ إلى المحتوى",
+  "primary": "رئيسي",
+  "footer": "تذييل",
+  "marketing": {
+    "guides": "أدلة",
+    "pricing": "الأسعار",
+    "signIn": "تسجيل الدخول",
+    "startFree": "ابدأ مجانًا"
+  },
+  "app": {
+    "dashboard": "لوحة التحكم",
+    "clients": "العملاء",
+    "projects": "المشاريع",
+    "settings": "الإعدادات",
+    "signOut": "تسجيل الخروج"
+  },
+  "mobile": {
+    "open": "فتح قائمة التنقل",
+    "close": "إغلاق قائمة التنقل",
+    "label": "التنقل"
+  },
+  "footerLinks": {
+    "pricing": "الأسعار",
+    "sample": "تقرير نموذجي",
+    "guides": "أدلة",
+    "terms": "الشروط",
+    "privacy": "الخصوصية",
+    "accessibility": "إمكانية الوصول",
+    "signIn": "تسجيل الدخول"
+  },
+  "copyright": "© {year} AccessAudit Pro · تدقيقات إمكانية الوصول وفق WCAG 2.2 للوكالات"
+}

@@ -6,7 +6,8 @@ export const alt = "AccessAudit Pro — WCAG 2.2 accessibility audits for agenci
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const BRAND = "#4F46E5";
+const BRAND = "#A24425";
+const BRAND_2 = "#CA592F";
 const TAGS = ["WCAG 2.2 AA", "EAA / EN 301 549", "Powered by axe-core"];
 
 export default function OpengraphImage() {
@@ -19,7 +20,7 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundImage: "linear-gradient(135deg, #ffffff 0%, #eef2ff 100%)",
+          backgroundImage: "linear-gradient(135deg, #ffffff 0%, #fbf5ee 100%)",
           padding: "72px 80px",
           fontFamily: "sans-serif",
           position: "relative",
@@ -34,7 +35,7 @@ export default function OpengraphImage() {
             display: "flex",
             width: "100%",
             height: 14,
-            backgroundImage: `linear-gradient(90deg, ${BRAND} 0%, #818cf8 100%)`,
+            backgroundImage: `linear-gradient(90deg, ${BRAND} 0%, ${BRAND_2} 100%)`,
           }}
         />
         {/* soft brand orb, top-right, for depth */}
@@ -47,7 +48,7 @@ export default function OpengraphImage() {
             width: 360,
             height: 360,
             borderRadius: 9999,
-            backgroundColor: "rgba(79,70,229,0.10)",
+            backgroundColor: "rgba(162,68,37,0.10)",
           }}
         />
 
@@ -92,7 +93,7 @@ export default function OpengraphImage() {
                 width: 56,
                 height: 56,
                 borderRadius: 14,
-                backgroundImage: `linear-gradient(135deg, ${BRAND} 0%, #6366f1 100%)`,
+                backgroundImage: `linear-gradient(135deg, ${BRAND} 0%, ${BRAND_2} 100%)`,
                 color: "#ffffff",
                 fontSize: 30,
                 fontWeight: 800,
@@ -114,8 +115,8 @@ export default function OpengraphImage() {
                   alignItems: "center",
                   padding: "10px 18px",
                   borderRadius: 9999,
-                  border: "1px solid rgba(79,70,229,0.25)",
-                  backgroundColor: "rgba(79,70,229,0.06)",
+                  border: "1px solid rgba(162,68,37,0.25)",
+                  backgroundColor: "rgba(162,68,37,0.06)",
                   color: BRAND,
                   fontSize: 20,
                   fontWeight: 600,

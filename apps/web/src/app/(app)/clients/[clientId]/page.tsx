@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Globe, Pencil, Plus } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "@/i18n/server";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -11,12 +12,10 @@ import { NoticeBanner } from "@/components/ui/notice-banner";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { archiveClientRecord, restoreClientRecord } from "../actions";
 
-export const metadata: Metadata = { title: "Client" };
-
-const NOTICE: Record<string, string> = {
-  "archive-failed": "Couldn't archive this client. Please try again.",
-  "restore-failed": "Couldn't restore this client. Please try again.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("clients");
+  return { title: t("metaDetail") };
+}
 
 export default async function ClientDetailPage({
   params,
@@ -27,6 +26,13 @@ export default async function ClientDetailPage({
 }) {
   const { clientId } = await params;
   const { notice } = await searchParams;
+  const t = await getTranslations("clients");
+  const tc = await getTranslations("common");
+
+  const NOTICE: Record<string, string> = {
+    "archive-failed": t("messages.archiveFailed"),
+    "restore-failed": t("messages.restoreFailed"),
+  };
   const noticeMessage = notice ? NOTICE[notice] : undefined;
   const { organization } = await requireSession();
   if (!organization) return null;
@@ -51,44 +57,44 @@ export default async function ClientDetailPage({
   const isArchived = Boolean(client.archived_at);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         <Link
           href="/clients"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          Clients
+          {t("title")}
         </Link>
-        <header className="mt-3 flex flex-wrap items-start justify-between gap-4">
+        <header className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">{client.name}</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {client.contact_email ?? "No contact email"}
-              {isArchived ? " · Archived" : ""}
+              {client.contact_email ?? t("noContactEmail")}
+              {isArchived ? ` · ${t("archivedLabel")}` : ""}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <ButtonLink href={`/clients/${client.id}/edit`} variant="secondary" size="sm">
               <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
-              Edit
+              {tc("actions.edit")}
             </ButtonLink>
             {isArchived ? (
               <form action={restoreClientRecord}>
                 <input type="hidden" name="id" value={client.id} />
                 <Button type="submit" variant="secondary" size="sm">
-                  Restore
+                  {tc("actions.restore")}
                 </Button>
               </form>
             ) : (
               <form action={archiveClientRecord}>
                 <input type="hidden" name="id" value={client.id} />
                 <ConfirmSubmit
-                  confirmLabel="Archive client"
-                  prompt="Archive this client?"
+                  confirmLabel={t("archiveConfirmLabel")}
+                  prompt={t("confirmArchive")}
                   className="text-danger-strong hover:bg-danger/10"
                 >
-                  Archive
+                  {tc("actions.archive")}
                 </ConfirmSubmit>
               </form>
             )}
@@ -100,19 +106,19 @@ export default async function ClientDetailPage({
 
       {client.notes ? (
         <Card>
-          <section aria-label="Notes" className="p-5">
-            <h2 className="mb-1.5 text-base font-semibold tracking-tight">Notes</h2>
+          <section aria-label={t("notesHeading")} className="p-5">
+            <h2 className="mb-1.5 text-base font-semibold tracking-tight">{t("notesHeading")}</h2>
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{client.notes}</p>
           </section>
         </Card>
       ) : null}
 
-      <section aria-label="Projects" className="space-y-3">
+      <section aria-label={t("projectsHeading")} className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Projects</h2>
+          <h2 className="text-lg font-medium">{t("projectsHeading")}</h2>
           <ButtonLink href={`/projects/new?client=${client.id}`} size="sm">
             <Plus className="h-4 w-4" aria-hidden="true" />
-            New project
+            {t("newProject")}
           </ButtonLink>
         </div>
 
@@ -123,10 +129,10 @@ export default async function ClientDetailPage({
                 <li key={project.id}>
                   <Link
                     href={`/projects/${project.id}`}
-                    className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/50"
+                    className="group flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/15 to-brand-2/10 text-brand ring-1 ring-inset ring-brand/15">
+                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
                         <Globe className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <div className="min-w-0">
@@ -146,12 +152,12 @@ export default async function ClientDetailPage({
         ) : (
           <EmptyState
             icon={Globe}
-            title="No projects under this client yet"
-            description="Add the website you want to audit for this client."
+            title={t("noProjectsTitle")}
+            description={t("noProjectsDescription")}
             action={
               <ButtonLink href={`/projects/new?client=${client.id}`} size="sm">
                 <Plus className="h-4 w-4" aria-hidden="true" />
-                Add a project
+                {t("addProject")}
               </ButtonLink>
             }
           />

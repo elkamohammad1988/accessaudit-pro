@@ -1,0 +1,160 @@
+{
+  "header": {
+    "guides": "Guides",
+    "pricing": "Tarifs",
+    "signIn": "Se connecter",
+    "startFree": "Commencer gratuitement"
+  },
+  "landing": {
+    "meta": {
+      "title": "Audits d'accessibilité WCAG et rapports en marque blanche pour les agences",
+      "description": "Analysez n'importe quel site selon WCAG 2.2, obtenez un rapport priorisé associé à l'EAA / EN 301 549, et remettez à vos clients un livrable en marque blanche. Gratuit pour démarrer — sans carte bancaire.",
+      "ogTitle": "AccessAudit Pro — des audits WCAG que vos clients peuvent vraiment lire",
+      "ogDescription": "Audits d'accessibilité WCAG 2.2 à la demande et rapports en marque blanche pour les agences. Gratuit pour démarrer."
+    },
+    "hero": {
+      "badge": "WCAG 2.2 · EAA / EN 301 549",
+      "titleLead": "Des audits d'accessibilité que vos clients peuvent",
+      "titleEmphasis": "vraiment lire.",
+      "subtitle": "La directive sur l'accessibilité (European Accessibility Act) est désormais en vigueur. Analysez n'importe quel site, obtenez un rapport WCAG priorisé, et remettez un livrable en marque blanche — conçu pour les agences, pas seulement pour les développeurs.",
+      "ctaPrimary": "Commencer gratuitement",
+      "ctaSecondary": "Voir un exemple de rapport",
+      "reassurance": "Sans carte bancaire · Forfait gratuit à vie · Propulsé par axe-core"
+    },
+    "how": {
+      "heading": "De l'URL au rapport prêt pour le client en trois étapes",
+      "subheading": "Aucune configuration, aucune extension de navigateur, aucun tableur.",
+      "steps": [
+        {
+          "title": "Ajoutez le site",
+          "body": "Créez un client et un projet, puis pointez AccessAudit vers n'importe quelle URL publique — ou collez une liste de pages."
+        },
+        {
+          "title": "Lancez l'audit",
+          "body": "Notre worker affiche la page dans un vrai Chromium et exécute axe-core selon WCAG 2.2 AA. Suivez la progression en direct."
+        },
+        {
+          "title": "Livrez le rapport",
+          "body": "Remettez au client un PDF à votre marque ou un lien partageable — noté, priorisé, avec des conseils de correction et des notes de vérification manuelle."
+        }
+      ]
+    },
+    "features": {
+      "label": "Fonctionnalités",
+      "items": [
+        {
+          "title": "Analysez en quelques secondes",
+          "body": "Saisissez une URL (ou une liste). Un worker Chromium headless + axe-core audite la page rendue selon WCAG 2.2 et la note."
+        },
+        {
+          "title": "Des rapports que les clients peuvent lire",
+          "body": "Priorisés par impact, associés aux critères WCAG, avec des conseils de correction en langage clair — pas un mur de sorties de console pour développeurs."
+        },
+        {
+          "title": "Livrables en marque blanche",
+          "body": "Partagez un lien public à votre marque ou exportez un PDF avec votre logo et vos couleurs. Vendez les audits comme une véritable prestation."
+        },
+        {
+          "title": "Multi-clients par conception",
+          "body": "Organisez le travail par client et par projet, ré-analysez au fil du temps, et conservez chaque audit dans vos archives."
+        }
+      ]
+    },
+    "pricing": {
+      "heading": "Une tarification simple, pensée pour les agences",
+      "subheading": "Commencez gratuitement, sans carte bancaire. Passez à un forfait supérieur quand vous en avez besoin.",
+      "mostPopular": "Le plus populaire",
+      "getStarted": "Commencer",
+      "choose": "Choisir {plan}",
+      "compare": "Comparer toutes les fonctionnalités →",
+      "disclaimer": "L'analyse automatisée détecte environ 30 à 50 % des problèmes WCAG. Chaque rapport signale les points qui nécessitent encore une vérification manuelle — vous protégeant ainsi que vos clients. Les espaces de travail sont mono-utilisateur dans cette version ; les sièges d'équipe sont prévus sur la feuille de route."
+    },
+    "faq": {
+      "heading": "Les questions que se posent les agences",
+      "items": [
+        {
+          "q": "Une analyse automatisée rend-elle un site conforme ?",
+          "a": "Aucun outil ne le peut — et nous le disons sur chaque rapport. Les tests automatisés (nous utilisons axe-core, le moteur derrière Lighthouse et axe DevTools) détectent de manière fiable les 30 à 50 % de problèmes WCAG qui sont décelables par une machine. Chaque rapport indique précisément quels critères nécessitent encore une vérification humaine, afin que vous fixiez les bonnes attentes et restiez protégé sur le plan juridique."
+        },
+        {
+          "q": "Par rapport à quels standards effectuez-vous les vérifications ?",
+          "a": "WCAG 2.2 niveaux A et AA. Les constats sont associés à la directive sur l'accessibilité (European Accessibility Act) / EN 301 549 (notre cadre principal), ainsi qu'à l'ADA et à la Section 508 pour les projets aux États-Unis — de sorte qu'une seule analyse réponde à l'obligation à laquelle votre client est soumis."
+        },
+        {
+          "q": "Puis-je apposer ma propre marque sur les rapports ?",
+          "a": "Oui, avec tout forfait payant : votre logo et votre couleur de marque sur les PDF en marque blanche, ainsi que la possibilité de retirer la mention « Propulsé par AccessAudit » à partir du forfait Agency. Les rapports deviennent un livrable que vous pouvez vendre."
+        },
+        {
+          "q": "Ai-je besoin d'une carte bancaire pour démarrer ?",
+          "a": "Non. Le forfait Free ne nécessite aucune carte — inscrivez-vous et lancez votre première analyse en quelques minutes. Passez à un forfait supérieur uniquement lorsque vous atteignez une limite."
+        },
+        {
+          "q": "Les données de mes clients sont-elles en sécurité ?",
+          "a": "Nous ne récupérons que des pages accessibles publiquement, et nous ne stockons que des extraits HTML des éléments signalés — jamais une copie complète du site. Chaque espace de travail est isolé au niveau de la ligne de base de données, de sorte que personne d'autre ne peut voir vos audits. Annulez à tout moment depuis le portail de facturation."
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Lancez votre premier audit aujourd'hui",
+      "body": "Transformez la conformité en matière d'accessibilité en une prestation. Gratuit pour démarrer — sans carte, sans engagement.",
+      "button": "Commencer gratuitement"
+    }
+  },
+  "pricing": {
+    "meta": {
+      "title": "Tarifs",
+      "description": "Une tarification pensée pour les agences pour les audits d'accessibilité WCAG 2.2 — conçue pour la conformité à la directive sur l'accessibilité (EAA). Commencez gratuitement, sans carte. Mensuel ou annuel (2 mois offerts)."
+    },
+    "heading": "Une tarification qui évolue avec votre portefeuille de clients",
+    "subheading": "Commencez gratuitement — sans carte bancaire. Montez en gamme à mesure que vous prenez plus de clients ou que vous avez besoin de livrables en marque blanche. Mensuel ou annuel (2 mois offerts). Annulez à tout moment.",
+    "eaaTitle": "La directive sur l'accessibilité (European Accessibility Act) est en vigueur.",
+    "eaaBody": "Les entreprises qui vendent à des consommateurs de l'UE doivent respecter les exigences d'accessibilité fondées sur WCAG, sous peine de sanctions. Auditez chaque site client et fournissez une preuve en quelques minutes —",
+    "eaaLink": "lire le guide sur l'EAA",
+    "tableCaption": "Comparaison des fonctionnalités entre les forfaits Free, Starter, Agency et Scale",
+    "feature": "Fonctionnalité",
+    "perYear": "ou {yearly} $/an · économisez {savings} $",
+    "mostPopular": "Le plus populaire",
+    "getStarted": "Commencer",
+    "choose": "Choisir",
+    "included": "Inclus",
+    "notIncluded": "Non inclus",
+    "disclaimer": "L'analyse automatisée détecte environ 30 à 50 % des problèmes WCAG. Chaque rapport signale les points qui nécessitent encore une vérification manuelle — vous protégeant ainsi que vos clients. Les espaces de travail sont mono-utilisateur dans cette version ; les sièges d'équipe sont prévus sur la feuille de route.",
+    "faqHeading": "Questions sur la facturation",
+    "faq": [
+      {
+        "q": "Puis-je démarrer sans carte bancaire ?",
+        "a": "Oui. Le forfait Free ne nécessite aucune carte — inscrivez-vous, créez votre espace de travail et lancez votre première analyse en quelques minutes."
+      },
+      {
+        "q": "Puis-je annuler à tout moment ?",
+        "a": "Oui. Gérez ou annulez votre abonnement depuis le portail de facturation Stripe. L'annulation prend effet à la fin de la période en cours ; vous conservez l'accès jusque-là."
+      },
+      {
+        "q": "Que se passe-t-il lorsque je change de forfait à la hausse ou à la baisse ?",
+        "a": "Les montées en gamme prennent effet immédiatement et vos nouvelles limites s'appliquent aussitôt. Les passages à un forfait inférieur s'appliquent à la prochaine période de facturation. La facturation est calculée au prorata par Stripe."
+      },
+      {
+        "q": "Proposez-vous des remboursements ?",
+        "a": "Sauf disposition légale contraire, les paiements ne sont pas remboursables et nous ne facturons pas les analyses inutilisées — le forfait Free vous permet donc d'évaluer pleinement le produit avant de payer."
+      }
+    ],
+    "ctaHeading": "Essayez gratuitement — sans carte bancaire",
+    "ctaBody": "Lancez un véritable audit WCAG et voyez le rapport que recevraient vos clients, avant de payer le moindre centime.",
+    "ctaButton": "Commencer gratuitement"
+  },
+  "sample": {
+    "meta": {
+      "title": "Exemple de rapport d'accessibilité",
+      "description": "Découvrez exactement à quoi ressemble un rapport AccessAudit Pro — un audit WCAG 2.2 noté, avec violations priorisées et conseils de correction, prêt à être remis à un client."
+    },
+    "bannerStrong": "Ceci est un exemple de rapport.",
+    "bannerRest": "C'est exactement ce que reçoivent vos clients — lancez-en un vrai sur n'importe quel site, gratuitement.",
+    "bannerCta": "Auditer mon site",
+    "reportTitle": "Audit d'accessibilité",
+    "poweredBy": "Propulsé par AccessAudit Pro",
+    "ctaHeading": "Générez un rapport comme celui-ci pour votre client",
+    "ctaBody": "Gratuit pour démarrer — sans carte. Ajoutez votre logo et votre couleur de marque, puis exportez un PDF ou partagez un lien.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Voir les tarifs"
+  }
+}

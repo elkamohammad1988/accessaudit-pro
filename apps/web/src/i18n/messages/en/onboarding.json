@@ -1,0 +1,18 @@
+{
+  "metaTitle": "Create your workspace",
+  "title": "Create your workspace",
+  "subtitle": "This is your agency's home. You can change branding later.",
+  "agencyName": "Agency name",
+  "agencyNamePlaceholder": "Pixel & Pine Studio",
+  "brandColor": "Brand color",
+  "brandColorHint": "Used on your white-label reports.",
+  "submit": "Create workspace",
+  "creating": "Creating…",
+  "messages": {
+    "invalidInput": "Invalid input.",
+    "nameMin": "Agency name must be at least 2 characters.",
+    "brandColorHex": "Brand color must be a hex value like #A24425.",
+    "createFailed": "Could not create your workspace. Please try again.",
+    "slugFailed": "Could not generate a unique workspace URL. Try a different name."
+  }
+}

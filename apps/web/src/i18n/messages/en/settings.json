@@ -1,0 +1,49 @@
+{
+  "metaTitle": "Settings",
+  "title": "Settings",
+  "subtitle": "Manage your account, workspace branding, billing, and team.",
+  "profile": {
+    "heading": "Profile",
+    "description": "Your personal account details.",
+    "emailLabel": "Email",
+    "emailHint": "Sign-in email — change it from your auth provider.",
+    "fullNameLabel": "Full name",
+    "fullNamePlaceholder": "Jane Doe",
+    "avatarUrlLabel": "Avatar URL",
+    "avatarUrlPlaceholder": "https://…/avatar.png",
+    "submit": "Save profile",
+    "saved": "Profile saved."
+  },
+  "workspace": {
+    "heading": "Workspace & branding",
+    "description": "Name, URL, and the branding applied to your reports.",
+    "nameLabel": "Agency name",
+    "slugLabel": "Workspace URL slug",
+    "slugHint": "Lowercase letters, numbers, and hyphens. Used in links and public reports.",
+    "brandColorLabel": "Brand color",
+    "brandColorHint": "Applied to your white-label reports.",
+    "logoUrlLabel": "Logo URL",
+    "logoUrlPlaceholder": "https://…/logo.png",
+    "logoUrlHint": "Shown on branded reports. Paste a hosted image URL.",
+    "submit": "Save workspace",
+    "saved": "Workspace saved."
+  },
+  "billing": {
+    "heading": "Billing",
+    "description": "Manage your plan, usage, and payment method.",
+    "goToBilling": "Go to billing"
+  },
+  "team": {
+    "heading": "Team",
+    "description": "AccessAudit Pro is single-owner in this release. Multi-seat teams and roles arrive with a later update."
+  },
+  "messages": {
+    "invalidInput": "Invalid input.",
+    "nameMin": "Agency name must be at least 2 characters.",
+    "slugMin": "Slug must be at least 2 characters.",
+    "slugFormat": "Slug may contain only lowercase letters, numbers, and hyphens.",
+    "brandColorHex": "Brand color must be a hex value like #A24425.",
+    "slugTaken": "That workspace URL is taken — choose a different slug.",
+    "saveFailed": "Something went wrong saving your changes. Please try again."
+  }
+}

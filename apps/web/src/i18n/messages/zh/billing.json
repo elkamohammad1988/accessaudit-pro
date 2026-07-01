@@ -1,0 +1,54 @@
+{
+  "metaTitle": "账单",
+  "title": "账单",
+  "backToSettings": "设置",
+  "planBadge": "{plan} 套餐",
+  "renewsOn": "{date} 续订",
+  "downgradeNotice": "您的 {plan} 订阅处于{status}状态，因此当前适用 {effectivePlan} 套餐的限额。请在账单门户中更新您的付款方式以恢复完整访问权限。",
+  "status": {
+    "active": "有效",
+    "trialing": "试用中",
+    "pastDue": "逾期未付",
+    "canceled": "已取消",
+    "incomplete": "未完成",
+    "none": "无有效订阅"
+  },
+  "banner": {
+    "success": "订阅已更新。此处可能需要几秒钟才能反映出来。",
+    "cancel": "结账已取消——未做任何更改。",
+    "error": "账单出现问题。请重试。",
+    "noCustomer": "尚无账单账户——选择一个套餐即可开始。",
+    "scanLimit": "您已达到本月套餐的扫描限额。升级以运行更多。"
+  },
+  "usage": {
+    "aria": "用量",
+    "scansThisMonth": "本月扫描次数",
+    "clients": "客户",
+    "projects": "项目",
+    "meter": "{label}用量"
+  },
+  "manage": {
+    "aria": "管理订阅",
+    "heading": "管理订阅",
+    "description": "更改套餐、更新付款方式、查看发票或取消。",
+    "openPortal": "打开账单门户"
+  },
+  "plan": {
+    "heading": "套餐",
+    "intervalGroup": "计费周期",
+    "monthly": "按月",
+    "annual": "按年",
+    "annualNote": "· 赠送两个月",
+    "current": "当前",
+    "perMonth": "/月",
+    "perYear": "/年",
+    "savePerYear": "每年节省 ${amount}",
+    "noWhiteLabel": "无白标",
+    "yourPlan": "您的套餐",
+    "downgradeViaPortal": "通过门户降级",
+    "switchViaPortal": "通过门户切换",
+    "choose": "选择 {plan}",
+    "footerMonthly": "限额在您创建客户、项目和扫描时强制执行。通过 Stripe 按月计费。本版本中工作区为单用户——团队席位已列入规划路线图。",
+    "footerAnnual": "限额在您创建客户、项目和扫描时强制执行。通过 Stripe 按月或按年计费。本版本中工作区为单用户——团队席位已列入规划路线图。"
+  }
+}

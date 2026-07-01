@@ -1,7 +1,11 @@
+"use client";
+
 import { ChevronDown } from "lucide-react";
 import { IMPACT_LEVELS, scoreBand, type ImpactTotals, type ScanStatus } from "@accessaudit/shared";
-import { IMPACT_BADGE, IMPACT_LABEL, scoreClassName, STATUS_META, totalViolations } from "@/lib/scan-format";
+import { IMPACT_BADGE, scoreClassName, totalViolations } from "@/lib/scan-format";
 import { formatDateTime } from "@/lib/dates";
+import { useTranslations, useLocale } from "@/i18n/provider";
+import { bandLabel } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScoreGauge } from "@/components/charts/score-gauge";
@@ -9,10 +13,10 @@ import type { GroupedViolation } from "@/lib/report";
 
 /** Left-edge accent per impact level — lets a reader scan severity at a glance. */
 const IMPACT_ACCENT: Record<string, string> = {
-  critical: "border-l-critical",
-  serious: "border-l-serious",
-  moderate: "border-l-moderate",
-  minor: "border-l-minor",
+  critical: "border-s-critical",
+  serious: "border-s-serious",
+  moderate: "border-s-moderate",
+  minor: "border-s-minor",
 };
 
 export interface ReportPage {
@@ -78,6 +82,10 @@ export function ReportView({
   totalViolationRows,
   truncated = false,
 }: ReportViewProps) {
+  const t = useTranslations("scans");
+  const tb = useTranslations("common.band");
+  const ts = useTranslations("common.score");
+  const locale = useLocale();
   const issues = totalViolations(totals);
   const inProgress = status === "queued" || status === "running";
   const failedPages = Math.max(0, pages.length - pagesScanned);
@@ -86,28 +94,24 @@ export function ReportView({
 
   if (inProgress) {
     return (
-      <div className="relative overflow-hidden rounded-lg border bg-card p-8 text-center shadow-sm">
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 h-24 w-40 -translate-x-1/2 rounded-full bg-brand/10 blur-2xl"
-        />
-        <div className="relative">
+      <div className="rounded-lg border bg-card p-6 text-center shadow-sm">
+        <div>
           <p className="flex items-center justify-center gap-2 font-medium">
             <span className="relative flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand/60" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand" />
             </span>
-            {STATUS_META[status].label}…
+            {t("status." + status)}…
           </p>
           <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-            The worker is auditing your page(s). This view updates automatically.
+            {t("report.inProgressNote")}
           </p>
           <div
             role="progressbar"
-            aria-label="Scan in progress"
+            aria-label={t("report.inProgressAria")}
             className="mx-auto mt-5 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-muted"
           >
-            <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-brand to-brand-2 animate-progress-indeterminate" />
+            <div className="h-full w-1/3 rounded-full bg-brand animate-progress-indeterminate" />
           </div>
         </div>
       </div>
@@ -116,63 +120,59 @@ export function ReportView({
 
   if (status === "failed") {
     return (
-      <div className="rounded-lg border border-danger/30 bg-danger/10 p-6">
-        <p className="font-medium text-danger-strong">Scan failed</p>
-        <p className="mt-1 text-sm text-danger-strong/90">{errorReason ?? "Unknown error."}</p>
+      <div className="rounded-lg border border-danger/30 bg-danger/10 p-5">
+        <p className="font-medium text-danger-strong">{t("report.failedTitle")}</p>
+        <p className="mt-1 text-sm text-danger-strong/90">{errorReason ?? t("report.unknownError")}</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {status === "partial" && failedPages > 0 ? (
         <section
-          aria-label="Partial scan"
+          aria-label={t("report.partialAria")}
           className="rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm"
         >
-          <p className="font-medium text-warning-strong">Partial scan — {failedPages} page(s) could not be loaded</p>
-          <p className="mt-1 text-muted-foreground">
-            The score and totals below reflect only the {pagesScanned} page(s) that loaded
-            successfully. Check the per-page list for the URLs that failed, then re-scan if needed.
-          </p>
+          <p className="font-medium text-warning-strong">{t.plural("report.partialTitle", failedPages)}</p>
+          <p className="mt-1 text-muted-foreground">{t.plural("report.partialBody", pagesScanned)}</p>
         </section>
       ) : null}
 
       {/* Summary */}
-      <section aria-label="Summary" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="relative flex flex-col items-center justify-center gap-3 overflow-hidden p-6 text-center">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-10 h-28 w-28 -translate-x-1/2 rounded-full bg-brand/10 blur-2xl print:hidden"
+      <section aria-label={t("report.summaryAria")} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Card className="flex flex-col items-center justify-center gap-3 p-5 text-center">
+          <ScoreGauge
+            score={score}
+            ariaLabel={score != null ? ts("aria", { score }) : ts("none")}
           />
-          <ScoreGauge score={score} />
           <div className="space-y-1">
-            <Badge variant={band.tone === "muted" ? "secondary" : band.tone}>{band.label}</Badge>
-            <p className="text-xs text-muted-foreground">Accessibility score</p>
+            <Badge variant={band.tone === "muted" ? "secondary" : band.tone}>{bandLabel(band.tone, tb)}</Badge>
+            <p className="text-xs text-muted-foreground">{t("report.accessibilityScore")}</p>
           </div>
         </Card>
-        <Card className="flex flex-col justify-center p-6">
-          <p className="text-sm text-muted-foreground">Issues found</p>
+        <Card className="flex flex-col justify-center p-5">
+          <p className="text-sm text-muted-foreground">{t("report.issuesFound")}</p>
           <p className="mt-1 text-4xl font-bold tabular-nums">{issues}</p>
           <p className="mt-1 text-xs text-muted-foreground">
             <span className={criticalAndSerious > 0 ? "font-semibold text-danger-strong" : undefined}>
               {criticalAndSerious}
             </span>{" "}
-            critical or serious
+            {t("report.criticalOrSerious")}
           </p>
         </Card>
-        <Card className="flex flex-col justify-center p-6">
-          <p className="text-sm text-muted-foreground">Pages scanned</p>
+        <Card className="flex flex-col justify-center p-5">
+          <p className="text-sm text-muted-foreground">{t("report.pagesScanned")}</p>
           <p className="mt-1 text-4xl font-bold tabular-nums">{pagesScanned}</p>
-          <p className="mt-1 text-xs text-muted-foreground">WCAG 2.2 Level {wcagLevel}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("report.wcagLevel", { level: wcagLevel })}</p>
         </Card>
       </section>
 
       {/* Breakdown by impact */}
-      <section aria-label="By impact" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section aria-label={t("report.byImpactAria")} className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {IMPACT_LEVELS.map((level) => (
           <div key={level} className={`rounded-lg p-3 ${IMPACT_BADGE[level]}`}>
-            <p className="text-xs font-semibold uppercase tracking-wide">{IMPACT_LABEL[level]}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide">{t("impact." + level)}</p>
             <p className="mt-1 text-2xl font-bold tabular-nums">{totals[level]}</p>
           </div>
         ))}
@@ -180,28 +180,23 @@ export function ReportView({
 
       {/* Honesty principle — required on every report */}
       <section
-        aria-label="Manual checks recommended"
+        aria-label={t("report.manualChecksAria")}
         className="rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm"
       >
-        <p className="font-medium text-warning-strong">Automated scan — manual checks still recommended</p>
-        <p className="mt-1 text-muted-foreground">
-          This audit targets WCAG 2.2 Level {wcagLevel} using automated rules (axe-core), which
-          catch roughly 30–50% of issues. It does not replace human review of things like
-          meaningful alt-text quality, logical reading/focus order, keyboard traps, captions, and
-          cognitive clarity. Use it to fix the clear failures fast, then review the rest manually.
-        </p>
+        <p className="font-medium text-warning-strong">{t("report.honestyTitle")}</p>
+        <p className="mt-1 text-muted-foreground">{t("report.honestyBody", { level: wcagLevel })}</p>
       </section>
 
       {/* Per-page results */}
       {pages.length > 1 ? (
-        <section aria-label="By page" className="space-y-3">
-          <h2 className="text-lg font-medium">Pages</h2>
+        <section aria-label={t("report.byPageAria")} className="space-y-3">
+          <h2 className="text-lg font-medium">{t("report.pagesHeading")}</h2>
           <Card className="overflow-hidden">
             <ul className="divide-y">
               {pages.map((page) => (
                 <li
                   key={page.url}
-                  className="flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/40"
+                  className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/40"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium" title={page.url}>
@@ -209,8 +204,10 @@ export function ReportView({
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {page.status === "ok"
-                        ? `${totalViolations(page.totals)} issue(s)`
-                        : `Error${page.httpStatus ? ` · HTTP ${page.httpStatus}` : ""}`}
+                        ? t.plural("report.issuesCount", totalViolations(page.totals))
+                        : page.httpStatus
+                          ? t("report.errorHttp", { status: page.httpStatus })
+                          : t("report.error")}
                     </p>
                   </div>
                   <span className={`text-sm font-semibold tabular-nums ${scoreClassName(page.score)}`}>
@@ -224,41 +221,41 @@ export function ReportView({
       ) : null}
 
       {/* Violation detail */}
-      <section aria-label="Violations" className="space-y-3">
-        <h2 className="text-lg font-medium">Violations ({groups.length})</h2>
+      <section aria-label={t("report.violationsAria")} className="space-y-3">
+        <h2 className="text-lg font-medium">{t("report.violationsHeading", { count: groups.length })}</h2>
         {truncated ? (
           <div
             role="status"
             className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning-strong"
           >
-            Showing the {groups.length} highest-severity rule(s) covering the first{" "}
-            {totalViolationRows != null ? "1,000" : "loaded"} findings of{" "}
-            {totalViolationRows?.toLocaleString() ?? "many"}. Export the CSV for the complete,
-            authoritative record.
+            {t.plural("report.truncatedNotice", groups.length, {
+              shown: totalViolationRows != null ? 1000 : t("report.loadedFindings"),
+              total: totalViolationRows ?? t("report.manyFindings"),
+            })}
           </div>
         ) : null}
         {groups.length === 0 ? (
-          <div className="rounded-lg border border-success/30 bg-success/10 p-6 text-center text-sm text-success-strong">
-            No automated WCAG {wcagLevel} violations found. Nice — still worth a manual review.
+          <div className="rounded-lg border border-success/30 bg-success/10 p-5 text-center text-sm text-success-strong">
+            {t("report.noViolations", { level: wcagLevel })}
           </div>
         ) : (
           <ul className="space-y-3">
             {groups.map((group) => (
               <li
                 key={group.ruleId}
-                className={`overflow-hidden rounded-lg border border-l-4 bg-card ${
-                  IMPACT_ACCENT[group.impact] ?? "border-l-border"
+                className={`overflow-hidden rounded-lg border border-s-4 bg-card ${
+                  IMPACT_ACCENT[group.impact] ?? "border-s-border"
                 }`}
               >
                 <details open={expanded} className="group">
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-3 p-4 transition-colors hover:bg-muted/40">
                     <span className="min-w-0">
                       <span className="flex flex-wrap items-center gap-2">
-                        <Badge variant={group.impact}>{IMPACT_LABEL[group.impact]}</Badge>
+                        <Badge variant={group.impact}>{t("impact." + group.impact)}</Badge>
                         <code className="font-mono text-sm font-semibold">{group.ruleId}</code>
                         {group.wcagCriteria.length > 0 ? (
                           <span className="text-xs text-muted-foreground">
-                            WCAG {group.wcagCriteria.join(", ")}
+                            {t("report.wcagCriteria", { criteria: group.wcagCriteria.join(", ") })}
                           </span>
                         ) : null}
                       </span>
@@ -267,7 +264,7 @@ export function ReportView({
                       </span>
                     </span>
                     <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                      {group.nodeCount} element(s)
+                      {t.plural("report.elementsCount", group.nodeCount)}
                       <ChevronDown
                         className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180 print:hidden"
                         aria-hidden="true"
@@ -284,7 +281,7 @@ export function ReportView({
                         rel="noopener noreferrer"
                         className="inline-block text-sm font-medium text-brand underline-offset-4 hover:underline"
                       >
-                        How to fix this →
+                        {t("report.howToFix")}
                       </a>
                     ) : null}
 
@@ -320,8 +317,7 @@ export function ReportView({
                           ))}
                           {view.hidden > 0 ? (
                             <p className="text-xs text-muted-foreground">
-                              + {view.hidden.toLocaleString()} more affected element(s). Export the CSV
-                              for the full list.
+                              {t.plural("report.moreElements", view.hidden)}
                             </p>
                           ) : null}
                         </>
@@ -336,7 +332,9 @@ export function ReportView({
       </section>
 
       {finishedAt ? (
-        <p className="text-xs text-muted-foreground">Completed {formatDateTime(finishedAt)}.</p>
+        <p className="text-xs text-muted-foreground">
+          {t("report.completed", { date: formatDateTime(finishedAt, locale) })}
+        </p>
       ) : null}
     </div>
   );

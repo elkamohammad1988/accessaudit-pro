@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { appBaseUrl } from "@/lib/env";
-import type { BillingInterval } from "@accessaudit/shared";
+import { ENTITLED_STATUSES, type BillingInterval } from "@accessaudit/shared";
 import { getStripe, priceIdForPlan } from "@/lib/stripe";
 
 const planSchema = z.enum(["starter", "agency", "scale"]);
@@ -23,22 +23,37 @@ export async function startCheckout(formData: FormData): Promise<void> {
   const { organization } = await requireOrg();
   const admin = createAdminClient();
 
+  const { data: sub } = await admin
+    .from("subscriptions")
+    .select("stripe_customer_id, status, stripe_subscription_id")
+    .eq("organization_id", organization.id)
+    .maybeSingle();
+
+  // Already on an active paid subscription — don't open a second checkout (Stripe
+  // would create a duplicate subscription and double-bill). Send them back to
+  // billing, where the "Manage subscription" portal button handles plan changes.
+  // Kept OUTSIDE the try below so redirect()'s NEXT_REDIRECT signal isn't swallowed
+  // by the catch.
+  if (sub?.stripe_subscription_id && sub.status && ENTITLED_STATUSES.includes(sub.status)) {
+    redirect("/settings/billing");
+  }
+
   let destination = "/settings/billing?status=error";
   try {
     const stripe = getStripe();
 
-    const { data: sub } = await admin
-      .from("subscriptions")
-      .select("stripe_customer_id")
-      .eq("organization_id", organization.id)
-      .maybeSingle();
-
     let customerId = sub?.stripe_customer_id ?? null;
     if (!customerId) {
-      const customer = await stripe.customers.create({
-        name: organization.name,
-        metadata: { organization_id: organization.id },
-      });
+      const customer = await stripe.customers.create(
+        {
+          name: organization.name,
+          metadata: { organization_id: organization.id },
+        },
+        // One Stripe customer per org: if two checkouts race, the idempotency key
+        // makes Stripe return the SAME customer rather than orphaning a second one
+        // (which would later trip the stripe_customer_id UNIQUE constraint).
+        { idempotencyKey: `org-customer-${organization.id}` },
+      );
       customerId = customer.id;
       // subscriptions is service-role-write only — use the admin client.
       await admin

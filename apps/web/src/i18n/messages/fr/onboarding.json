@@ -1,0 +1,18 @@
+{
+  "metaTitle": "Créez votre espace de travail",
+  "title": "Créez votre espace de travail",
+  "subtitle": "C'est le foyer de votre agence. Vous pourrez modifier l'image de marque plus tard.",
+  "agencyName": "Nom de l'agence",
+  "agencyNamePlaceholder": "Studio Pixel & Pine",
+  "brandColor": "Couleur de marque",
+  "brandColorHint": "Utilisée sur vos rapports en marque blanche.",
+  "submit": "Créer l'espace de travail",
+  "creating": "Création…",
+  "messages": {
+    "invalidInput": "Saisie invalide.",
+    "nameMin": "Le nom de l'agence doit comporter au moins 2 caractères.",
+    "brandColorHex": "La couleur de marque doit être une valeur hexadécimale, par exemple #A24425.",
+    "createFailed": "Impossible de créer votre espace de travail. Veuillez réessayer.",
+    "slugFailed": "Impossible de générer une URL d'espace de travail unique. Essayez un autre nom."
+  }
+}

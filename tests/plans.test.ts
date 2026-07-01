@@ -7,6 +7,7 @@ import {
   limitsFor,
   pagesWithinScanLimit,
   priceForInterval,
+  rpcQuotaLimit,
   yearlySavings,
   UNLIMITED,
 } from "@accessaudit/shared";
@@ -45,6 +46,15 @@ describe("plan limits", () => {
     expect(pagesWithinScanLimit("starter", 25)).toBe(true); // boundary is allowed
     expect(pagesWithinScanLimit("starter", 26)).toBe(false);
     expect(pagesWithinScanLimit("scale", 500)).toBe(true);
+  });
+
+  it("rpcQuotaLimit maps finite caps through and unlimited to -1", () => {
+    // SQL has no Infinity — the atomic-quota RPCs read any negative value as "no cap".
+    expect(rpcQuotaLimit(limitsFor("free").clients)).toBe(1);
+    expect(rpcQuotaLimit(limitsFor("starter").projects)).toBe(25);
+    expect(rpcQuotaLimit(limitsFor("free").scansPerMonth)).toBe(10);
+    expect(rpcQuotaLimit(limitsFor("agency").clients)).toBe(-1);
+    expect(rpcQuotaLimit(UNLIMITED)).toBe(-1);
   });
 });
 

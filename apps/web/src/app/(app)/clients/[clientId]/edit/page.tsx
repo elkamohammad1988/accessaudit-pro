@@ -3,10 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "@/i18n/server";
 import { ClientForm } from "@/components/clients/client-form";
 import { updateClientRecord } from "../../actions";
 
-export const metadata: Metadata = { title: "Edit client" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("clients");
+  return { title: t("metaEdit") };
+}
 
 export default async function EditClientPage({
   params,
@@ -14,6 +18,7 @@ export default async function EditClientPage({
   params: Promise<{ clientId: string }>;
 }) {
   const { clientId } = await params;
+  const t = await getTranslations("clients");
   const { organization } = await requireSession();
   if (!organization) return null;
 
@@ -28,7 +33,7 @@ export default async function EditClientPage({
   if (!client) notFound();
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
+    <div className="mx-auto max-w-lg space-y-5">
       <div>
         <Link
           href={`/clients/${client.id}`}
@@ -36,9 +41,9 @@ export default async function EditClientPage({
         >
           ← {client.name}
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold">Edit client</h1>
+        <h1 className="mt-2 text-2xl font-semibold">{t("metaEdit")}</h1>
       </div>
-      <ClientForm action={updateClientRecord} client={client} submitLabel="Save changes" />
+      <ClientForm action={updateClientRecord} client={client} submitLabel={t("editSubmit")} />
     </div>
   );
 }

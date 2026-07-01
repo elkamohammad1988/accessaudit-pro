@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight, ChevronDown, Mail, Plus, Users } from "lucide-react";
-import { formatLimit, limitsFor, type PlanTier } from "@accessaudit/shared";
+import { effectivePlan, limitsFor } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,50 +13,71 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
 import { restoreClientRecord } from "./actions";
 
-export const metadata: Metadata = { title: "Clients" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("clients");
+  return { title: t("metaTitle") };
+}
+
+/** Max rows fetched for the list before we surface a "refine" notice. Makes the
+ *  bound explicit instead of silently hitting PostgREST's row cap; generous enough
+ *  that only unlimited-tier orgs can approach it. */
+const LIST_PAGE_LIMIT = 200;
 
 export default async function ClientsPage() {
   const { organization } = await requireSession();
   if (!organization) return null;
 
   const supabase = await createClient();
+  const t = await getTranslations("clients");
+  const tc = await getTranslations("common");
+  const tp = await getTranslations("plans");
   const [{ data: clients, error: clientsError }, { data: sub }] = await Promise.all([
     supabase
       .from("clients")
       .select("id, name, contact_email, archived_at, created_at")
       .eq("organization_id", organization.id)
-      .order("created_at", { ascending: false }),
-    supabase.from("subscriptions").select("plan").eq("organization_id", organization.id).maybeSingle(),
+      .order("created_at", { ascending: false })
+      .limit(LIST_PAGE_LIMIT + 1),
+    supabase
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("organization_id", organization.id)
+      .maybeSingle(),
   ]);
 
-  const active = (clients ?? []).filter((c) => !c.archived_at);
-  const archived = (clients ?? []).filter((c) => c.archived_at);
-  const plan: PlanTier = sub?.plan ?? "free";
-  const limit = limitsFor(plan).clients;
+  const rows = clients ?? [];
+  const truncated = rows.length > LIST_PAGE_LIMIT;
+  const visible = truncated ? rows.slice(0, LIST_PAGE_LIMIT) : rows;
+  const active = visible.filter((c) => !c.archived_at);
+  const archived = visible.filter((c) => c.archived_at);
+  // Show the *enforced* plan's limit (a canceled paid sub falls back to free), so
+  // the badge always matches what createClientRecord actually allows.
+  const limit = limitsFor(effectivePlan(sub?.plan, sub?.status)).clients;
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Clients</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-            The companies you audit for
+            {t("subtitle")}
             <Badge variant="secondary">
-              {active.length} / {formatLimit(limit)}
+              {active.length} / {displayLimit(limit, tp)}
             </Badge>
           </p>
         </div>
         <ButtonLink href="/clients/new">
           <Plus className="h-4 w-4" aria-hidden="true" />
-          New client
+          {t("new")}
         </ButtonLink>
       </header>
 
+      {truncated ? (
+        <NoticeBanner tone="info">{tc("labels.listTruncated", { count: LIST_PAGE_LIMIT })}</NoticeBanner>
+      ) : null}
+
       {clientsError ? (
-        <NoticeBanner tone="error">
-          We couldn&apos;t load your clients just now. Refresh the page to try again — if it keeps
-          happening, the issue is on our side, not yours.
-        </NoticeBanner>
+        <NoticeBanner tone="error">{t("loadError")}</NoticeBanner>
       ) : active.length > 0 ? (
         <Card className="overflow-hidden">
           <ul className="divide-y">
@@ -62,17 +85,17 @@ export default async function ClientsPage() {
               <li key={client.id}>
                 <Link
                   href={`/clients/${client.id}`}
-                  className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/50"
+                  className="group flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/15 to-brand-2/10 text-brand ring-1 ring-inset ring-brand/15">
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
                       <Users className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{client.name}</p>
                       <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
                         <Mail className="h-3 w-3 shrink-0" aria-hidden="true" />
-                        {client.contact_email ?? "No contact email"}
+                        {client.contact_email ?? t("noContactEmail")}
                       </p>
                     </div>
                   </div>
@@ -88,12 +111,12 @@ export default async function ClientsPage() {
       ) : (
         <EmptyState
           icon={Users}
-          title="No clients yet"
-          description="Add the first company you audit for. Projects (their websites) live under a client."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             <ButtonLink href="/clients/new">
               <Plus className="h-4 w-4" aria-hidden="true" />
-              Add your first client
+              {t("emptyAction")}
             </ButtonLink>
           }
         />
@@ -102,7 +125,7 @@ export default async function ClientsPage() {
       {archived.length > 0 ? (
         <details className="group rounded-xl border bg-card px-4 py-3 shadow-xs transition-colors hover:border-foreground/15">
           <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium [&::-webkit-details-marker]:hidden">
-            Archived ({archived.length})
+            {tc("labels.archivedCount", { count: archived.length })}
             <ChevronDown
               aria-hidden="true"
               className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180"
@@ -115,7 +138,7 @@ export default async function ClientsPage() {
                 <form action={restoreClientRecord}>
                   <input type="hidden" name="id" value={client.id} />
                   <Button type="submit" variant="ghost" size="sm">
-                    Restore
+                    {tc("actions.restore")}
                   </Button>
                 </form>
               </li>

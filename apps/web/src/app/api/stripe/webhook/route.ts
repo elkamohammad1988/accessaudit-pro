@@ -17,7 +17,22 @@ async function syncFromSubscription(
   deleted = false,
 ): Promise<void> {
   const priceId = subscription.items.data[0]?.price?.id ?? null;
-  const plan: PlanTier = deleted ? "free" : (planForPriceId(priceId) ?? "free");
+  let plan: PlanTier;
+  if (deleted) {
+    plan = "free";
+  } else {
+    const mapped = planForPriceId(priceId);
+    if (!mapped && priceId) {
+      // A real, paying subscription on a price we don't recognize means a
+      // misconfigured environment (a missing STRIPE_PRICE_* var). Silently
+      // mapping it to `free` would downgrade a paying customer with no signal —
+      // throw instead so POST returns 500, Stripe keeps retrying, and the gap is
+      // loud (and self-heals once the env var is set). The event is NOT recorded
+      // as processed, so the retry re-runs it.
+      throw new Error(`Unmapped Stripe price ${priceId} — set the STRIPE_PRICE_* env var for this plan.`);
+    }
+    plan = mapped ?? "free";
+  }
   const status = deleted ? "canceled" : mapStripeStatus(subscription.status);
   // `current_period_end` is top-level on the API version we pin; read the
   // subscription-item fallback too so a future API-version move doesn't null it.

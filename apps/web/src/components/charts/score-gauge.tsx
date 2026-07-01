@@ -19,10 +19,13 @@ export function ScoreGauge({
   score,
   size = 132,
   strokeWidth = 12,
+  ariaLabel,
 }: {
   score: number | null;
   size?: number;
   strokeWidth?: number;
+  /** Localized accessible label — required so the gauge never ships English. */
+  ariaLabel: string;
 }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -31,8 +34,6 @@ export function ScoreGauge({
   const tone = TONE_CLASS[band.tone];
   const offset = circumference * (1 - clamped / 100);
   const center = size / 2;
-  // Distinct sizes need distinct gradient ids; identical defs may share one.
-  const gradId = `aa-gauge-grad-${size}`;
 
   return (
     <div
@@ -45,16 +46,8 @@ export function ScoreGauge({
         viewBox={`0 0 ${size} ${size}`}
         className={tone}
         role="img"
-        aria-label={score != null ? `Accessibility score ${score} out of 100` : "No score yet"}
+        aria-label={ariaLabel}
       >
-        <defs>
-          {/* Subtle light→full fade across the arc for depth (premium "lit ring"). */}
-          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
-          </linearGradient>
-        </defs>
-
         {/* Track */}
         <circle
           cx={center}
@@ -65,46 +58,21 @@ export function ScoreGauge({
           strokeWidth={strokeWidth}
         />
 
-        {/* Soft colored glow behind the arc — screen only, hidden in print/PDF. */}
-        {score != null ? (
-          <g className="print:hidden">
-            <circle
-              cx={center}
-              cy={center}
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-              transform={`rotate(-90 ${center} ${center})`}
-              className="animate-draw-ring"
-              style={{
-                ["--circumference" as string]: circumference,
-                filter: "blur(6px)",
-                opacity: 0.55,
-              }}
-            />
-          </g>
-        ) : null}
-
-        {/* Value arc — sweeps from empty → its value on mount. Pure CSS (the
-         * `draw-ring` keyframe reads `--circumference` as its start offset), so
-         * it works in Server Components and is disabled by reduced-motion. */}
+        {/* Value arc — the dash offset sets how much of the ring is filled. In
+            dark mode it carries a soft halo in its own band color (currentColor),
+            so the ring reads as glowing metal; omitted in light/print. */}
         <circle
           cx={center}
           cy={center}
           r={radius}
           fill="none"
-          stroke={score != null ? `url(#${gradId})` : "currentColor"}
+          stroke="currentColor"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           transform={`rotate(-90 ${center} ${center})`}
-          className={score != null ? "animate-draw-ring" : undefined}
-          style={{ ["--circumference" as string]: circumference }}
+          className="dark:[filter:drop-shadow(0_0_4px_currentColor)]"
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">

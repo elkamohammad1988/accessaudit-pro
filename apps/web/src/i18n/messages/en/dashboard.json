@@ -1,0 +1,30 @@
+{
+  "metaTitle": "Dashboard",
+  "title": "Dashboard",
+  "planBadge": "{plan} plan",
+  "newScan": "New scan",
+  "avgScore": "Average accessibility score",
+  "scoreTrendLabel": "Score trend across {count} scans",
+  "trendEmpty": "Run a few scans to see your score trend here.",
+  "trendCaption": {
+    "one": "Across your last {count} completed scan",
+    "other": "Across your last {count} completed scans"
+  },
+  "usageTitle": "Usage this month",
+  "meters": {
+    "scans": "Scans",
+    "clients": "Clients",
+    "projects": "Projects",
+    "aria": "{label} usage"
+  },
+  "pagesPerScan": "Pages / scan",
+  "severityHeading": "Issues by severity",
+  "recentHeading": "Recent scans",
+  "pagesCount": {
+    "one": "{count} page",
+    "other": "{count} pages"
+  },
+  "emptyTitle": "No scans yet",
+  "emptyDescription": "Run your first accessibility audit to see your scores, trends, and issues here.",
+  "emptyAction": "Run your first scan"
+}

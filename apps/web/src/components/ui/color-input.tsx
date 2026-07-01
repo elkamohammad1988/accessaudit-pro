@@ -13,11 +13,11 @@ export const ColorInput = React.forwardRef<HTMLInputElement, ColorInputProps>(
     <input
       ref={ref}
       type="color"
+      // Shares the premium `.field` surface so the swatch reads as one system
+      // with the text controls; the inner swatch is rounded to match.
       className={cn(
-        "h-10 w-14 cursor-pointer rounded-md border border-input bg-background p-1 shadow-xs",
-        "transition-colors hover:border-foreground/25",
-        "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20",
-        "[&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0",
+        "field h-11 w-14 cursor-pointer rounded-2xl p-1",
+        "[&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-xl [&::-webkit-color-swatch]:border-0",
         className,
       )}
       {...props}

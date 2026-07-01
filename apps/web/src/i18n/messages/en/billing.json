@@ -1,0 +1,54 @@
+{
+  "metaTitle": "Billing",
+  "title": "Billing",
+  "backToSettings": "Settings",
+  "planBadge": "{plan} plan",
+  "renewsOn": "renews {date}",
+  "downgradeNotice": "Your {plan} subscription is {status}, so {effectivePlan}-plan limits currently apply. Update your payment method in the billing portal to restore full access.",
+  "status": {
+    "active": "Active",
+    "trialing": "Trial",
+    "pastDue": "Payment past due",
+    "canceled": "Canceled",
+    "incomplete": "Incomplete",
+    "none": "No active subscription"
+  },
+  "banner": {
+    "success": "Subscription updated. It can take a few seconds to reflect here.",
+    "cancel": "Checkout canceled — no changes were made.",
+    "error": "Something went wrong with billing. Please try again.",
+    "noCustomer": "No billing account yet — pick a plan to get started.",
+    "scanLimit": "You've reached your plan's scan limit for this month. Upgrade to run more."
+  },
+  "usage": {
+    "aria": "Usage",
+    "scansThisMonth": "Scans this month",
+    "clients": "Clients",
+    "projects": "Projects",
+    "meter": "{label} usage"
+  },
+  "manage": {
+    "aria": "Manage subscription",
+    "heading": "Manage subscription",
+    "description": "Change plan, update payment method, view invoices, or cancel.",
+    "openPortal": "Open billing portal"
+  },
+  "plan": {
+    "heading": "Plans",
+    "intervalGroup": "Billing interval",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "annualNote": "· 2 months free",
+    "current": "Current",
+    "perMonth": "/mo",
+    "perYear": "/yr",
+    "savePerYear": "Save ${amount} a year",
+    "noWhiteLabel": "No white-label",
+    "yourPlan": "Your plan",
+    "downgradeViaPortal": "Downgrade via portal",
+    "switchViaPortal": "Switch via portal",
+    "choose": "Choose {plan}",
+    "footerMonthly": "Limits are enforced as you create clients, projects, and scans. Billed monthly via Stripe. Workspaces are single-user in this release — team seats are on the roadmap.",
+    "footerAnnual": "Limits are enforced as you create clients, projects, and scans. Billed monthly or annually via Stripe. Workspaces are single-user in this release — team seats are on the roadmap."
+  }
+}

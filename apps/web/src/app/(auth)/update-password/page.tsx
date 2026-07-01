@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { UpdatePasswordForm } from "@/components/auth/update-password-form";
+import { getTranslations } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Set a new password",
-  description: "Choose a new password for your AccessAudit Pro account.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("auth.updatePassword");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    robots: { index: false, follow: false },
+  };
+}
 export const dynamic = "force-dynamic";
 
 // Reached via the reset-password email link → /auth/callback exchanges the code
@@ -20,14 +24,13 @@ export default async function UpdatePasswordPage() {
   if (!user) {
     redirect("/login");
   }
+  const t = await getTranslations("auth.updatePassword");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold">Set a new password</h1>
-        <p className="text-sm text-muted-foreground">
-          Choose a new password for {user.email}.
-        </p>
+        <h1 className="text-xl font-semibold">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle", { email: user.email ?? "" })}</p>
       </div>
       <UpdatePasswordForm />
     </div>

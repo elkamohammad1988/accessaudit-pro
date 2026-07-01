@@ -1,0 +1,20 @@
+# Gitleaks configuration. Extends the default ruleset and allowlists content that
+# is intentionally in the repo and is NOT a live secret, so the secret-scan job
+# fails only on genuine leaks.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documented placeholders and test fixtures (not real secrets)"
+paths = [
+  # Placeholder env template — values are dummies (e.g. "price_...", dummy keys).
+  '''\.env\.example$''',
+  # E2E test fixtures use a fixed throwaway local credential, never a real account.
+  '''apps/web/e2e/.*''',
+  # Lockfile integrity hashes are not secrets.
+  '''pnpm-lock\.yaml$''',
+]
+regexes = [
+  # The deterministic local-Supabase demo password used only against a throwaway DB.
+  '''e2e-Password-123!''',
+]

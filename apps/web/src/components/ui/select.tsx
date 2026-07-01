@@ -7,13 +7,9 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, children, ...props }, ref) => (
     <select
       ref={ref}
-      className={cn(
-        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs",
-        "transition-[color,border-color,box-shadow] hover:border-foreground/25",
-        "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        className,
-      )}
+      // Shared premium surface (.field). Sizing/shape stays here and remains
+      // overridable per call site.
+      className={cn("field flex h-11 w-full rounded-2xl px-3.5 text-sm", className)}
       {...props}
     >
       {children}

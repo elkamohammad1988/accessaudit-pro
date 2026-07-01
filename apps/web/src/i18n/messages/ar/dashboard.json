@@ -1,0 +1,38 @@
+{
+  "metaTitle": "لوحة التحكم",
+  "title": "لوحة التحكم",
+  "planBadge": "خطة {plan}",
+  "newScan": "فحص جديد",
+  "avgScore": "متوسط درجة إمكانية الوصول",
+  "scoreTrendLabel": "اتجاه الدرجات عبر {count} فحص",
+  "trendEmpty": "أجرِ بضعة فحوصات لرؤية اتجاه درجاتك هنا.",
+  "trendCaption": {
+    "zero": "عبر آخر {count} فحص مكتمل لديك",
+    "one": "عبر آخر {count} فحص مكتمل لديك",
+    "two": "عبر آخر {count} فحصين مكتملين لديك",
+    "few": "عبر آخر {count} فحوصات مكتملة لديك",
+    "many": "عبر آخر {count} فحصًا مكتملًا لديك",
+    "other": "عبر آخر {count} فحص مكتمل لديك"
+  },
+  "usageTitle": "الاستخدام هذا الشهر",
+  "meters": {
+    "scans": "الفحوصات",
+    "clients": "العملاء",
+    "projects": "المشاريع",
+    "aria": "استخدام {label}"
+  },
+  "pagesPerScan": "الصفحات / الفحص",
+  "severityHeading": "المشكلات حسب الخطورة",
+  "recentHeading": "الفحوصات الأخيرة",
+  "pagesCount": {
+    "zero": "{count} صفحة",
+    "one": "{count} صفحة",
+    "two": "{count} صفحتان",
+    "few": "{count} صفحات",
+    "many": "{count} صفحةً",
+    "other": "{count} صفحة"
+  },
+  "emptyTitle": "لا توجد فحوصات بعد",
+  "emptyDescription": "أجرِ أول تدقيق لإمكانية الوصول لرؤية درجاتك واتجاهاتك ومشكلاتك هنا.",
+  "emptyAction": "أجرِ أول فحص لك"
+}

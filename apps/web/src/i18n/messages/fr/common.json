@@ -1,0 +1,75 @@
+{
+  "appName": "AccessAudit Pro",
+  "tagline": "Audits d'accessibilité WCAG 2.2 pour les agences",
+  "actions": {
+    "save": "Enregistrer",
+    "saveChanges": "Enregistrer les modifications",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "back": "Retour",
+    "next": "Suivant",
+    "continue": "Continuer",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "copy": "Copier",
+    "copied": "Copié",
+    "download": "Télécharger",
+    "export": "Exporter",
+    "view": "Afficher",
+    "viewAll": "Tout afficher",
+    "learnMore": "En savoir plus",
+    "getStarted": "Commencer",
+    "startFree": "Commencer gratuitement",
+    "retry": "Réessayer",
+    "remove": "Retirer",
+    "restore": "Restaurer",
+    "archive": "Archiver",
+    "upgrade": "Changer de forfait →",
+    "loading": "Chargement…",
+    "working": "En cours…",
+    "saving": "Enregistrement…"
+  },
+  "labels": {
+    "optional": "Facultatif",
+    "required": "Obligatoire",
+    "none": "Aucun",
+    "name": "Nom",
+    "email": "E-mail",
+    "status": "Statut",
+    "actions": "Actions",
+    "search": "Rechercher",
+    "yes": "Oui",
+    "no": "Non",
+    "areYouSure": "Êtes-vous sûr ?",
+    "archivedCount": "Archivés ({count})",
+    "listTruncated": "Affichage des {count} premiers. Archivez d'anciennes entrées pour en voir plus."
+  },
+  "messages": {
+    "saveFailed": "Une erreur est survenue lors de l'enregistrement de vos modifications. Veuillez réessayer."
+  },
+  "units": {
+    "perMonth": "/mois",
+    "score": "{value}/100"
+  },
+  "band": {
+    "good": "Bon",
+    "needsWork": "À améliorer",
+    "poor": "Médiocre",
+    "notScored": "Non évalué"
+  },
+  "score": {
+    "aria": "Score d'accessibilité de {score} sur 100",
+    "none": "Pas encore de score"
+  },
+  "theme": {
+    "system": "Thème système",
+    "light": "Thème clair",
+    "dark": "Thème sombre",
+    "toggleAria": "{current}. Passer au {next}."
+  },
+  "meta": {
+    "titleTemplate": "{page} · AccessAudit Pro"
+  }
+}

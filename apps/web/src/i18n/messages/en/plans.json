@@ -1,0 +1,30 @@
+{
+  "unlimited": "Unlimited",
+  "highlights": {
+    "scansUnlimited": "Unlimited scans / month",
+    "scansPerMonth": "{count} scans / month",
+    "singlePageScans": "Single-page scans",
+    "pagesPerScan": "Up to {count} pages / scan",
+    "clientsOne": "{count} client",
+    "clientsOther": "{count} clients",
+    "clientsUnlimited": "Unlimited clients",
+    "projects": "{count} projects",
+    "projectsUnlimited": "Unlimited projects",
+    "whiteLabelPdf": "White-label PDF reports",
+    "brandedLinks": "AccessAudit-branded share links",
+    "dataExport": "CSV / JSON export",
+    "removePoweredBy": "Remove \"Powered by\" branding",
+    "priorityQueue": "Priority scan queue"
+  },
+  "rows": {
+    "clients": "Clients",
+    "projects": "Projects",
+    "scansPerMonth": "Scans / month",
+    "pagesPerScan": "Pages / scan",
+    "publicLinks": "Public shareable links",
+    "whiteLabelPdf": "White-label PDF reports",
+    "dataExport": "CSV / JSON export",
+    "removePoweredBy": "Remove \"Powered by\" branding",
+    "priorityQueue": "Priority scan queue"
+  }
+}

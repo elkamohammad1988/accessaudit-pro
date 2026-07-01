@@ -4,14 +4,21 @@ import { effectivePlan, limitsFor, type ScanStatus } from "@accessaudit/shared";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseTotals } from "@/lib/scan-format";
 import { loadReportByToken } from "@/lib/load-report";
+import { getTranslations, getLocale } from "@/i18n/server";
+import { formatDateTime } from "@/lib/dates";
 import { ReportView } from "@/components/scans/report-view";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 // Tokenized public links — resolved server-side with the service-role client.
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {
-  title: "Accessibility report",
-  robots: { index: false, follow: false },
-};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("scans.public");
+  return {
+    title: t("metaTitle"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function PublicReportPage({
   params,
@@ -20,6 +27,8 @@ export default async function PublicReportPage({
 }) {
   const { token } = await params;
 
+  const t = await getTranslations("scans");
+  const locale = await getLocale();
   const admin = createAdminClient();
   const report = await loadReportByToken(admin, token);
   if (!report) notFound();
@@ -42,29 +51,32 @@ export default async function PublicReportPage({
   // keep white-label removal on its public links indefinitely.
   const plan = effectivePlan(sub?.plan, sub?.status);
   const showPoweredBy = !limitsFor(plan).removePoweredBy;
-  const brandColor = org?.brand_color ?? "#4F46E5";
+  const brandColor = org?.brand_color ?? "#A24425";
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="mx-auto max-w-3xl px-6 py-8">
+      {/* Clients view this deliverable on their own devices/time — let them read
+       * it in their preferred theme. Hidden when the report is printed/saved. */}
+      <ThemeToggle className="no-print fixed end-4 top-4 z-20 border bg-card/80 shadow-sm backdrop-blur-sm" />
       <div className="h-1.5 w-full rounded-full" style={{ backgroundColor: brandColor }} />
 
-      <header className="mt-6 flex items-center gap-4">
+      <header className="mt-5 flex items-center gap-3">
         {org?.logo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={org.logo_url} alt={`${org.name} logo`} className="h-10 w-auto" />
+          <img src={org.logo_url} alt={t("logoAlt", { name: org.name ?? "" })} className="h-10 w-auto" />
         ) : null}
         <div>
-          <p className="text-lg font-semibold">{org?.name ?? "Accessibility report"}</p>
+          <p className="text-lg font-semibold">{org?.name ?? t("public.metaTitle")}</p>
           <p className="text-sm text-muted-foreground">
             {report.clientName ? `${report.clientName} · ` : ""}
-            WCAG {scan.wcag_level} · {new Date(scan.created_at).toLocaleDateString()}
+            {t("wcagShort", { level: scan.wcag_level })} · {formatDateTime(scan.created_at, locale)}
           </p>
         </div>
       </header>
 
-      <h1 className="mt-8 text-2xl font-semibold">Accessibility audit</h1>
+      <h1 className="mt-6 text-2xl font-semibold">{t("auditHeading")}</h1>
 
-      <div className="mt-6">
+      <div className="mt-5">
         <ReportView
           status={scan.status as ScanStatus}
           score={scan.score}
@@ -81,8 +93,8 @@ export default async function PublicReportPage({
       </div>
 
       {showPoweredBy ? (
-        <footer className="mt-10 border-t pt-4 text-center text-xs text-muted-foreground">
-          Powered by AccessAudit Pro
+        <footer className="mt-8 border-t pt-4 text-center text-xs text-muted-foreground">
+          {t("poweredBy")}
         </footer>
       ) : null}
     </main>

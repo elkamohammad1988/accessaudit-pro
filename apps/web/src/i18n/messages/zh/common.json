@@ -1,0 +1,75 @@
+{
+  "appName": "AccessAudit Pro",
+  "tagline": "面向代理机构的 WCAG 2.2 无障碍审计",
+  "actions": {
+    "save": "保存",
+    "saveChanges": "保存更改",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "back": "返回",
+    "next": "下一步",
+    "continue": "继续",
+    "confirm": "确认",
+    "close": "关闭",
+    "copy": "复制",
+    "copied": "已复制",
+    "download": "下载",
+    "export": "导出",
+    "view": "查看",
+    "viewAll": "查看全部",
+    "learnMore": "了解更多",
+    "getStarted": "开始使用",
+    "startFree": "免费开始",
+    "retry": "重试",
+    "remove": "移除",
+    "restore": "恢复",
+    "archive": "归档",
+    "upgrade": "升级套餐 →",
+    "loading": "加载中…",
+    "working": "处理中…",
+    "saving": "保存中…"
+  },
+  "labels": {
+    "optional": "可选",
+    "required": "必填",
+    "none": "无",
+    "name": "名称",
+    "email": "邮箱",
+    "status": "状态",
+    "actions": "操作",
+    "search": "搜索",
+    "yes": "是",
+    "no": "否",
+    "areYouSure": "确定吗？",
+    "archivedCount": "已归档（{count}）",
+    "listTruncated": "显示前 {count} 条。归档旧条目以查看更多。"
+  },
+  "messages": {
+    "saveFailed": "保存更改时出现问题，请重试。"
+  },
+  "units": {
+    "perMonth": "/月",
+    "score": "{value}/100"
+  },
+  "band": {
+    "good": "良好",
+    "needsWork": "需改进",
+    "poor": "较差",
+    "notScored": "未评分"
+  },
+  "score": {
+    "aria": "无障碍评分 {score}（满分 100）",
+    "none": "暂无评分"
+  },
+  "theme": {
+    "system": "系统主题",
+    "light": "浅色主题",
+    "dark": "深色主题",
+    "toggleAria": "{current}。切换到{next}。"
+  },
+  "meta": {
+    "titleTemplate": "{page} · AccessAudit Pro"
+  }
+}

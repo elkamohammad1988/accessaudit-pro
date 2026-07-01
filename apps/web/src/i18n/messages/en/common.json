@@ -1,0 +1,75 @@
+{
+  "appName": "AccessAudit Pro",
+  "tagline": "WCAG 2.2 accessibility audits for agencies",
+  "actions": {
+    "save": "Save",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "confirm": "Confirm",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "export": "Export",
+    "view": "View",
+    "viewAll": "View all",
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "startFree": "Start free",
+    "retry": "Try again",
+    "remove": "Remove",
+    "restore": "Restore",
+    "archive": "Archive",
+    "upgrade": "Upgrade your plan →",
+    "loading": "Loading…",
+    "working": "Working…",
+    "saving": "Saving…"
+  },
+  "labels": {
+    "optional": "Optional",
+    "required": "Required",
+    "none": "None",
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
+    "actions": "Actions",
+    "search": "Search",
+    "yes": "Yes",
+    "no": "No",
+    "areYouSure": "Are you sure?",
+    "archivedCount": "Archived ({count})",
+    "listTruncated": "Showing the first {count}. Archive older entries to see more."
+  },
+  "messages": {
+    "saveFailed": "Something went wrong saving your changes. Please try again."
+  },
+  "units": {
+    "perMonth": "/mo",
+    "score": "{value}/100"
+  },
+  "band": {
+    "good": "Good",
+    "needsWork": "Needs work",
+    "poor": "Poor",
+    "notScored": "Not scored"
+  },
+  "score": {
+    "aria": "Accessibility score {score} out of 100",
+    "none": "No score yet"
+  },
+  "theme": {
+    "system": "System theme",
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "toggleAria": "{current}. Switch to {next}."
+  },
+  "meta": {
+    "titleTemplate": "{page} · AccessAudit Pro"
+  }
+}

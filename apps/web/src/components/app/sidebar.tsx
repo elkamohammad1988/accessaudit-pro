@@ -4,19 +4,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, FolderKanban, Settings, LogOut, Menu, X } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { signOut } from "@/app/(auth)/actions";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { useTranslations, useLocale } from "@/i18n/provider";
+import { directionOf } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/clients", label: "Clients", icon: Users },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
+  { href: "/clients", key: "clients", icon: Users },
+  { href: "/projects", key: "projects", icon: FolderKanban },
+  { href: "/settings", key: "settings", icon: Settings },
 ] as const;
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+// Drawer open/close transition length (ms). Matches the `duration-300` on the
+// panel so the element unmounts exactly when the slide-out finishes.
+const DRAWER_MS = 300;
 
 function initials(value: string): string {
   const cleaned = value.trim();
@@ -36,16 +41,15 @@ function SidebarBody({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <span
+        <LogoMark
           aria-hidden="true"
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-brand-fg shadow-sm ring-1 ring-inset ring-white/15"
-        >
-          A
-        </span>
+          className="h-8 w-8 rounded-lg shadow-sm dark:shadow-[0_0_18px_-3px_hsl(var(--brand)/0.6)]"
+        />
         <div className="min-w-0">
           <Link
             href="/dashboard"
@@ -60,8 +64,8 @@ function SidebarBody({
         </div>
       </div>
 
-      <nav aria-label="Primary" className="flex-1 space-y-0.5 px-3">
-        {NAV.map(({ href, label, icon: Icon }) => {
+      <nav aria-label={t("primary")} className="flex-1 space-y-0.5 px-3">
+        {NAV.map(({ href, key, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
@@ -76,11 +80,12 @@ function SidebarBody({
                   : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
               )}
             >
-              {/* Active accent bar — the Linear/Vercel cue for "you are here". */}
+              {/* Active accent bar — the Linear/Vercel cue for "you are here".
+                  Logical inline-start so it sits on the correct edge in RTL. */}
               <span
                 aria-hidden="true"
                 className={cn(
-                  "absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-gradient-to-b from-brand to-brand-2 transition-opacity",
+                  "absolute start-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-brand transition-opacity",
                   active ? "opacity-100" : "opacity-0",
                 )}
               />
@@ -88,10 +93,13 @@ function SidebarBody({
                 className={cn(
                   "h-4 w-4 shrink-0 transition-colors",
                   active ? "text-brand" : "text-muted-foreground group-hover:text-foreground",
+                  // Signature micro-interaction: the Settings gear turns slowly
+                  // while you hover the row, then settles. Stilled by reduced-motion.
+                  key === "settings" && "group-hover:animate-spin-slow",
                 )}
                 aria-hidden="true"
               />
-              {label}
+              {t(`app.${key}`)}
             </Link>
           );
         })}
@@ -99,16 +107,27 @@ function SidebarBody({
 
       <div className="border-t p-3">
         <div className="flex items-center gap-2.5 rounded-md px-2 py-2">
-          <span
-            aria-hidden="true"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/15 to-brand-2/10 text-xs font-semibold text-brand ring-1 ring-inset ring-brand/15"
-          >
-            {initials(email ?? orgName)}
+          <span className="relative shrink-0">
+            <span
+              aria-hidden="true"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/10 text-xs font-semibold text-brand ring-1 ring-inset ring-brand/15"
+            >
+              {initials(email ?? orgName)}
+            </span>
+            {/* Presence indicator — a breathing emerald dot, the universal "active
+                session" cue, ringed to read cleanly against the avatar. */}
+            <span
+              aria-hidden="true"
+              className="live-dot absolute -bottom-0.5 -end-0.5 rounded-full ring-2 ring-muted/40 dark:ring-background"
+            />
           </span>
           <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={email}>
             {email}
           </p>
           <ThemeToggle />
+        </div>
+        <div className="mt-1 px-1">
+          <LanguageSwitcher className="w-full" align="start" />
         </div>
         <form action={signOut} className="mt-1">
           <button
@@ -116,7 +135,7 @@ function SidebarBody({
             className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-background/60 hover:text-foreground"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
-            Sign out
+            {t("app.signOut")}
           </button>
         </form>
       </div>
@@ -126,8 +145,17 @@ function SidebarBody({
 
 export function Sidebar({ orgName, email }: { orgName: string; email: string | undefined }) {
   const pathname = usePathname();
+  const t = useTranslations("nav");
+  const dir = directionOf(useLocale());
+  // Off-canvas transform for the slide: physical X, so it flips with direction
+  // (start-0 sits on the right in RTL, so it exits to the right: +100%).
+  const offClass = dir === "rtl" ? "translate-x-full" : "-translate-x-full";
   const [open, setOpen] = useState(false);
-  const reduce = useReducedMotion();
+  // `render` keeps the drawer mounted through its exit transition; `entered`
+  // drives the enter/exit CSS classes. A CSS transition replaces framer-motion's
+  // AnimatePresence here — one fewer (large) dependency on every authed route.
+  const [render, setRender] = useState(false);
+  const [entered, setEntered] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -145,9 +173,25 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
     setOpen(false);
   }, [pathname]);
 
-  // While open: lock body scroll, focus the drawer, trap Tab inside it, Esc closes.
+  // Mount → enter → exit → unmount, driven by `open`. On open we mount, then flip
+  // `entered` next frame so the CSS transition runs from off-canvas to on-screen.
+  // On close we clear `entered` (slide out) and unmount after the transition ends.
+  // `prefers-reduced-motion` is handled in CSS (motion-reduce:transition-none), so
+  // the only cost under reduced motion is an invisible, harmless unmount delay.
   useEffect(() => {
-    if (!open) return;
+    if (open) {
+      setRender(true);
+      const raf = requestAnimationFrame(() => setEntered(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setEntered(false);
+    const id = setTimeout(() => setRender(false), DRAWER_MS);
+    return () => clearTimeout(id);
+  }, [open]);
+
+  // While mounted: lock body scroll, focus the drawer, trap Tab inside it, Esc closes.
+  useEffect(() => {
+    if (!render) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         close();
@@ -157,7 +201,7 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
       const panel = panelRef.current;
       if (!panel) return;
       const focusables = panel.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
       if (focusables.length === 0) return;
       const first = focusables[0];
@@ -178,12 +222,12 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [open, close]);
+  }, [render, close]);
 
   return (
     <>
       {/* Desktop rail */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r bg-muted/40 lg:flex">
+      <aside className="hidden w-64 shrink-0 flex-col border-e bg-muted/40 lg:flex">
         <SidebarBody orgName={orgName} email={email} />
       </aside>
 
@@ -193,68 +237,65 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
           ref={triggerRef}
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Open navigation menu"
+          aria-label={t("mobile.open")}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="-ml-1 inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="-ms-1 inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </button>
         <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-          <span
+          <LogoMark
             aria-hidden="true"
-            className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-xs font-bold text-brand-fg shadow-sm ring-1 ring-inset ring-white/15"
-          >
-            A
-          </span>
+            className="h-7 w-7 rounded-lg shadow-sm dark:shadow-[0_0_16px_-3px_hsl(var(--brand)/0.6)]"
+          />
           <span className="truncate text-sm font-bold tracking-tight">
             AccessAudit<span className="text-brand"> Pro</span>
           </span>
         </Link>
-        <div className="ml-auto">
+        <div className="ms-auto flex items-center gap-1">
+          <LanguageSwitcher variant="compact" />
           <ThemeToggle />
         </div>
       </header>
 
-      {/* Mobile off-canvas drawer */}
-      <AnimatePresence>
-        {open ? (
-          <motion.div key="mobile-nav-overlay" className="lg:hidden">
-            <motion.div
-              className="fixed inset-0 z-40 bg-foreground/40 backdrop-blur-sm"
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduce ? 0 : 0.2 }}
+      {/* Mobile off-canvas drawer. CSS transitions (no JS animation lib); kept
+          mounted through the exit transition via `render`. */}
+      {render ? (
+        <div className="lg:hidden">
+          <div
+            className={cn(
+              "fixed inset-0 z-40 bg-foreground/40 backdrop-blur-sm transition-opacity duration-200 motion-reduce:transition-none",
+              entered ? "opacity-100" : "opacity-0",
+            )}
+            onClick={close}
+            aria-hidden="true"
+          />
+          <aside
+            ref={panelRef}
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("mobile.label")}
+            className={cn(
+              "fixed inset-y-0 start-0 z-50 flex w-72 max-w-[82vw] flex-col border-e bg-background shadow-lg",
+              "transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+              entered ? "translate-x-0" : offClass,
+            )}
+          >
+            <button
+              ref={closeRef}
+              type="button"
               onClick={close}
-              aria-hidden="true"
-            />
-            <motion.aside
-              ref={panelRef}
-              id="mobile-nav"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation"
-              className="fixed inset-y-0 left-0 z-50 flex w-72 max-w-[82vw] flex-col border-r bg-background shadow-lg"
-              initial={reduce ? false : { x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={reduce ? { opacity: 0 } : { x: "-100%" }}
-              transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+              aria-label={t("mobile.close")}
+              className="absolute end-3 top-4 inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
-              <button
-                ref={closeRef}
-                type="button"
-                onClick={close}
-                aria-label="Close navigation menu"
-                className="absolute right-3 top-4 inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </button>
-              <SidebarBody orgName={orgName} email={email} onNavigate={() => setOpen(false)} />
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+              <X className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <SidebarBody orgName={orgName} email={email} onNavigate={() => setOpen(false)} />
+          </aside>
+        </div>
+      ) : null}
     </>
   );
 }

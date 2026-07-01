@@ -1,0 +1,24 @@
+{
+  "generic": {
+    "title": "Something went wrong",
+    "body": "An unexpected error occurred. The team has been notified — please try again.",
+    "retry": "Try again",
+    "home": "Back to home"
+  },
+  "app": {
+    "title": "This page hit a snag",
+    "body": "We couldn't load this view. Try again, or head back to your dashboard.",
+    "dashboard": "Go to dashboard"
+  },
+  "global": {
+    "title": "Something went wrong",
+    "body": "A critical error occurred and the page could not be displayed. Please reload.",
+    "reload": "Reload"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or may have moved.",
+    "home": "Back to home",
+    "dashboard": "Go to dashboard"
+  }
+}

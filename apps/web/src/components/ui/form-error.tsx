@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
+import { useTranslations } from "@/i18n/provider";
 
 /** Inline success banner — the positive twin of FormError, same visual rhythm. */
 export function FormSuccess({ message }: { message: string | null }) {
@@ -21,6 +24,7 @@ export function FormSuccess({ message }: { message: string | null }) {
  * moment of intent, instead of leaving the user to find it.
  */
 export function FormError({ error, upgrade }: { error: string | null; upgrade?: boolean }) {
+  const t = useTranslations("common.actions");
   if (!error) return null;
   return (
     <div
@@ -33,7 +37,7 @@ export function FormError({ error, upgrade }: { error: string | null; upgrade?: 
           href="/settings/billing"
           className="inline-block font-semibold underline underline-offset-4 hover:no-underline"
         >
-          Upgrade your plan →
+          {t("upgrade")}
         </Link>
       ) : null}
     </div>

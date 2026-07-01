@@ -1,0 +1,49 @@
+{
+  "metaTitle": "Paramètres",
+  "title": "Paramètres",
+  "subtitle": "Gérez votre compte, l'image de marque de votre espace de travail, la facturation et votre équipe.",
+  "profile": {
+    "heading": "Profil",
+    "description": "Les informations de votre compte personnel.",
+    "emailLabel": "E-mail",
+    "emailHint": "E-mail de connexion — modifiez-le depuis votre fournisseur d'authentification.",
+    "fullNameLabel": "Nom complet",
+    "fullNamePlaceholder": "Jeanne Dupont",
+    "avatarUrlLabel": "URL de l'avatar",
+    "avatarUrlPlaceholder": "https://…/avatar.png",
+    "submit": "Enregistrer le profil",
+    "saved": "Profil enregistré."
+  },
+  "workspace": {
+    "heading": "Espace de travail et image de marque",
+    "description": "Le nom, l'URL et l'image de marque appliqués à vos rapports.",
+    "nameLabel": "Nom de l'agence",
+    "slugLabel": "Slug de l'URL de l'espace de travail",
+    "slugHint": "Lettres minuscules, chiffres et tirets. Utilisé dans les liens et les rapports publics.",
+    "brandColorLabel": "Couleur de marque",
+    "brandColorHint": "Appliquée à vos rapports en marque blanche.",
+    "logoUrlLabel": "URL du logo",
+    "logoUrlPlaceholder": "https://…/logo.png",
+    "logoUrlHint": "Affiché sur les rapports à votre marque. Collez l'URL d'une image hébergée.",
+    "submit": "Enregistrer l'espace de travail",
+    "saved": "Espace de travail enregistré."
+  },
+  "billing": {
+    "heading": "Facturation",
+    "description": "Gérez votre forfait, votre utilisation et votre moyen de paiement.",
+    "goToBilling": "Aller à la facturation"
+  },
+  "team": {
+    "heading": "Équipe",
+    "description": "AccessAudit Pro est mono-propriétaire dans cette version. Les équipes multi-sièges et les rôles arriveront dans une mise à jour ultérieure."
+  },
+  "messages": {
+    "invalidInput": "Saisie invalide.",
+    "nameMin": "Le nom de l'agence doit comporter au moins 2 caractères.",
+    "slugMin": "Le slug doit comporter au moins 2 caractères.",
+    "slugFormat": "Le slug ne peut contenir que des lettres minuscules, des chiffres et des tirets.",
+    "brandColorHex": "La couleur de marque doit être une valeur hexadécimale, par exemple #A24425.",
+    "slugTaken": "Cette URL d'espace de travail est déjà prise — choisissez un autre slug.",
+    "saveFailed": "Une erreur est survenue lors de l'enregistrement de vos modifications. Veuillez réessayer."
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "wcagShort": "WCAG {level}",
+  "auditHeading": "Accessibility audit",
+  "logoAlt": "{name} logo",
+  "poweredBy": "Powered by AccessAudit Pro",
+  "status": {
+    "queued": "Queued",
+    "running": "Running",
+    "completed": "Completed",
+    "partial": "Partial",
+    "failed": "Failed"
+  },
+  "impact": {
+    "critical": "Critical",
+    "serious": "Serious",
+    "moderate": "Moderate",
+    "minor": "Minor"
+  },
+  "severityBar": {
+    "none": "No violations found",
+    "distribution": "Violation severity distribution: {distribution}"
+  },
+  "report": {
+    "inProgressNote": "The worker is auditing your page(s). This view updates automatically.",
+    "inProgressAria": "Scan in progress",
+    "failedTitle": "Scan failed",
+    "unknownError": "Unknown error.",
+    "partialAria": "Partial scan",
+    "partialTitle": {
+      "one": "Partial scan — {count} page could not be loaded",
+      "other": "Partial scan — {count} pages could not be loaded"
+    },
+    "partialBody": {
+      "one": "The score and totals below reflect only the {count} page that loaded successfully. Check the per-page list for the URLs that failed, then re-scan if needed.",
+      "other": "The score and totals below reflect only the {count} pages that loaded successfully. Check the per-page list for the URLs that failed, then re-scan if needed."
+    },
+    "summaryAria": "Summary",
+    "accessibilityScore": "Accessibility score",
+    "issuesFound": "Issues found",
+    "criticalOrSerious": "critical or serious",
+    "pagesScanned": "Pages scanned",
+    "wcagLevel": "WCAG 2.2 Level {level}",
+    "byImpactAria": "By impact",
+    "manualChecksAria": "Manual checks recommended",
+    "honestyTitle": "Automated scan — manual checks still recommended",
+    "honestyBody": "This audit targets WCAG 2.2 Level {level} using automated rules (axe-core), which catch roughly 30–50% of issues. It does not replace human review of things like meaningful alt-text quality, logical reading/focus order, keyboard traps, captions, and cognitive clarity. Use it to fix the clear failures fast, then review the rest manually.",
+    "byPageAria": "By page",
+    "pagesHeading": "Pages",
+    "issuesCount": {
+      "one": "{count} issue",
+      "other": "{count} issues"
+    },
+    "error": "Error",
+    "errorHttp": "Error · HTTP {status}",
+    "violationsAria": "Violations",
+    "violationsHeading": "Violations ({count})",
+    "truncatedNotice": {
+      "one": "Showing the {count} highest-severity rule covering the first {shown} findings of {total}. Export the CSV for the complete, authoritative record.",
+      "other": "Showing the {count} highest-severity rules covering the first {shown} findings of {total}. Export the CSV for the complete, authoritative record."
+    },
+    "loadedFindings": "loaded",
+    "manyFindings": "many",
+    "noViolations": "No automated WCAG {level} violations found. Nice — still worth a manual review.",
+    "wcagCriteria": "WCAG {criteria}",
+    "elementsCount": {
+      "one": "{count} element",
+      "other": "{count} elements"
+    },
+    "howToFix": "How to fix this →",
+    "moreElements": {
+      "one": "+ {count} more affected element. Export the CSV for the full list.",
+      "other": "+ {count} more affected elements. Export the CSV for the full list."
+    },
+    "completed": "Completed {date}."
+  },
+  "new": {
+    "metaTitle": "New scan",
+    "dashboard": "Dashboard",
+    "title": "New scan",
+    "subtitle": "Run a WCAG 2.2 accessibility audit against a page or a list of pages.",
+    "emptyTitle": "No project to scan yet",
+    "emptyDescription": "You need a project (a client's website) before you can run a scan.",
+    "emptyAction": "Create a project",
+    "form": {
+      "project": "Project",
+      "scope": "Scope",
+      "singlePageTitle": "Single page",
+      "singlePageDesc": "Audit one specific URL.",
+      "urlListTitle": "URL list",
+      "urlListDesc": {
+        "one": "Audit up to {count} page at once.",
+        "other": "Audit up to {count} pages at once."
+      },
+      "urlListUpgrade": "Upgrade to scan multiple pages.",
+      "url": "URL",
+      "urlHint": "Defaults to the project's base URL. Change it to scan a specific page.",
+      "urls": "URLs",
+      "urlsHint": {
+        "one": "One URL per line, up to {count} page on your plan.",
+        "other": "One URL per line, up to {count} pages on your plan."
+      },
+      "wcagTarget": "WCAG target",
+      "wcagA": "WCAG 2.2 — Level A",
+      "wcagAA": "WCAG 2.2 — Level AA (recommended)",
+      "wcagAAA": "WCAG 2.2 — Level AAA",
+      "submit": "Start scan",
+      "submitPending": "Starting scan…",
+      "authorizationLabel": "I confirm I'm authorized to audit this website."
+    }
+  },
+  "share": {
+    "createLink": "Create share link",
+    "linkAria": "Public report link",
+    "revoke": "Revoke"
+  },
+  "detail": {
+    "metaTitle": "Scan report",
+    "title": "Scan report",
+    "rescan": "Re-scan",
+    "deletePrompt": "Delete permanently?",
+    "shareExportAria": "Share & export",
+    "exportPdf": "Export PDF",
+    "exportCsv": "Export CSV",
+    "upgradeExport": "Upgrade to export branded PDF & CSV",
+    "liveStatus": "Scan status: {status}.",
+    "notices": {
+      "rateLimited": "You're starting scans too quickly. Wait a moment and try again.",
+      "rescanFailed": "Couldn't start the re-scan. Please try again.",
+      "deleteFailed": "Couldn't delete this scan. Please try again.",
+      "shareFailed": "Couldn't update the share link. Please try again."
+    }
+  },
+  "print": {
+    "metaTitle": "Report (print)",
+    "printButton": "Print / Save as PDF"
+  },
+  "public": {
+    "metaTitle": "Accessibility report"
+  },
+  "export": {
+    "forbidden": "CSV export is available on paid plans. Upgrade to enable it.",
+    "notFound": "Scan not found.",
+    "headers": {
+      "pageUrl": "Page URL",
+      "impact": "Impact",
+      "rule": "Rule",
+      "wcag": "WCAG",
+      "description": "Description",
+      "helpUrl": "Help URL",
+      "selector": "Selector",
+      "failureSummary": "Failure summary"
+    }
+  },
+  "messages": {
+    "chooseProject": "Choose a project to scan.",
+    "urlListTooLarge": "That URL list is too large.",
+    "invalidInput": "Invalid input.",
+    "rateLimited": "You're starting scans too quickly. Wait a moment and try again.",
+    "selectValidProject": "Select a valid project.",
+    "enterValidUrl": "Enter a valid URL to scan.",
+    "addOneUrl": "Add at least one valid URL (one per line).",
+    "pagesQuota": "Your {plan} plan allows {limit} page(s) per scan. Remove some URLs or upgrade.",
+    "scansQuota": "You've used all {limit} scans on the {plan} plan this month. Upgrade for more.",
+    "saveFailed": "Something went wrong saving your changes. Please try again."
+  }
+}

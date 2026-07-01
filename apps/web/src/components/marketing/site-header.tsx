@@ -1,43 +1,50 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { ButtonLink } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { getTranslations } from "@/i18n/server";
 
 /** Top navigation for the public marketing surface (landing, pricing, guides). */
-export function SiteHeader() {
+export async function SiteHeader() {
+  const t = await getTranslations("nav");
   return (
     <header className="glass sticky top-0 z-40 border-b">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span
+        <Link href="/" className="group flex items-center gap-2 font-semibold tracking-tight">
+          <LogoMark
             aria-hidden="true"
-            className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-2 text-sm font-bold text-brand-fg shadow-sm ring-1 ring-inset ring-white/15"
-          >
-            A
-          </span>
+            className="h-7 w-7 rounded-lg shadow-sm transition-transform duration-300 group-hover:-rotate-3 dark:shadow-[0_0_16px_-3px_hsl(var(--brand)/0.55)]"
+          />
           AccessAudit<span className="text-brand">&nbsp;Pro</span>
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-1 text-sm sm:gap-2">
+        <nav aria-label={t("primary")} className="flex items-center gap-1 text-sm sm:gap-2">
           <Link
             href="/guides"
             className="hidden rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-block"
           >
-            Guides
+            {t("marketing.guides")}
           </Link>
           <Link
             href="/pricing"
             className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            Pricing
+            {t("marketing.pricing")}
           </Link>
           <Link
             href="/login"
             className="rounded-md px-3 py-2 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            Sign in
+            {t("marketing.signIn")}
           </Link>
+          <LanguageSwitcher className="hidden sm:block" />
+          {/* Desktop-only: the mobile header is space-constrained and long locale
+           * strings (ar/zh) would overflow it. Mobile marketing still follows the
+           * OS dark-mode preference, and every signed-in/auth surface has the
+           * toggle, so a manual switch is reachable as soon as the user acts. */}
           <ThemeToggle className="hidden sm:inline-flex" />
           <ButtonLink href="/signup" size="sm" className="h-9 px-4">
-            Start free
+            {t("marketing.startFree")}
           </ButtonLink>
         </nav>
       </div>

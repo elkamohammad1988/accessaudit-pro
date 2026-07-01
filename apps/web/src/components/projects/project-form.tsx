@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormError } from "@/components/ui/form-error";
+import { useTranslations } from "@/i18n/provider";
 import type { ProjectFormState } from "@/app/(app)/projects/actions";
 
 const initialState: ProjectFormState = { error: null };
@@ -21,15 +22,16 @@ export function ProjectForm({
   clients,
   project,
   defaultClientId,
-  submitLabel = "Save project",
+  submitLabel,
 }: {
   action: (prev: ProjectFormState, formData: FormData) => Promise<ProjectFormState>;
   clients: ClientOption[];
   project?: Project;
   defaultClientId?: string;
-  submitLabel?: string;
+  submitLabel: string;
 }) {
   const [state, formAction] = useActionState(action, initialState);
+  const t = useTranslations("projects");
   const selectedClient = project?.client_id ?? defaultClientId ?? "";
 
   return (
@@ -37,10 +39,10 @@ export function ProjectForm({
       {project ? <input type="hidden" name="id" value={project.id} /> : null}
 
       <div className="space-y-2">
-        <Label htmlFor="clientId">Client</Label>
+        <Label htmlFor="clientId">{t("form.client")}</Label>
         <Select id="clientId" name="clientId" required defaultValue={selectedClient}>
           <option value="" disabled>
-            Select a client…
+            {t("form.selectClient")}
           </option>
           {clients.map((client) => (
             <option key={client.id} value={client.id}>
@@ -51,35 +53,35 @@ export function ProjectForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="name">Project name</Label>
+        <Label htmlFor="name">{t("form.name")}</Label>
         <Input
           id="name"
           name="name"
           required
           maxLength={80}
           defaultValue={project?.name ?? ""}
-          placeholder="Marketing site"
+          placeholder={t("form.namePlaceholder")}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="baseUrl">Website URL</Label>
+        <Label htmlFor="baseUrl">{t("form.websiteUrl")}</Label>
         <Input
           id="baseUrl"
           name="baseUrl"
           inputMode="url"
           defaultValue={project?.base_url ?? ""}
-          placeholder="https://example.com"
+          placeholder={t("form.websiteUrlPlaceholder")}
           aria-describedby="baseUrl-hint"
         />
         <span id="baseUrl-hint" className="text-xs text-muted-foreground">
-          The base address of the site you want to audit.
+          {t("form.websiteUrlHint")}
         </span>
       </div>
 
       <FormError error={state.error} upgrade={state.upgrade} />
 
-      <SubmitButton pendingLabel="Saving…">{submitLabel}</SubmitButton>
+      <SubmitButton>{submitLabel}</SubmitButton>
     </form>
   );
 }

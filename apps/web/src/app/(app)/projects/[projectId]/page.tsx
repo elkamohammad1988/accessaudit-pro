@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateTime } from "@/lib/dates";
 import { scoreClassName } from "@/lib/scan-format";
+import { getTranslations, getLocale } from "@/i18n/server";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -15,12 +16,10 @@ import { ConfirmSubmit } from "@/components/ui/confirm-submit";
 import { ScanStatusBadge } from "@/components/scans/scan-status-badge";
 import { archiveProjectRecord, restoreProjectRecord } from "../actions";
 
-export const metadata: Metadata = { title: "Project" };
-
-const NOTICE: Record<string, string> = {
-  "archive-failed": "Couldn't archive this project. Please try again.",
-  "restore-failed": "Couldn't restore this project. Please try again.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("projects");
+  return { title: t("metaDetail") };
+}
 
 export default async function ProjectDetailPage({
   params,
@@ -31,6 +30,14 @@ export default async function ProjectDetailPage({
 }) {
   const { projectId } = await params;
   const { notice } = await searchParams;
+  const t = await getTranslations("projects");
+  const tc = await getTranslations("common");
+  const locale = await getLocale();
+
+  const NOTICE: Record<string, string> = {
+    "archive-failed": t("messages.archiveFailed"),
+    "restore-failed": t("messages.restoreFailed"),
+  };
   const noticeMessage = notice ? NOTICE[notice] : undefined;
   const { organization } = await requireSession();
   if (!organization) return null;
@@ -58,16 +65,16 @@ export default async function ProjectDetailPage({
   const isArchived = Boolean(project.archived_at);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         <Link
           href="/projects"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          Projects
+          {t("title")}
         </Link>
-        <header className="mt-3 flex flex-wrap items-start justify-between gap-4">
+        <header className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-2xl font-semibold tracking-tight">{project.name}</h1>
             <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted-foreground">
@@ -76,7 +83,7 @@ export default async function ProjectDetailPage({
                   {client.name}
                 </Link>
               ) : (
-                "Unknown client"
+                t("unknownClient")
               )}
               <span aria-hidden="true">·</span>
               <a
@@ -88,30 +95,30 @@ export default async function ProjectDetailPage({
                 <span className="break-all">{project.base_url}</span>
                 <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
               </a>
-              {isArchived ? <span>· Archived</span> : null}
+              {isArchived ? <span>· {t("archivedLabel")}</span> : null}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <ButtonLink href={`/projects/${project.id}/edit`} variant="secondary" size="sm">
               <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
-              Edit
+              {tc("actions.edit")}
             </ButtonLink>
             {isArchived ? (
               <form action={restoreProjectRecord}>
                 <input type="hidden" name="id" value={project.id} />
                 <Button type="submit" variant="secondary" size="sm">
-                  Restore
+                  {tc("actions.restore")}
                 </Button>
               </form>
             ) : (
               <form action={archiveProjectRecord}>
                 <input type="hidden" name="id" value={project.id} />
                 <ConfirmSubmit
-                  confirmLabel="Archive project"
-                  prompt="Archive this project?"
+                  confirmLabel={t("archiveConfirmLabel")}
+                  prompt={t("confirmArchive")}
                   className="text-danger-strong hover:bg-danger/10"
                 >
-                  Archive
+                  {tc("actions.archive")}
                 </ConfirmSubmit>
               </form>
             )}
@@ -121,13 +128,13 @@ export default async function ProjectDetailPage({
 
       {noticeMessage ? <NoticeBanner tone="error">{noticeMessage}</NoticeBanner> : null}
 
-      <section aria-label="Scan history" className="space-y-3">
+      <section aria-label={t("scanHistoryHeading")} className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Scan history</h2>
+          <h2 className="text-lg font-medium">{t("scanHistoryHeading")}</h2>
           {!isArchived ? (
             <ButtonLink href={`/scans/new?project=${project.id}`} size="sm">
               <Plus className="h-4 w-4" aria-hidden="true" />
-              New scan
+              {t("newScan")}
             </ButtonLink>
           ) : null}
         </div>
@@ -139,15 +146,15 @@ export default async function ProjectDetailPage({
                 <li key={scan.id}>
                   <Link
                     href={`/scans/${scan.id}`}
-                    className="flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/50"
+                    className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
                   >
                     <div className="flex items-center gap-3">
                       <ScanStatusBadge status={scan.status as ScanStatus} />
                       <div>
                         <p className="text-sm font-medium">
-                          {scan.pages_scanned} page{scan.pages_scanned === 1 ? "" : "s"}
+                          {t.plural("pagesCount", scan.pages_scanned)}
                         </p>
-                        <p className="text-xs text-muted-foreground">{formatDateTime(scan.created_at)}</p>
+                        <p className="text-xs text-muted-foreground">{formatDateTime(scan.created_at, locale)}</p>
                       </div>
                     </div>
                     <span className={`text-sm font-semibold tabular-nums ${scoreClassName(scan.score)}`}>
@@ -161,13 +168,13 @@ export default async function ProjectDetailPage({
         ) : (
           <EmptyState
             icon={ScanLine}
-            title="No scans yet"
-            description="Run your first accessibility audit for this website to see results here."
+            title={t("noScansTitle")}
+            description={t("noScansDescription")}
             action={
               !isArchived ? (
                 <ButtonLink href={`/scans/new?project=${project.id}`} size="sm">
                   <Plus className="h-4 w-4" aria-hidden="true" />
-                  Run a scan
+                  {t("runScan")}
                 </ButtonLink>
               ) : undefined
             }

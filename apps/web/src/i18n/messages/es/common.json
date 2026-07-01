@@ -1,0 +1,75 @@
+{
+  "appName": "AccessAudit Pro",
+  "tagline": "Auditorías de accesibilidad WCAG 2.2 para agencias",
+  "actions": {
+    "save": "Guardar",
+    "saveChanges": "Guardar cambios",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "continue": "Continuar",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "download": "Descargar",
+    "export": "Exportar",
+    "view": "Ver",
+    "viewAll": "Ver todo",
+    "learnMore": "Más información",
+    "getStarted": "Empezar",
+    "startFree": "Empezar gratis",
+    "retry": "Reintentar",
+    "remove": "Quitar",
+    "restore": "Restaurar",
+    "archive": "Archivar",
+    "upgrade": "Mejora tu plan →",
+    "loading": "Cargando…",
+    "working": "Procesando…",
+    "saving": "Guardando…"
+  },
+  "labels": {
+    "optional": "Opcional",
+    "required": "Obligatorio",
+    "none": "Ninguno",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "status": "Estado",
+    "actions": "Acciones",
+    "search": "Buscar",
+    "yes": "Sí",
+    "no": "No",
+    "areYouSure": "¿Estás seguro?",
+    "archivedCount": "Archivados ({count})",
+    "listTruncated": "Mostrando los primeros {count}. Archiva entradas antiguas para ver más."
+  },
+  "messages": {
+    "saveFailed": "Algo salió mal al guardar tus cambios. Inténtalo de nuevo."
+  },
+  "units": {
+    "perMonth": "/mes",
+    "score": "{value}/100"
+  },
+  "band": {
+    "good": "Bueno",
+    "needsWork": "Necesita mejoras",
+    "poor": "Deficiente",
+    "notScored": "Sin puntuar"
+  },
+  "score": {
+    "aria": "Puntuación de accesibilidad {score} de 100",
+    "none": "Aún sin puntuación"
+  },
+  "theme": {
+    "system": "Tema del sistema",
+    "light": "Tema claro",
+    "dark": "Tema oscuro",
+    "toggleAria": "{current}. Cambiar a {next}."
+  },
+  "meta": {
+    "titleTemplate": "{page} · AccessAudit Pro"
+  }
+}

@@ -18,6 +18,14 @@ const config: Config = {
           2: "hsl(var(--brand-2) / <alpha-value>)",
           fg: "hsl(var(--brand-fg) / <alpha-value>)",
         },
+        // Metallic-gold luxury accent (mainly dark mode). `strong` is the AA text
+        // variant; `DEFAULT`/`2` are for borders, glows, gauges, and highlights.
+        gold: {
+          DEFAULT: "hsl(var(--gold) / <alpha-value>)",
+          2: "hsl(var(--gold-2) / <alpha-value>)",
+          strong: "hsl(var(--gold-strong) / <alpha-value>)",
+          fg: "hsl(var(--gold-fg) / <alpha-value>)",
+        },
         card: {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
@@ -85,20 +93,11 @@ const config: Config = {
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
         xl: "var(--shadow-xl)",
-        brand: "var(--shadow-brand)",
       },
       keyframes: {
         "fade-in": {
           from: { opacity: "0" },
           to: { opacity: "1" },
-        },
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(6px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "scale-in": {
-          from: { opacity: "0", transform: "scale(0.97)" },
-          to: { opacity: "1", transform: "scale(1)" },
         },
         shimmer: {
           "100%": { transform: "translateX(100%)" },
@@ -107,35 +106,48 @@ const config: Config = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(300%)" },
         },
-        "bar-grow": {
-          from: { transform: "scaleX(0)" },
-          to: { transform: "scaleX(1)" },
-        },
-        "draw-ring": {
-          from: { "stroke-dashoffset": "var(--circumference)" },
-        },
-        "draw-line": {
-          from: { "stroke-dashoffset": "1" },
-          to: { "stroke-dashoffset": "0" },
+        // Luxury motion — all GPU-friendly (transform/opacity only). Disabled for
+        // prefers-reduced-motion by the global rule in globals.css.
+        "rise-in": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
         },
+        breathe: {
+          "0%, 100%": { opacity: "0.35" },
+          "50%": { opacity: "0.8" },
+        },
+        "spin-slow": {
+          to: { transform: "rotate(360deg)" },
+        },
+        // Breathing halo: opacity + a hair of scale, so glows bloom and recede.
+        "glow-pulse": {
+          "0%, 100%": { opacity: "0.4", transform: "scale(0.97)" },
+          "50%": { opacity: "0.85", transform: "scale(1.05)" },
+        },
+        // One-shot stroke reveal for charts (line draws itself in on mount).
+        "draw-in": {
+          from: { strokeDashoffset: "var(--draw-length)" },
+          to: { strokeDashoffset: "0" },
+        },
       },
       animation: {
+        // Subtle fade for content that appears in place (alerts, menus).
         "fade-in": "fade-in 0.3s ease-out both",
-        "fade-up": "fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both",
-        "scale-in": "scale-in 0.18s ease-out both",
+        // Loading affordances only: skeleton sweep + the indeterminate scan bar.
         shimmer: "shimmer 1.6s infinite",
-        // Indeterminate bar for the live-scan "auditing…" state.
         "progress-indeterminate": "progress-indeterminate 1.4s ease-in-out infinite",
-        "bar-grow": "bar-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
-        // Circular score gauge sweeps from empty to its value on mount.
-        "draw-ring": "draw-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
-        // Sparkline line draws left→right (path normalized via pathLength="1").
-        "draw-line": "draw-line 1.1s ease-out both",
+        // Premium entrance + ambient motion.
+        "rise-in": "rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
         float: "float 6s ease-in-out infinite",
+        breathe: "breathe 4.5s ease-in-out infinite",
+        "spin-slow": "spin-slow 9s linear infinite",
+        // Slow, calm flourishes for the luxury dark surfaces.
+        "glow-pulse": "glow-pulse 5.5s ease-in-out infinite",
+        "draw-in": "draw-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

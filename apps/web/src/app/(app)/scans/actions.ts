@@ -6,10 +6,9 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   effectivePlan,
-  formatLimit,
-  isUnlimited,
   limitsFor,
   pagesWithinScanLimit,
+  rpcQuotaLimit,
   type PlanLimits,
   type PlanTier,
 } from "@accessaudit/shared";
@@ -18,6 +17,8 @@ import { startOfMonthIso } from "@/lib/dates";
 import { normalizeScanUrl } from "@/lib/url-safety";
 import { genericWriteError } from "@/lib/errors";
 import { allowRequest } from "@/lib/rate-limit";
+import { getTranslations } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
 
 export type NewScanState = { error: string | null; upgrade?: boolean };
 
@@ -25,14 +26,6 @@ export type NewScanState = { error: string | null; upgrade?: boolean };
 // request path (the per-plan page quota then governs how many actually run).
 const MAX_URL_LIST_CHARS = 20_000;
 const MAX_URL_LIST_LINES = 1_000;
-
-const schema = z.object({
-  projectId: z.string().uuid("Choose a project to scan."),
-  scanType: z.enum(["single", "list"]),
-  wcagLevel: z.enum(["A", "AA", "AAA"]),
-  singleUrl: z.string().max(2_048).optional(),
-  urlList: z.string().max(MAX_URL_LIST_CHARS, "That URL list is too large.").optional(),
-});
 
 /** The plan whose limits currently apply to an org (canceled/unpaid → free). */
 async function planLimits(
@@ -48,12 +41,18 @@ async function planLimits(
   return { plan, limits: limitsFor(plan) };
 }
 
-/** Monthly limit as the RPC wants it: -1 for unlimited (Infinity isn't a SQL int). */
-function monthlyScanLimit(limits: PlanLimits): number {
-  return isUnlimited(limits.scansPerMonth) ? -1 : limits.scansPerMonth;
-}
-
 export async function createScan(_prev: NewScanState, formData: FormData): Promise<NewScanState> {
+  const t = await getTranslations("scans.messages");
+  const tp = await getTranslations("plans");
+
+  const schema = z.object({
+    projectId: z.string().uuid(t("chooseProject")),
+    scanType: z.enum(["single", "list"]),
+    wcagLevel: z.enum(["A", "AA", "AAA"]),
+    singleUrl: z.string().max(2_048).optional(),
+    urlList: z.string().max(MAX_URL_LIST_CHARS, t("urlListTooLarge")).optional(),
+  });
+
   const parsed = schema.safeParse({
     projectId: formData.get("projectId"),
     scanType: formData.get("scanType"),
@@ -62,7 +61,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     urlList: (formData.get("urlList") as string | null) ?? "",
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? t("invalidInput") };
   }
 
   const { supabase, organization } = await requireOrg();
@@ -77,7 +76,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
       windowSeconds: 60,
     }))
   ) {
-    return { error: "You're starting scans too quickly. Wait a moment and try again." };
+    return { error: t("rateLimited") };
   }
 
   const { data: project } = await supabase
@@ -88,13 +87,13 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     .is("archived_at", null)
     .maybeSingle();
   if (!project) {
-    return { error: "Select a valid project." };
+    return { error: t("selectValidProject") };
   }
 
   let urls: string[];
   if (parsed.data.scanType === "single") {
     const single = normalizeScanUrl(parsed.data.singleUrl?.trim() || project.base_url);
-    if (!single) return { error: "Enter a valid URL to scan." };
+    if (!single) return { error: t("enterValidUrl") };
     urls = [single];
   } else {
     urls = [
@@ -106,7 +105,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
           .filter((u): u is string => Boolean(u)),
       ),
     ];
-    if (urls.length === 0) return { error: "Add at least one valid URL (one per line)." };
+    if (urls.length === 0) return { error: t("addOneUrl") };
   }
 
   const { plan, limits } = await planLimits(supabase, organization.id);
@@ -114,7 +113,7 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
   // clear message before we touch the DB.
   if (!pagesWithinScanLimit(plan, urls.length)) {
     return {
-      error: `Your ${limits.label} plan allows ${formatLimit(limits.pagesPerScan)} page(s) per scan. Remove some URLs or upgrade.`,
+      error: t("pagesQuota", { plan: limits.label, limit: displayLimit(limits.pagesPerScan, tp) }),
       upgrade: true,
     };
   }
@@ -127,13 +126,13 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
     p_scan_type: parsed.data.scanType,
     p_target_urls: urls,
     p_wcag_level: parsed.data.wcagLevel,
-    p_monthly_limit: monthlyScanLimit(limits),
+    p_monthly_limit: rpcQuotaLimit(limits.scansPerMonth),
     p_period_start: startOfMonthIso(),
   });
-  if (error) return { error: genericWriteError("createScan", error) };
+  if (error) return { error: genericWriteError("createScan", error, t("saveFailed")) };
   if (!newScanId) {
     return {
-      error: `You've used all ${formatLimit(limits.scansPerMonth)} scans on the ${limits.label} plan this month. Upgrade for more.`,
+      error: t("scansQuota", { plan: limits.label, limit: displayLimit(limits.scansPerMonth, tp) }),
       upgrade: true,
     };
   }
@@ -186,7 +185,7 @@ export async function rescanScan(formData: FormData): Promise<void> {
     p_scan_type: prev.scan_type,
     p_target_urls: urls,
     p_wcag_level: prev.wcag_level,
-    p_monthly_limit: monthlyScanLimit(limits),
+    p_monthly_limit: rpcQuotaLimit(limits.scansPerMonth),
     p_period_start: startOfMonthIso(),
   });
   if (error) redirect(`/scans/${id}?notice=rescan-failed`);

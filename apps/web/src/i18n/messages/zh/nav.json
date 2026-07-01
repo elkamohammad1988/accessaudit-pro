@@ -1,0 +1,33 @@
+{
+  "skipToContent": "跳至内容",
+  "primary": "主导航",
+  "footer": "页脚",
+  "marketing": {
+    "guides": "指南",
+    "pricing": "定价",
+    "signIn": "登录",
+    "startFree": "免费开始"
+  },
+  "app": {
+    "dashboard": "仪表板",
+    "clients": "客户",
+    "projects": "项目",
+    "settings": "设置",
+    "signOut": "退出登录"
+  },
+  "mobile": {
+    "open": "打开导航菜单",
+    "close": "关闭导航菜单",
+    "label": "导航"
+  },
+  "footerLinks": {
+    "pricing": "定价",
+    "sample": "示例报告",
+    "guides": "指南",
+    "terms": "条款",
+    "privacy": "隐私",
+    "accessibility": "无障碍",
+    "signIn": "登录"
+  },
+  "copyright": "© {year} AccessAudit Pro · 面向代理机构的 WCAG 2.2 无障碍审计"
+}

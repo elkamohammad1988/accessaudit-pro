@@ -1,9 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { SrLoading } from "@/components/ui/sr-loading";
 
 /** List-shaped skeleton matching the projects index that follows. */
 export default function Loading() {
   return (
-    <div className="space-y-6" aria-busy="true" aria-live="polite">
+    <div className="space-y-5" aria-busy="true" aria-live="polite">
       <div className="flex items-center justify-between">
         <Skeleton className="h-7 w-32" />
         <Skeleton className="h-9 w-28" />
@@ -13,7 +14,7 @@ export default function Loading() {
           <Skeleton key={i} className="h-14 w-full rounded-md" />
         ))}
       </div>
-      <span className="sr-only">Loading…</span>
+      <SrLoading />
     </div>
   );
 }

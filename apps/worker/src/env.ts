@@ -18,16 +18,19 @@ function numberEnv(name: string, fallback: number): number {
 export const env = {
   supabaseUrl: required("SUPABASE_URL"),
   serviceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
+  // Floors guard against a misconfigured env (e.g. POLL_INTERVAL_MS=0 busy-spins
+  // the CPU; a negative timeout breaks the timing logic). Each clamps to a sane
+  // minimum rather than trusting the raw value.
   /** How often to poll for queued scans when idle (ms). */
-  pollIntervalMs: numberEnv("WORKER_POLL_INTERVAL_MS", 3000),
+  pollIntervalMs: Math.max(250, numberEnv("WORKER_POLL_INTERVAL_MS", 3000)),
   /** Per-page navigation/analysis timeout (ms). */
-  pageTimeoutMs: numberEnv("WORKER_PAGE_TIMEOUT_MS", 30000),
+  pageTimeoutMs: Math.max(1000, numberEnv("WORKER_PAGE_TIMEOUT_MS", 30000)),
   /** Best-effort network-settle wait after load before running axe (ms). */
-  settleMs: numberEnv("WORKER_SETTLE_MS", 5000),
+  settleMs: Math.max(0, numberEnv("WORKER_SETTLE_MS", 5000)),
   /** Cap affected-element nodes stored per violation (avoids JSONB bloat). */
-  maxNodesPerViolation: numberEnv("WORKER_MAX_NODES", 5),
+  maxNodesPerViolation: Math.max(1, numberEnv("WORKER_MAX_NODES", 5)),
   /** A scan stuck in 'running' longer than this is reaped (ms). */
-  staleScanMs: numberEnv("WORKER_STALE_SCAN_MS", 1_800_000),
+  staleScanMs: Math.max(60_000, numberEnv("WORKER_STALE_SCAN_MS", 1_800_000)),
   /** Pages scanned in parallel within a single scan. */
   scanConcurrency: Math.max(1, numberEnv("WORKER_SCAN_CONCURRENCY", 3)),
   /** Max times a scan is claimed before it is dead-lettered to 'failed'. */

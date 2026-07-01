@@ -1,0 +1,160 @@
+{
+  "header": {
+    "guides": "Guías",
+    "pricing": "Precios",
+    "signIn": "Iniciar sesión",
+    "startFree": "Empezar gratis"
+  },
+  "landing": {
+    "meta": {
+      "title": "Auditorías de accesibilidad WCAG e informes de marca blanca para agencias",
+      "description": "Analiza cualquier sitio según WCAG 2.2, obtén un informe priorizado asociado a la EAA / EN 301 549 y entrega a tus clientes un producto de marca blanca. Gratis para empezar, sin tarjeta.",
+      "ogTitle": "AccessAudit Pro — Auditorías WCAG que tus clientes sí pueden leer",
+      "ogDescription": "Auditorías de accesibilidad WCAG 2.2 e informes de marca blanca bajo demanda para agencias. Gratis para empezar."
+    },
+    "hero": {
+      "badge": "WCAG 2.2 · EAA / EN 301 549",
+      "titleLead": "Auditorías de accesibilidad que tus clientes",
+      "titleEmphasis": "sí pueden leer.",
+      "subtitle": "La Ley Europea de Accesibilidad ya está en vigor. Analiza cualquier sitio, obtén un informe WCAG priorizado y entrega un producto de marca blanca, diseñado para agencias, no solo para desarrolladores.",
+      "ctaPrimary": "Empezar gratis",
+      "ctaSecondary": "Ver un informe de muestra",
+      "reassurance": "Sin tarjeta de crédito · Plan gratuito para siempre · Con la tecnología de axe-core"
+    },
+    "how": {
+      "heading": "De la URL al informe listo para el cliente en tres pasos",
+      "subheading": "Sin configuración, sin extensiones de navegador, sin hojas de cálculo.",
+      "steps": [
+        {
+          "title": "Añade el sitio",
+          "body": "Crea un cliente y un proyecto, y luego apunta AccessAudit a cualquier URL pública, o pega una lista de páginas."
+        },
+        {
+          "title": "Ejecuta la auditoría",
+          "body": "Nuestro worker renderiza la página en Chromium real y ejecuta axe-core según WCAG 2.2 AA. Sigue el progreso en directo."
+        },
+        {
+          "title": "Entrega el informe",
+          "body": "Entrega al cliente un PDF con tu marca o un enlace para compartir, puntuado, priorizado, con orientación de corrección y notas de revisión manual."
+        }
+      ]
+    },
+    "features": {
+      "label": "Funciones",
+      "items": [
+        {
+          "title": "Analiza en segundos",
+          "body": "Introduce una URL (o una lista). Un worker con Chromium headless + axe-core audita la página renderizada según WCAG 2.2 y la puntúa."
+        },
+        {
+          "title": "Informes que los clientes pueden leer",
+          "body": "Priorizados por impacto, asociados a los criterios WCAG, con orientación de corrección en lenguaje claro, no un muro de mensajes de la consola del desarrollador."
+        },
+        {
+          "title": "Entregables de marca blanca",
+          "body": "Comparte un enlace público con tu marca o exporta un PDF con tu logotipo y tus colores. Vende auditorías como línea de servicio."
+        },
+        {
+          "title": "Multicliente por diseño",
+          "body": "Organiza el trabajo por cliente y proyecto, vuelve a analizar con el tiempo y mantén el registro de cada auditoría."
+        }
+      ]
+    },
+    "pricing": {
+      "heading": "Precios sencillos y pensados para agencias",
+      "subheading": "Empieza gratis, sin tarjeta. Mejora tu plan cuando necesites más.",
+      "mostPopular": "Más popular",
+      "getStarted": "Empezar",
+      "choose": "Elegir {plan}",
+      "compare": "Comparar todas las funciones →",
+      "disclaimer": "El análisis automatizado detecta entre el 30 % y el 50 % de los problemas WCAG. Cada informe señala dónde sigue siendo necesaria una revisión manual, protegiéndote a ti y a tus clientes. En esta versión los espacios de trabajo son de un solo usuario; los puestos de equipo están en la hoja de ruta."
+    },
+    "faq": {
+      "heading": "Preguntas que hacen las agencias",
+      "items": [
+        {
+          "q": "¿Un análisis automatizado hace que un sitio cumpla la normativa?",
+          "a": "Ninguna herramienta puede hacerlo, y lo decimos en cada informe. Las pruebas automatizadas (usamos axe-core, el mismo motor detrás de Lighthouse y axe DevTools) detectan de forma fiable el 30-50 % de los problemas WCAG que son detectables por máquina. Cada informe indica exactamente qué criterios aún necesitan revisión humana, para que establezcas las expectativas correctas y te mantengas protegido legalmente."
+        },
+        {
+          "q": "¿Con qué estándares se comparan?",
+          "a": "WCAG 2.2 niveles A y AA. Los hallazgos se asocian a la Ley Europea de Accesibilidad / EN 301 549 (nuestro marco principal), además de la ADA y la Section 508 para trabajos en EE. UU., de modo que un solo análisis cubre la obligación que corresponda a tu cliente."
+        },
+        {
+          "q": "¿Puedo poner mi propia marca en los informes?",
+          "a": "Sí, en cualquier plan de pago: tu logotipo y color de marca en los PDF de marca blanca, además de la opción de eliminar el sello «Powered by AccessAudit» en el plan Agency y superiores. Los informes se convierten en un entregable que puedes vender."
+        },
+        {
+          "q": "¿Necesito una tarjeta de crédito para empezar?",
+          "a": "No. El plan Free no requiere tarjeta: regístrate y ejecuta tu primer análisis en minutos. Mejora tu plan solo cuando alcances un límite."
+        },
+        {
+          "q": "¿Están seguros los datos de mis clientes?",
+          "a": "Solo accedemos a páginas de acceso público y almacenamos únicamente fragmentos de HTML de los elementos señalados, nunca una copia completa del sitio. Cada espacio de trabajo está aislado a nivel de fila en la base de datos, de modo que nadie más puede ver tus auditorías. Cancela cuando quieras desde el portal de facturación."
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Ejecuta tu primera auditoría hoy",
+      "body": "Convierte el cumplimiento de la accesibilidad en una línea de servicio. Gratis para empezar, sin tarjeta, sin compromiso.",
+      "button": "Empezar gratis"
+    }
+  },
+  "pricing": {
+    "meta": {
+      "title": "Precios",
+      "description": "Precios pensados para agencias para auditorías de accesibilidad WCAG 2.2, diseñados para el cumplimiento de la Ley Europea de Accesibilidad (EAA). Empieza gratis, sin tarjeta. Mensual o anual (2 meses gratis)."
+    },
+    "heading": "Precios que crecen con tu cartera de clientes",
+    "subheading": "Empieza gratis, sin tarjeta de crédito. Sube de nivel cuando captes más clientes o necesites entregables de marca blanca. Mensual o anual (2 meses gratis). Cancela cuando quieras.",
+    "eaaTitle": "La Ley Europea de Accesibilidad está en vigor.",
+    "eaaBody": "Las empresas que venden a consumidores de la UE deben cumplir los requisitos de accesibilidad basados en WCAG o arriesgarse a sanciones. Audita el sitio de cada cliente y entrega pruebas en minutos —",
+    "eaaLink": "lee la guía de la EAA",
+    "tableCaption": "Comparativa de funciones entre los planes Free, Starter, Agency y Scale",
+    "feature": "Función",
+    "perYear": "o {yearly} $/año · ahorra {savings} $",
+    "mostPopular": "Más popular",
+    "getStarted": "Empezar",
+    "choose": "Elegir",
+    "included": "Incluido",
+    "notIncluded": "No incluido",
+    "disclaimer": "El análisis automatizado detecta entre el 30 % y el 50 % de los problemas WCAG. Cada informe señala dónde sigue siendo necesaria una revisión manual, protegiéndote a ti y a tus clientes. En esta versión los espacios de trabajo son de un solo usuario; los puestos de equipo están en la hoja de ruta.",
+    "faqHeading": "Preguntas sobre facturación",
+    "faq": [
+      {
+        "q": "¿Puedo empezar sin tarjeta de crédito?",
+        "a": "Sí. El plan Free no requiere tarjeta: regístrate, crea tu espacio de trabajo y ejecuta tu primer análisis en minutos."
+      },
+      {
+        "q": "¿Puedo cancelar cuando quiera?",
+        "a": "Sí. Gestiona o cancela tu suscripción desde el portal de facturación de Stripe. La cancelación surte efecto al final del periodo actual; conservas el acceso hasta entonces."
+      },
+      {
+        "q": "¿Qué ocurre cuando mejoro o reduzco mi plan?",
+        "a": "Las mejoras surten efecto de inmediato y tus nuevos límites se aplican al instante. Las reducciones se aplican en el siguiente periodo de facturación. Stripe prorratea la facturación."
+      },
+      {
+        "q": "¿Ofrecen reembolsos?",
+        "a": "Salvo donde lo exija la ley, los pagos no son reembolsables y no cobramos por análisis no utilizados, por lo que el plan Free te permite evaluar el producto por completo antes de pagar."
+      }
+    ],
+    "ctaHeading": "Pruébalo gratis, sin tarjeta",
+    "ctaBody": "Ejecuta una auditoría WCAG real y mira el informe que recibirían tus clientes, antes de pagar un solo céntimo.",
+    "ctaButton": "Empezar gratis"
+  },
+  "sample": {
+    "meta": {
+      "title": "Informe de accesibilidad de muestra",
+      "description": "Mira exactamente cómo es un informe de AccessAudit Pro: una auditoría WCAG 2.2 puntuada, con infracciones priorizadas y orientación de corrección, lista para entregar a un cliente."
+    },
+    "bannerStrong": "Este es un informe de muestra.",
+    "bannerRest": "Es exactamente lo que reciben tus clientes; ejecuta uno real en cualquier sitio, gratis.",
+    "bannerCta": "Auditar mi sitio",
+    "reportTitle": "Auditoría de accesibilidad",
+    "poweredBy": "Con la tecnología de AccessAudit Pro",
+    "ctaHeading": "Genera un informe como este para tu cliente",
+    "ctaBody": "Gratis para empezar, sin tarjeta. Añade tu logotipo y color de marca, y luego exporta un PDF o comparte un enlace.",
+    "ctaPrimary": "Empezar gratis",
+    "ctaSecondary": "Ver precios"
+  }
+}

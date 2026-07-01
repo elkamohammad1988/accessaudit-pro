@@ -1,0 +1,262 @@
+{
+  "layout": {
+    "skipToContent": "Skip to content",
+    "home": "Home",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility"
+  },
+  "terms": {
+    "metaTitle": "Terms of Service",
+    "metaDescription": "The terms governing your use of AccessAudit Pro.",
+    "title": "Terms of Service",
+    "effective": "Effective {date}",
+    "intro": "These Terms of Service (“Terms”) are a binding agreement between you (the “Customer”) and AccessAudit Pro (“AccessAudit Pro”, “we”, “us”) governing your access to and use of the AccessAudit Pro website, application, and related services (together, the “Service”). By creating an account or using the Service, you agree to these Terms. If you do not agree, do not use the Service.",
+    "sections": [
+      {
+        "heading": "1. The Service",
+        "body": [
+          "AccessAudit Pro runs automated accessibility scans of web pages you specify, using headless-browser tooling and the axe-core rules engine, and produces reports mapped to the Web Content Accessibility Guidelines (WCAG) 2.2. The Service helps you find and prioritize many common accessibility issues; it does not perform manual or assistive-technology review."
+        ]
+      },
+      {
+        "heading": "2. Accounts",
+        "body": [
+          "You must provide accurate information, keep your credentials confidential, and are responsible for all activity under your account. You must be at least 18 years old and able to form a binding contract. You are responsible for your end users and clients."
+        ]
+      },
+      {
+        "heading": "3. Plans, billing and cancellation",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Paid plans are billed monthly in advance through our payment processor, Stripe. By subscribing you authorize recurring charges until you cancel.",
+              "Plan limits (clients, projects, scans per month, pages per scan, and features) are described on our pricing and billing pages and may change with notice.",
+              "You can cancel at any time from the billing portal; cancellation takes effect at the end of the current billing period and you retain access until then.",
+              "Except where required by law, payments are non-refundable and we do not provide refunds or credits for partial periods or unused scans. Fees are exclusive of taxes, which are your responsibility."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "4. Acceptable use",
+        "body": [
+          "You agree that you will not, and will not permit anyone to:",
+          {
+            "type": "ul",
+            "items": [
+              "submit any URL for scanning unless you own the target site or have explicit authorization from its owner to audit it;",
+              "use the Service to scan, probe, or test systems you are not authorized to assess, or in a way that violates any third party’s rights or any applicable law;",
+              "attempt to overload, disrupt, reverse-engineer, or gain unauthorized access to the Service or its infrastructure, or circumvent plan limits or usage controls;",
+              "resell or provide the Service to third parties except as the intended audit deliverable."
+            ]
+          },
+          "You are solely responsible for ensuring you have the right to scan any target you submit. We may suspend or terminate accounts that violate this section."
+        ]
+      },
+      {
+        "heading": "5. Accessibility disclaimer — please read",
+        "body": [
+          "Automated testing detects only a portion of accessibility issues. Industry research and our own tooling indicate automated rules catch roughly 30–50% of WCAG issues. A clean or high-scoring report does not mean a site is fully accessible, compliant with WCAG, the European Accessibility Act, EN 301 549, the ADA, Section 508, or any other law or standard. Many requirements—such as the quality of alternative text, logical reading and focus order, keyboard operability, captions, and cognitive clarity—require human judgement and assistive-technology testing.",
+          "Reports and scores are provided for informational purposes only, are not legal advice, and are not a certification of compliance. You are responsible for any remediation decisions and for obtaining independent expert and legal review where appropriate."
+        ]
+      },
+      {
+        "heading": "6. Your content and our intellectual property",
+        "body": [
+          "You retain ownership of the data you submit and the reports generated for you, and you may share white-labeled deliverables with your clients. You grant us a limited license to process your data solely to provide the Service. We retain all rights in the Service software, models, and branding. Our honesty disclaimer must not be removed from reports."
+        ]
+      },
+      {
+        "heading": "7. Third-party services",
+        "body": [
+          "The Service relies on third-party providers including Supabase (hosting and database), Stripe (payments), and our error-monitoring provider. Your use may be subject to their terms. We are not responsible for third-party services we do not control."
+        ]
+      },
+      {
+        "heading": "8. Warranties",
+        "body": [
+          "The Service is provided “as is” and “as available” without warranties of any kind, whether express, implied, or statutory, including any implied warranties of merchantability, fitness for a particular purpose, accuracy, and non-infringement. We do not warrant that the Service will be uninterrupted, error-free, or that scan results will be complete or accurate."
+        ]
+      },
+      {
+        "heading": "9. Limitation of liability",
+        "body": [
+          "To the maximum extent permitted by law, we will not be liable for any indirect, incidental, special, consequential, or punitive damages, or for any loss of profits, revenue, data, or goodwill, arising out of or relating to the Service. Our total aggregate liability for any claim relating to the Service will not exceed the amount you paid us in the twelve (12) months before the event giving rise to the claim."
+        ]
+      },
+      {
+        "heading": "10. Indemnification",
+        "body": [
+          "You will indemnify and hold us harmless from any claim arising out of your use of the Service, your content, your scanning of any target, or your breach of these Terms."
+        ]
+      },
+      {
+        "heading": "11. Termination",
+        "body": [
+          "You may stop using the Service at any time. We may suspend or terminate access for breach of these Terms or for any unlawful or harmful use. On termination, your right to use the Service ends; sections that by their nature should survive will survive."
+        ]
+      },
+      {
+        "heading": "12. Changes",
+        "body": [
+          "We may update these Terms from time to time. Material changes will be reflected by an updated effective date and, where appropriate, additional notice. Continued use after changes take effect constitutes acceptance."
+        ]
+      },
+      {
+        "heading": "13. Governing law",
+        "body": [
+          "These Terms are governed by the laws of England and Wales, without regard to conflict-of-laws rules, and the courts of that jurisdiction will have exclusive jurisdiction, except where mandatory local law provides otherwise."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "14. Contact",
+      "before": "Questions about these Terms? Contact us at",
+      "after": "."
+    }
+  },
+  "privacy": {
+    "metaTitle": "Privacy Policy",
+    "metaDescription": "How AccessAudit Pro collects, uses, and protects your data.",
+    "title": "Privacy Policy",
+    "effective": "Effective {date}",
+    "intro": "This Privacy Policy explains how AccessAudit Pro (“AccessAudit Pro”, “we”) collects, uses, and protects information in connection with the AccessAudit Pro service (the “Service”). We act as the data controller for account data and as your processor for the audit data you submit.",
+    "sections": [
+      {
+        "heading": "1. Information we collect",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Account information: your email address, password (stored only as a salted hash by our authentication provider), and the organization/brand details you enter.",
+              "Audit data: the URLs you submit, the clients and projects you create, and the accessibility results we generate (scores, violations, and limited HTML snippets of the elements that failed a rule). We do not log into target sites or collect personal data from scanned pages beyond what is necessary to report a violation.",
+              "Billing information: processed by Stripe. We store a Stripe customer and subscription identifier and your plan status; we do not store full card numbers.",
+              "Technical and diagnostic data: standard server logs and, where enabled, error-monitoring events used to keep the Service reliable and secure."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "2. How we use information",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "to provide, operate, and improve the Service and generate your reports;",
+              "to process payments, manage subscriptions, and enforce plan limits;",
+              "to secure the Service, prevent abuse, and diagnose and fix errors;",
+              "to communicate with you about your account and service-related matters;",
+              "to comply with legal obligations."
+            ]
+          },
+          "We do not sell your personal data, and we do not use your audit data to train models for other customers."
+        ]
+      },
+      {
+        "heading": "3. Sub-processors",
+        "body": [
+          "We share data with service providers only as needed to run the Service:",
+          {
+            "type": "ul",
+            "items": [
+              "Supabase — authentication, database, and hosting of your account and audit data.",
+              "Stripe — payment processing and subscription management.",
+              "Error monitoring — aggregated diagnostic events, only when a monitoring key is configured."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "4. Data retention",
+        "body": [
+          "We retain account and audit data for as long as your account is active. You can delete individual scans, clients, and projects at any time; deletion removes the associated pages and violations. If you close your account, we delete or anonymize your data within a reasonable period, except where we must retain limited records to meet legal, tax, or security obligations."
+        ]
+      },
+      {
+        "heading": "5. Security",
+        "body": [
+          "Data is encrypted in transit. Access to tenant data is restricted by database row-level security so each workspace can only reach its own records, and administrative database keys are used only by server-side processes. No method of transmission or storage is perfectly secure, but we take reasonable measures to protect your information."
+        ]
+      },
+      {
+        "heading": "6. Your rights",
+        "body": [
+          "Depending on your location, you may have rights to access, correct, export, or delete your personal data, and to object to or restrict certain processing. You can exercise many of these directly in the app, or contact us using the details below. If you are in the EEA or UK, our legal bases for processing are performance of our contract with you, our legitimate interests in operating and securing the Service, and compliance with legal obligations."
+        ]
+      },
+      {
+        "heading": "7. Cookies",
+        "body": [
+          "We use only the cookies necessary to keep you signed in and to operate the Service. We do not use third-party advertising cookies."
+        ]
+      },
+      {
+        "heading": "8. International transfers",
+        "body": [
+          "Your data may be processed in countries other than your own. Where required, we rely on appropriate safeguards for such transfers."
+        ]
+      },
+      {
+        "heading": "9. Changes",
+        "body": [
+          "We may update this policy from time to time. Material changes will be reflected by an updated effective date and, where appropriate, additional notice."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "10. Contact",
+      "before": "For privacy questions or to exercise your rights, contact us at",
+      "after": "."
+    }
+  },
+  "accessibility": {
+    "metaTitle": "Accessibility Statement",
+    "metaDescription": "How AccessAudit Pro holds its own product to the WCAG 2.2 AA standard it audits against — and how to report an accessibility issue.",
+    "title": "Accessibility Statement",
+    "lastReviewed": "Last reviewed {date}",
+    "intro": "We sell an accessibility product, so we hold our own to the same bar. AccessAudit Pro is built and tested to meet WCAG 2.2 Level AA — the standard our scans measure against. This statement explains where we stand and how to tell us if we fall short.",
+    "sections": [
+      {
+        "heading": "Conformance target",
+        "body": [
+          "We aim for conformance with the Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA across the AccessAudit Pro web application and marketing site. Accessibility is treated as a requirement during design and development, not an afterthought."
+        ]
+      },
+      {
+        "heading": "What we do",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Semantic HTML with a logical heading structure and landmark regions.",
+              "Full keyboard operability, with a visible focus indicator and no keyboard traps.",
+              "Form fields with programmatic labels and clear, text-based error messages.",
+              "Colour contrast that meets the AA thresholds, in both light and dark themes.",
+              "Status messages (scan progress, errors) exposed to assistive technology.",
+              "Content that reflows and remains usable at 200% zoom and on small screens."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Known limitations",
+        "body": [
+          "Accessibility is ongoing work. Some areas — for example, complex data tables in reports, or content rendered from a customer’s own branding — may not yet fully meet every Level AA criterion. Where we find a gap, we prioritize and fix it. If you hit a barrier we haven’t listed, please tell us."
+        ]
+      },
+      {
+        "heading": "Honesty about automated testing",
+        "body": [
+          "Our own product, like any automated scanner, detects only part of all accessibility issues. We combine automated testing with manual review of our interface, and we recommend the same approach to our customers. A high automated score is a strong signal, not a guarantee of full conformance."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "Give us feedback",
+      "before": "If you encounter an accessibility barrier on AccessAudit Pro, email us at",
+      "after": ". Please include the page, what you were trying to do, and your browser and assistive technology if relevant. We aim to respond promptly and to fix confirmed issues as a priority."
+    }
+  }
+}

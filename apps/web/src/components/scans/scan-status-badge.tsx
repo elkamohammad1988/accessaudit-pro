@@ -1,6 +1,9 @@
+"use client";
+
 import type { ScanStatus } from "@accessaudit/shared";
 import { STATUS_META } from "@/lib/scan-format";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "@/i18n/provider";
 
 /** The canonical scan-status pill, shared by the dashboard, lists, and detail. */
 export function ScanStatusBadge({
@@ -10,6 +13,7 @@ export function ScanStatusBadge({
   status: ScanStatus;
   className?: string;
 }) {
+  const t = useTranslations("scans");
   const meta = STATUS_META[status];
   return (
     <span
@@ -26,7 +30,7 @@ export function ScanStatusBadge({
         ) : null}
         <span className={cn("relative inline-flex h-1.5 w-1.5 rounded-full", meta.dot)} />
       </span>
-      {meta.label}
+      {t("status." + status)}
     </span>
   );
 }

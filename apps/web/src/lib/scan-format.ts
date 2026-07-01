@@ -25,13 +25,6 @@ export function totalViolations(totals: ImpactTotals): number {
   return totals.critical + totals.serious + totals.moderate + totals.minor;
 }
 
-export const IMPACT_LABEL: Record<ImpactLevel, string> = {
-  critical: "Critical",
-  serious: "Serious",
-  moderate: "Moderate",
-  minor: "Minor",
-};
-
 /**
  * Tailwind classes for an impact badge — soft tint + inset ring, theme-aware via
  * the severity tokens so they read correctly in both light and dark mode.
@@ -44,7 +37,6 @@ export const IMPACT_BADGE: Record<ImpactLevel, string> = {
 };
 
 export interface StatusMeta {
-  label: string;
   className: string;
   /** Background class for the leading status dot in the badge. */
   dot: string;
@@ -53,12 +45,14 @@ export interface StatusMeta {
   terminal: boolean;
 }
 
+// Human labels live in the `scans.status.*` catalog (translate via `t("status." + s)`);
+// only the locale-agnostic presentation (classes, dot, terminal) lives here.
 export const STATUS_META: Record<ScanStatus, StatusMeta> = {
-  queued: { label: "Queued", className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", dot: "bg-muted-foreground", terminal: false },
-  running: { label: "Running", className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", dot: "bg-brand", terminal: false },
-  completed: { label: "Completed", className: "bg-success/10 text-success-strong ring-1 ring-inset ring-success/25", dot: "bg-success", terminal: true },
-  partial: { label: "Partial", className: "bg-warning/10 text-warning-strong ring-1 ring-inset ring-warning/25", dot: "bg-warning", terminal: true },
-  failed: { label: "Failed", className: "bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
+  queued: { className: "bg-muted text-muted-foreground ring-1 ring-inset ring-border", dot: "bg-muted-foreground", terminal: false },
+  running: { className: "bg-brand/10 text-brand ring-1 ring-inset ring-brand/25", dot: "bg-brand", terminal: false },
+  completed: { className: "bg-success/10 text-success-strong ring-1 ring-inset ring-success/25", dot: "bg-success", terminal: true },
+  partial: { className: "bg-warning/10 text-warning-strong ring-1 ring-inset ring-warning/25", dot: "bg-warning", terminal: true },
+  failed: { className: "bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
 };
 
 /** Color the numeric score by band (good / needs work / poor). */

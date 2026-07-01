@@ -1,0 +1,262 @@
+{
+  "layout": {
+    "skipToContent": "Saltar al contenido",
+    "home": "Inicio",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "accessibility": "Accesibilidad"
+  },
+  "terms": {
+    "metaTitle": "Términos del Servicio",
+    "metaDescription": "Los términos que rigen tu uso de AccessAudit Pro.",
+    "title": "Términos del Servicio",
+    "effective": "En vigor desde el {date}",
+    "intro": "Estos Términos del Servicio («Términos») constituyen un acuerdo vinculante entre tú (el «Cliente») y AccessAudit Pro («AccessAudit Pro», «nosotros») que rigen tu acceso y uso del sitio web, la aplicación y los servicios relacionados de AccessAudit Pro (en conjunto, el «Servicio»). Al crear una cuenta o usar el Servicio, aceptas estos Términos. Si no estás de acuerdo, no uses el Servicio.",
+    "sections": [
+      {
+        "heading": "1. El Servicio",
+        "body": [
+          "AccessAudit Pro ejecuta análisis automatizados de accesibilidad de las páginas web que especifiques, utilizando herramientas de navegador headless y el motor de reglas axe-core, y genera informes asociados a las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2. El Servicio te ayuda a encontrar y priorizar muchos problemas de accesibilidad habituales; no realiza una revisión manual ni con tecnología de asistencia."
+        ]
+      },
+      {
+        "heading": "2. Cuentas",
+        "body": [
+          "Debes proporcionar información precisa, mantener tus credenciales confidenciales y eres responsable de toda la actividad realizada con tu cuenta. Debes tener al menos 18 años y capacidad para celebrar un contrato vinculante. Eres responsable de tus usuarios finales y tus clientes."
+        ]
+      },
+      {
+        "heading": "3. Planes, facturación y cancelación",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Los planes de pago se facturan por adelantado de forma mensual a través de nuestro procesador de pagos, Stripe. Al suscribirte, autorizas los cargos recurrentes hasta que canceles.",
+              "Los límites del plan (clientes, proyectos, análisis al mes, páginas por análisis y funciones) se describen en nuestras páginas de precios y facturación y pueden cambiar con previo aviso.",
+              "Puedes cancelar en cualquier momento desde el portal de facturación; la cancelación surte efecto al final del periodo de facturación actual y conservas el acceso hasta entonces.",
+              "Salvo donde lo exija la ley, los pagos no son reembolsables y no ofrecemos reembolsos ni créditos por periodos parciales o análisis no utilizados. Las tarifas no incluyen los impuestos, que son tu responsabilidad."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "4. Uso aceptable",
+        "body": [
+          "Aceptas que no realizarás, ni permitirás a nadie realizar, lo siguiente:",
+          {
+            "type": "ul",
+            "items": [
+              "enviar cualquier URL para su análisis a menos que seas propietario del sitio objetivo o cuentes con autorización explícita de su propietario para auditarlo;",
+              "usar el Servicio para analizar, sondear o probar sistemas que no estés autorizado a evaluar, o de una forma que vulnere los derechos de terceros o cualquier ley aplicable;",
+              "intentar sobrecargar, interrumpir, aplicar ingeniería inversa u obtener acceso no autorizado al Servicio o su infraestructura, o eludir los límites del plan o los controles de uso;",
+              "revender o proporcionar el Servicio a terceros, salvo como el entregable de auditoría previsto."
+            ]
+          },
+          "Eres el único responsable de asegurarte de que tienes derecho a analizar cualquier objetivo que envíes. Podemos suspender o cancelar las cuentas que infrinjan esta sección."
+        ]
+      },
+      {
+        "heading": "5. Descargo de responsabilidad sobre accesibilidad — por favor, léelo",
+        "body": [
+          "Las pruebas automatizadas detectan solo una parte de los problemas de accesibilidad. La investigación del sector y nuestras propias herramientas indican que las reglas automatizadas detectan aproximadamente entre el 30 % y el 50 % de los problemas WCAG. Un informe limpio o con una puntuación alta no significa que un sitio sea totalmente accesible ni que cumpla con las WCAG, la Ley Europea de Accesibilidad, la EN 301 549, la ADA, la Section 508 ni cualquier otra ley o estándar. Muchos requisitos —como la calidad del texto alternativo, el orden lógico de lectura y de foco, la operabilidad con teclado, los subtítulos y la claridad cognitiva— requieren juicio humano y pruebas con tecnología de asistencia.",
+          "Los informes y las puntuaciones se proporcionan únicamente con fines informativos, no constituyen asesoramiento jurídico y no son una certificación de cumplimiento. Eres responsable de cualquier decisión de corrección y de obtener una revisión experta e independiente y un asesoramiento jurídico cuando corresponda."
+        ]
+      },
+      {
+        "heading": "6. Tu contenido y nuestra propiedad intelectual",
+        "body": [
+          "Conservas la propiedad de los datos que envías y de los informes generados para ti, y puedes compartir entregables de marca blanca con tus clientes. Nos concedes una licencia limitada para procesar tus datos únicamente con el fin de prestar el Servicio. Conservamos todos los derechos sobre el software, los modelos y la marca del Servicio. Nuestro descargo de honestidad no debe eliminarse de los informes."
+        ]
+      },
+      {
+        "heading": "7. Servicios de terceros",
+        "body": [
+          "El Servicio se apoya en proveedores externos, entre ellos Supabase (alojamiento y base de datos), Stripe (pagos) y nuestro proveedor de monitorización de errores. Tu uso puede estar sujeto a sus términos. No somos responsables de los servicios de terceros que no controlamos."
+        ]
+      },
+      {
+        "heading": "8. Garantías",
+        "body": [
+          "El Servicio se proporciona «tal cual» y «según disponibilidad», sin garantías de ningún tipo, ya sean expresas, implícitas o legales, incluida cualquier garantía implícita de comerciabilidad, idoneidad para un fin determinado, exactitud y no infracción. No garantizamos que el Servicio funcione sin interrupciones ni errores, ni que los resultados de los análisis sean completos o exactos."
+        ]
+      },
+      {
+        "heading": "9. Limitación de responsabilidad",
+        "body": [
+          "En la máxima medida permitida por la ley, no seremos responsables de ningún daño indirecto, incidental, especial, consecuente o punitivo, ni de ninguna pérdida de beneficios, ingresos, datos o fondo de comercio, que surja de o esté relacionado con el Servicio. Nuestra responsabilidad total acumulada por cualquier reclamación relacionada con el Servicio no superará el importe que nos hayas pagado en los doce (12) meses anteriores al hecho que dio origen a la reclamación."
+        ]
+      },
+      {
+        "heading": "10. Indemnización",
+        "body": [
+          "Nos indemnizarás y nos mantendrás indemnes frente a cualquier reclamación derivada de tu uso del Servicio, tu contenido, tu análisis de cualquier objetivo o tu incumplimiento de estos Términos."
+        ]
+      },
+      {
+        "heading": "11. Terminación",
+        "body": [
+          "Puedes dejar de usar el Servicio en cualquier momento. Podemos suspender o cancelar el acceso por incumplimiento de estos Términos o por cualquier uso ilícito o perjudicial. Al terminar, tu derecho a usar el Servicio finaliza; las secciones que por su naturaleza deban perdurar seguirán vigentes."
+        ]
+      },
+      {
+        "heading": "12. Cambios",
+        "body": [
+          "Podemos actualizar estos Términos de vez en cuando. Los cambios significativos se reflejarán mediante una fecha de entrada en vigor actualizada y, cuando corresponda, un aviso adicional. El uso continuado después de que los cambios entren en vigor constituye su aceptación."
+        ]
+      },
+      {
+        "heading": "13. Ley aplicable",
+        "body": [
+          "Estos Términos se rigen por las leyes de Inglaterra y Gales, sin tener en cuenta las normas sobre conflicto de leyes, y los tribunales de dicha jurisdicción tendrán jurisdicción exclusiva, salvo cuando la legislación local imperativa disponga lo contrario."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "14. Contacto",
+      "before": "¿Tienes preguntas sobre estos Términos? Contáctanos en",
+      "after": "."
+    }
+  },
+  "privacy": {
+    "metaTitle": "Política de Privacidad",
+    "metaDescription": "Cómo AccessAudit Pro recopila, usa y protege tus datos.",
+    "title": "Política de Privacidad",
+    "effective": "En vigor desde el {date}",
+    "intro": "Esta Política de Privacidad explica cómo AccessAudit Pro («AccessAudit Pro», «nosotros») recopila, usa y protege la información en relación con el servicio de AccessAudit Pro (el «Servicio»). Actuamos como responsable del tratamiento de los datos de la cuenta y como encargado del tratamiento de los datos de auditoría que envías.",
+    "sections": [
+      {
+        "heading": "1. Información que recopilamos",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Información de la cuenta: tu dirección de correo electrónico, contraseña (almacenada únicamente como un hash con sal por nuestro proveedor de autenticación) y los datos de organización/marca que introduces.",
+              "Datos de auditoría: las URL que envías, los clientes y proyectos que creas y los resultados de accesibilidad que generamos (puntuaciones, infracciones y fragmentos limitados de HTML de los elementos que no superaron una regla). No iniciamos sesión en los sitios objetivo ni recopilamos datos personales de las páginas analizadas más allá de lo necesario para informar de una infracción.",
+              "Información de facturación: procesada por Stripe. Almacenamos un identificador de cliente y de suscripción de Stripe y el estado de tu plan; no almacenamos los números de tarjeta completos.",
+              "Datos técnicos y de diagnóstico: registros de servidor estándar y, cuando esté habilitado, eventos de monitorización de errores utilizados para mantener el Servicio fiable y seguro."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "2. Cómo usamos la información",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "para prestar, operar y mejorar el Servicio y generar tus informes;",
+              "para procesar pagos, gestionar suscripciones y aplicar los límites del plan;",
+              "para proteger el Servicio, prevenir el abuso y diagnosticar y corregir errores;",
+              "para comunicarnos contigo sobre tu cuenta y asuntos relacionados con el servicio;",
+              "para cumplir con obligaciones legales."
+            ]
+          },
+          "No vendemos tus datos personales y no usamos tus datos de auditoría para entrenar modelos para otros clientes."
+        ]
+      },
+      {
+        "heading": "3. Subencargados del tratamiento",
+        "body": [
+          "Compartimos datos con proveedores de servicios solo en la medida necesaria para operar el Servicio:",
+          {
+            "type": "ul",
+            "items": [
+              "Supabase — autenticación, base de datos y alojamiento de los datos de tu cuenta y de auditoría.",
+              "Stripe — procesamiento de pagos y gestión de suscripciones.",
+              "Monitorización de errores — eventos de diagnóstico agregados, solo cuando hay configurada una clave de monitorización."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "4. Conservación de datos",
+        "body": [
+          "Conservamos los datos de la cuenta y de auditoría mientras tu cuenta esté activa. Puedes eliminar análisis, clientes y proyectos individuales en cualquier momento; la eliminación borra las páginas e infracciones asociadas. Si cierras tu cuenta, eliminamos o anonimizamos tus datos en un plazo razonable, salvo cuando debamos conservar registros limitados para cumplir obligaciones legales, fiscales o de seguridad."
+        ]
+      },
+      {
+        "heading": "5. Seguridad",
+        "body": [
+          "Los datos se cifran en tránsito. El acceso a los datos de cada inquilino está restringido mediante seguridad a nivel de fila en la base de datos, de modo que cada espacio de trabajo solo puede acceder a sus propios registros, y las claves administrativas de la base de datos solo las usan procesos del lado del servidor. Ningún método de transmisión o almacenamiento es perfectamente seguro, pero adoptamos medidas razonables para proteger tu información."
+        ]
+      },
+      {
+        "heading": "6. Tus derechos",
+        "body": [
+          "Según tu ubicación, puedes tener derecho a acceder, corregir, exportar o eliminar tus datos personales, así como a oponerte o restringir determinados tratamientos. Puedes ejercer muchos de ellos directamente en la aplicación o contactándonos con los datos que aparecen abajo. Si te encuentras en el EEE o el Reino Unido, nuestras bases jurídicas para el tratamiento son la ejecución de nuestro contrato contigo, nuestros intereses legítimos en operar y proteger el Servicio, y el cumplimiento de obligaciones legales."
+        ]
+      },
+      {
+        "heading": "7. Cookies",
+        "body": [
+          "Usamos únicamente las cookies necesarias para mantener tu sesión iniciada y para operar el Servicio. No usamos cookies publicitarias de terceros."
+        ]
+      },
+      {
+        "heading": "8. Transferencias internacionales",
+        "body": [
+          "Tus datos pueden tratarse en países distintos al tuyo. Cuando sea necesario, aplicamos las garantías adecuadas para dichas transferencias."
+        ]
+      },
+      {
+        "heading": "9. Cambios",
+        "body": [
+          "Podemos actualizar esta política de vez en cuando. Los cambios significativos se reflejarán mediante una fecha de entrada en vigor actualizada y, cuando corresponda, un aviso adicional."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "10. Contacto",
+      "before": "Para preguntas sobre privacidad o para ejercer tus derechos, contáctanos en",
+      "after": "."
+    }
+  },
+  "accessibility": {
+    "metaTitle": "Declaración de Accesibilidad",
+    "metaDescription": "Cómo AccessAudit Pro somete su propio producto al estándar WCAG 2.2 AA con el que audita, y cómo informar de un problema de accesibilidad.",
+    "title": "Declaración de Accesibilidad",
+    "lastReviewed": "Última revisión: {date}",
+    "intro": "Vendemos un producto de accesibilidad, así que aplicamos a lo nuestro el mismo listón. AccessAudit Pro está creado y probado para cumplir el Nivel AA de WCAG 2.2, el estándar con el que se comparan nuestros análisis. Esta declaración explica nuestra situación y cómo decirnos si nos quedamos cortos.",
+    "sections": [
+      {
+        "heading": "Objetivo de conformidad",
+        "body": [
+          "Aspiramos a la conformidad con las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2 en el Nivel AA en toda la aplicación web y el sitio de marketing de AccessAudit Pro. La accesibilidad se trata como un requisito durante el diseño y el desarrollo, no como una ocurrencia tardía."
+        ]
+      },
+      {
+        "heading": "Lo que hacemos",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "HTML semántico con una estructura de encabezados lógica y regiones de referencia (landmarks).",
+              "Operabilidad completa con teclado, con un indicador de foco visible y sin trampas de teclado.",
+              "Campos de formulario con etiquetas programáticas y mensajes de error claros y basados en texto.",
+              "Contraste de color que cumple los umbrales AA, tanto en el tema claro como en el oscuro.",
+              "Mensajes de estado (progreso del análisis, errores) expuestos a la tecnología de asistencia.",
+              "Contenido que se readapta y sigue siendo usable con un zoom del 200 % y en pantallas pequeñas."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Limitaciones conocidas",
+        "body": [
+          "La accesibilidad es un trabajo continuo. Algunas áreas —por ejemplo, las tablas de datos complejas de los informes o el contenido renderizado a partir de la propia marca de un cliente— pueden no cumplir todavía por completo todos los criterios del Nivel AA. Cuando detectamos una carencia, la priorizamos y la corregimos. Si te encuentras con una barrera que no hemos enumerado, dínoslo, por favor."
+        ]
+      },
+      {
+        "heading": "Honestidad sobre las pruebas automatizadas",
+        "body": [
+          "Nuestro propio producto, como cualquier analizador automatizado, detecta solo una parte de todos los problemas de accesibilidad. Combinamos las pruebas automatizadas con la revisión manual de nuestra interfaz, y recomendamos el mismo enfoque a nuestros clientes. Una puntuación automatizada alta es una señal fuerte, no una garantía de plena conformidad."
+        ]
+      }
+    ],
+    "contact": {
+      "heading": "Danos tu opinión",
+      "before": "Si encuentras una barrera de accesibilidad en AccessAudit Pro, escríbenos a",
+      "after": ". Incluye la página, lo que intentabas hacer y tu navegador y tecnología de asistencia si es relevante. Procuramos responder con prontitud y corregir como prioridad los problemas confirmados."
+    }
+  }
+}

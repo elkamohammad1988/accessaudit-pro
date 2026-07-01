@@ -1,0 +1,54 @@
+{
+  "metaTitle": "Facturation",
+  "title": "Facturation",
+  "backToSettings": "Paramètres",
+  "planBadge": "Forfait {plan}",
+  "renewsOn": "renouvellement le {date}",
+  "downgradeNotice": "Votre abonnement {plan} est {status}, les limites du forfait {effectivePlan} s'appliquent donc actuellement. Mettez à jour votre moyen de paiement dans le portail de facturation pour rétablir l'accès complet.",
+  "status": {
+    "active": "Actif",
+    "trialing": "Essai",
+    "pastDue": "Paiement en retard",
+    "canceled": "Annulé",
+    "incomplete": "Incomplet",
+    "none": "Aucun abonnement actif"
+  },
+  "banner": {
+    "success": "Abonnement mis à jour. La prise en compte ici peut prendre quelques secondes.",
+    "cancel": "Paiement annulé — aucune modification n'a été effectuée.",
+    "error": "Une erreur est survenue avec la facturation. Veuillez réessayer.",
+    "noCustomer": "Pas encore de compte de facturation — choisissez un forfait pour commencer.",
+    "scanLimit": "Vous avez atteint la limite d'analyses de votre forfait pour ce mois-ci. Passez à un forfait supérieur pour en lancer davantage."
+  },
+  "usage": {
+    "aria": "Utilisation",
+    "scansThisMonth": "Analyses ce mois-ci",
+    "clients": "Clients",
+    "projects": "Projets",
+    "meter": "Utilisation : {label}"
+  },
+  "manage": {
+    "aria": "Gérer l'abonnement",
+    "heading": "Gérer l'abonnement",
+    "description": "Changez de forfait, mettez à jour votre moyen de paiement, consultez vos factures ou annulez.",
+    "openPortal": "Ouvrir le portail de facturation"
+  },
+  "plan": {
+    "heading": "Forfaits",
+    "intervalGroup": "Périodicité de facturation",
+    "monthly": "Mensuel",
+    "annual": "Annuel",
+    "annualNote": "· 2 mois offerts",
+    "current": "Actuel",
+    "perMonth": "/mois",
+    "perYear": "/an",
+    "savePerYear": "Économisez {amount} $ par an",
+    "noWhiteLabel": "Pas de marque blanche",
+    "yourPlan": "Votre forfait",
+    "downgradeViaPortal": "Passer à un forfait inférieur via le portail",
+    "switchViaPortal": "Changer via le portail",
+    "choose": "Choisir {plan}",
+    "footerMonthly": "Les limites s'appliquent au fur et à mesure que vous créez des clients, des projets et des analyses. Facturé mensuellement via Stripe. Les espaces de travail sont mono-utilisateur dans cette version — les sièges d'équipe sont prévus sur la feuille de route.",
+    "footerAnnual": "Les limites s'appliquent au fur et à mesure que vous créez des clients, des projets et des analyses. Facturé mensuellement ou annuellement via Stripe. Les espaces de travail sont mono-utilisateur dans cette version — les sièges d'équipe sont prévus sur la feuille de route."
+  }
+}

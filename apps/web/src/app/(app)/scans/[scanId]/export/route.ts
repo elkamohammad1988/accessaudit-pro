@@ -3,6 +3,7 @@ import { requireOrg } from "@/lib/auth";
 import { fetchAllViolationsForExport, loadReportByScan } from "@/lib/load-report";
 import { parseNodes } from "@/lib/report";
 import { rowsToCsv } from "@/lib/csv";
+import { getTranslations } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export async function GET(
 ): Promise<Response> {
   const { scanId } = await ctx.params;
   const { supabase, organization } = await requireOrg();
+  const t = await getTranslations("scans.export");
 
   const { data: sub } = await supabase
     .from("subscriptions")
@@ -20,25 +22,25 @@ export async function GET(
     .maybeSingle();
   const plan = effectivePlan(sub?.plan, sub?.status);
   if (!limitsFor(plan).dataExport) {
-    return new Response("CSV export is available on paid plans. Upgrade to enable it.", {
+    return new Response(t("forbidden"), {
       status: 403,
     });
   }
 
   const report = await loadReportByScan(supabase, scanId, organization.id);
   if (!report) {
-    return new Response("Scan not found.", { status: 404 });
+    return new Response(t("notFound"), { status: 404 });
   }
 
   const header = [
-    "Page URL",
-    "Impact",
-    "Rule",
-    "WCAG",
-    "Description",
-    "Help URL",
-    "Selector",
-    "Failure summary",
+    t("headers.pageUrl"),
+    t("headers.impact"),
+    t("headers.rule"),
+    t("headers.wcag"),
+    t("headers.description"),
+    t("headers.helpUrl"),
+    t("headers.selector"),
+    t("headers.failureSummary"),
   ];
   const rows: string[][] = [header];
 

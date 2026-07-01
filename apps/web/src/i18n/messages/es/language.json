@@ -1,0 +1,6 @@
+{
+  "label": "Idioma",
+  "change": "Cambiar idioma",
+  "current": "Idioma actual: {language}",
+  "select": "Selecciona un idioma"
+}

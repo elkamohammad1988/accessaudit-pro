@@ -10,8 +10,8 @@ interface SparklineProps {
   max?: number;
   height?: number;
   className?: string;
-  /** Accessible description of the trend. */
-  label?: string;
+  /** Localized accessible description of the trend (required — no English fallback). */
+  label: string;
 }
 
 /**
@@ -45,7 +45,7 @@ export function Sparkline({
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
       role="img"
-      aria-label={label ?? "Trend"}
+      aria-label={label}
       className={cn("h-14 w-full overflow-visible", className)}
     >
       <defs>
@@ -55,6 +55,9 @@ export function Sparkline({
         </linearGradient>
       </defs>
       <path d={area} fill={`url(#${gradientId})`} className="animate-fade-in" />
+      {/* The trend line draws itself in on mount: `pathLength={1}` normalizes the
+          length so a dash of 1 with an offset animating 1 → 0 sweeps the stroke
+          into view. Reduced-motion collapses the animation to its drawn state. */}
       <path
         d={line}
         fill="none"
@@ -63,10 +66,19 @@ export function Sparkline({
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
-        // Normalize the path to a length of 1 so the draw keyframe is width-agnostic.
         pathLength={1}
         strokeDasharray={1}
-        className="animate-draw-line"
+        className="animate-draw-in [--draw-length:1] dark:[filter:drop-shadow(0_1px_3px_hsl(var(--brand)/0.55))]"
+      />
+      {/* Latest point — a soft breathing halo (opacity only, origin-safe in SVG)
+          behind a glowing dot, reading as a live data tip. */}
+      <circle
+        cx={lastX}
+        cy={lastY}
+        r={5}
+        fill="hsl(var(--brand))"
+        className="animate-breathe"
+        vectorEffect="non-scaling-stroke"
       />
       <circle
         cx={lastX}
@@ -74,8 +86,7 @@ export function Sparkline({
         r={2.5}
         fill="hsl(var(--brand))"
         vectorEffect="non-scaling-stroke"
-        // Pop the latest-point marker in just as the line finishes drawing.
-        style={{ animation: "fade-in 0.5s ease-out 0.9s both" }}
+        className="dark:[filter:drop-shadow(0_0_3px_hsl(var(--brand)))]"
       />
     </svg>
   );

@@ -1,0 +1,28 @@
+{
+  "metaTitle": "仪表板",
+  "title": "仪表板",
+  "planBadge": "{plan} 套餐",
+  "newScan": "新建扫描",
+  "avgScore": "平均无障碍评分",
+  "scoreTrendLabel": "{count} 次扫描的评分趋势",
+  "trendEmpty": "运行几次扫描，即可在此查看您的评分趋势。",
+  "trendCaption": {
+    "other": "基于您最近 {count} 次已完成的扫描"
+  },
+  "usageTitle": "本月用量",
+  "meters": {
+    "scans": "扫描",
+    "clients": "客户",
+    "projects": "项目",
+    "aria": "{label}用量"
+  },
+  "pagesPerScan": "每次扫描页面数",
+  "severityHeading": "按严重程度划分的问题",
+  "recentHeading": "最近的扫描",
+  "pagesCount": {
+    "other": "{count} 个页面"
+  },
+  "emptyTitle": "暂无扫描",
+  "emptyDescription": "运行您的首次无障碍审计，即可在此查看您的评分、趋势和问题。",
+  "emptyAction": "运行您的首次扫描"
+}

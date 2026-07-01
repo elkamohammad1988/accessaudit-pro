@@ -1,0 +1,158 @@
+{
+  "wcagShort": "WCAG {level}",
+  "auditHeading": "无障碍审计",
+  "logoAlt": "{name} 徽标",
+  "poweredBy": "由 AccessAudit Pro 提供支持",
+  "status": {
+    "queued": "排队中",
+    "running": "运行中",
+    "completed": "已完成",
+    "partial": "部分完成",
+    "failed": "失败"
+  },
+  "impact": {
+    "critical": "严重",
+    "serious": "重大",
+    "moderate": "中等",
+    "minor": "轻微"
+  },
+  "severityBar": {
+    "none": "未发现违规",
+    "distribution": "违规严重程度分布：{distribution}"
+  },
+  "report": {
+    "inProgressNote": "工作进程正在审计您的页面。此视图会自动更新。",
+    "inProgressAria": "扫描进行中",
+    "failedTitle": "扫描失败",
+    "unknownError": "未知错误。",
+    "partialAria": "部分扫描",
+    "partialTitle": {
+      "other": "部分扫描——{count} 个页面无法加载"
+    },
+    "partialBody": {
+      "other": "下方的评分和总计仅反映成功加载的 {count} 个页面。请查看逐页列表以了解加载失败的 URL，如有需要可重新扫描。"
+    },
+    "summaryAria": "摘要",
+    "accessibilityScore": "无障碍评分",
+    "issuesFound": "发现的问题",
+    "criticalOrSerious": "严重或重大",
+    "pagesScanned": "已扫描页面",
+    "wcagLevel": "WCAG 2.2 {level} 级",
+    "byImpactAria": "按影响程度",
+    "manualChecksAria": "建议进行手动检查",
+    "honestyTitle": "自动扫描——仍建议进行手动检查",
+    "honestyBody": "本次审计使用自动规则（axe-core）针对 WCAG 2.2 {level} 级进行，约可发现 30–50% 的问题。它无法替代对以下方面的人工复核：有意义的替代文本质量、合理的阅读/焦点顺序、键盘陷阱、字幕以及认知清晰度。请用它快速修复明显的失败项，然后手动复核其余部分。",
+    "byPageAria": "按页面",
+    "pagesHeading": "页面",
+    "issuesCount": {
+      "other": "{count} 个问题"
+    },
+    "error": "错误",
+    "errorHttp": "错误 · HTTP {status}",
+    "violationsAria": "违规项",
+    "violationsHeading": "违规项（{count}）",
+    "truncatedNotice": {
+      "other": "正在显示 {count} 条严重程度最高的规则，涵盖 {total} 项发现中的前 {shown} 项。导出 CSV 以获取完整、权威的记录。"
+    },
+    "loadedFindings": "已加载",
+    "manyFindings": "多项",
+    "noViolations": "未发现自动检测的 WCAG {level} 级违规。很好——但仍值得进行一次手动复核。",
+    "wcagCriteria": "WCAG {criteria}",
+    "elementsCount": {
+      "other": "{count} 个元素"
+    },
+    "howToFix": "如何修复此问题 →",
+    "moreElements": {
+      "other": "+ 另有 {count} 个受影响的元素。导出 CSV 以查看完整列表。"
+    },
+    "completed": "已于 {date} 完成。"
+  },
+  "new": {
+    "metaTitle": "新建扫描",
+    "dashboard": "仪表板",
+    "title": "新建扫描",
+    "subtitle": "针对一个页面或一组页面运行 WCAG 2.2 无障碍审计。",
+    "emptyTitle": "暂无可扫描的项目",
+    "emptyDescription": "在运行扫描之前，您需要先有一个项目（客户的网站）。",
+    "emptyAction": "创建项目",
+    "form": {
+      "project": "项目",
+      "scope": "范围",
+      "singlePageTitle": "单个页面",
+      "singlePageDesc": "审计一个特定的 URL。",
+      "urlListTitle": "URL 列表",
+      "urlListDesc": {
+        "other": "一次最多审计 {count} 个页面。"
+      },
+      "urlListUpgrade": "升级以扫描多个页面。",
+      "url": "URL",
+      "urlHint": "默认使用项目的基础 URL。可更改以扫描特定页面。",
+      "urls": "URL",
+      "urlsHint": {
+        "other": "每行一个 URL，您的套餐最多 {count} 个页面。"
+      },
+      "wcagTarget": "WCAG 目标",
+      "wcagA": "WCAG 2.2 —— A 级",
+      "wcagAA": "WCAG 2.2 —— AA 级（推荐）",
+      "wcagAAA": "WCAG 2.2 —— AAA 级",
+      "submit": "开始扫描",
+      "submitPending": "正在开始扫描…",
+      "authorizationLabel": "我确认我有权审计此网站。"
+    }
+  },
+  "share": {
+    "createLink": "创建分享链接",
+    "linkAria": "公开报告链接",
+    "revoke": "撤销"
+  },
+  "detail": {
+    "metaTitle": "扫描报告",
+    "title": "扫描报告",
+    "rescan": "重新扫描",
+    "deletePrompt": "永久删除？",
+    "shareExportAria": "分享与导出",
+    "exportPdf": "导出 PDF",
+    "exportCsv": "导出 CSV",
+    "upgradeExport": "升级以导出带品牌的 PDF 和 CSV",
+    "liveStatus": "扫描状态：{status}。",
+    "notices": {
+      "rateLimited": "您发起扫描的速度过快。请稍候片刻再试。",
+      "rescanFailed": "无法开始重新扫描。请重试。",
+      "deleteFailed": "无法删除此扫描。请重试。",
+      "shareFailed": "无法更新分享链接。请重试。"
+    }
+  },
+  "print": {
+    "metaTitle": "报告（打印）",
+    "printButton": "打印 / 另存为 PDF"
+  },
+  "public": {
+    "metaTitle": "无障碍报告"
+  },
+  "export": {
+    "forbidden": "CSV 导出仅在付费套餐中可用。升级以启用。",
+    "notFound": "未找到扫描。",
+    "headers": {
+      "pageUrl": "页面 URL",
+      "impact": "影响程度",
+      "rule": "规则",
+      "wcag": "WCAG",
+      "description": "描述",
+      "helpUrl": "帮助 URL",
+      "selector": "选择器",
+      "failureSummary": "失败摘要"
+    }
+  },
+  "messages": {
+    "chooseProject": "选择一个要扫描的项目。",
+    "urlListTooLarge": "该 URL 列表过大。",
+    "invalidInput": "输入无效。",
+    "rateLimited": "您发起扫描的速度过快。请稍候片刻再试。",
+    "selectValidProject": "请选择一个有效的项目。",
+    "enterValidUrl": "请输入一个有效的 URL 进行扫描。",
+    "addOneUrl": "至少添加一个有效的 URL（每行一个）。",
+    "pagesQuota": "您的 {plan} 套餐允许每次扫描 {limit} 个页面。请移除部分 URL 或升级。",
+    "scansQuota": "本月您已用完 {plan} 套餐的全部 {limit} 次扫描。升级以获取更多。",
+    "saveFailed": "保存更改时出现问题，请重试。"
+  }
+}

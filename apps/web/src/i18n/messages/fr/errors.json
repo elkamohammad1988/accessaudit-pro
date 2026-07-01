@@ -1,0 +1,24 @@
+{
+  "generic": {
+    "title": "Une erreur est survenue",
+    "body": "Une erreur inattendue s'est produite. L'équipe a été avertie — veuillez réessayer.",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
+  },
+  "app": {
+    "title": "Cette page a rencontré un problème",
+    "body": "Nous n'avons pas pu charger cette vue. Réessayez, ou revenez à votre tableau de bord.",
+    "dashboard": "Aller au tableau de bord"
+  },
+  "global": {
+    "title": "Une erreur est survenue",
+    "body": "Une erreur critique s'est produite et la page n'a pas pu s'afficher. Veuillez recharger.",
+    "reload": "Recharger"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "La page que vous recherchez n'existe pas ou a peut-être été déplacée.",
+    "home": "Retour à l'accueil",
+    "dashboard": "Aller au tableau de bord"
+  }
+}

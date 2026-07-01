@@ -1,0 +1,75 @@
+{
+  "appName": "AccessAudit Pro",
+  "tagline": "تدقيقات إمكانية الوصول وفق WCAG 2.2 للوكالات",
+  "actions": {
+    "save": "حفظ",
+    "saveChanges": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "back": "رجوع",
+    "next": "التالي",
+    "continue": "متابعة",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "download": "تنزيل",
+    "export": "تصدير",
+    "view": "عرض",
+    "viewAll": "عرض الكل",
+    "learnMore": "اعرف المزيد",
+    "getStarted": "ابدأ الآن",
+    "startFree": "ابدأ مجانًا",
+    "retry": "حاول مرة أخرى",
+    "remove": "إزالة",
+    "restore": "استعادة",
+    "archive": "أرشفة",
+    "upgrade": "قم بترقية خطتك ←",
+    "loading": "جارٍ التحميل…",
+    "working": "جارٍ العمل…",
+    "saving": "جارٍ الحفظ…"
+  },
+  "labels": {
+    "optional": "اختياري",
+    "required": "مطلوب",
+    "none": "لا شيء",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "search": "بحث",
+    "yes": "نعم",
+    "no": "لا",
+    "areYouSure": "هل أنت متأكد؟",
+    "archivedCount": "المؤرشفة ({count})",
+    "listTruncated": "عرض أول {count}. قم بأرشفة الإدخالات القديمة لعرض المزيد."
+  },
+  "messages": {
+    "saveFailed": "حدث خطأ أثناء حفظ تغييراتك. يرجى المحاولة مرة أخرى."
+  },
+  "units": {
+    "perMonth": "/شهر",
+    "score": "{value}/100"
+  },
+  "band": {
+    "good": "جيد",
+    "needsWork": "يحتاج إلى تحسين",
+    "poor": "ضعيف",
+    "notScored": "غير مُقيَّم"
+  },
+  "score": {
+    "aria": "درجة إمكانية الوصول {score} من 100",
+    "none": "لا توجد درجة بعد"
+  },
+  "theme": {
+    "system": "سمة النظام",
+    "light": "السمة الفاتحة",
+    "dark": "السمة الداكنة",
+    "toggleAria": "{current}. التبديل إلى {next}."
+  },
+  "meta": {
+    "titleTemplate": "{page} · AccessAudit Pro"
+  }
+}

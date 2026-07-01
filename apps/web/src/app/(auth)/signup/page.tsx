@@ -2,30 +2,32 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { signUp } from "../actions";
 import { AuthForm } from "@/components/auth/auth-form";
+import { getTranslations } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Create account",
-  description:
-    "Create your free AccessAudit Pro workspace and run your first WCAG 2.2 accessibility audit in minutes. No credit card required.",
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("auth.signup");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    robots: { index: false, follow: true },
+  };
+}
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const t = await getTranslations("auth.signup");
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="space-y-1 text-center">
-        <h1 className="text-xl font-semibold">Create your account</h1>
-        <p className="text-sm text-muted-foreground">
-          Free to start — no card required.
-        </p>
+        <h1 className="text-xl font-semibold">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <AuthForm action={signUp} submitLabel="Create account" passwordAutoComplete="new-password" />
+      <AuthForm action={signUp} submitLabel={t("submit")} passwordAutoComplete="new-password" />
 
       <p className="text-center text-sm">
-        Already have an account?{" "}
+        {t("haveAccount")}{" "}
         <Link href="/login" className="underline-offset-4 hover:underline">
-          Sign in
+          {t("signIn")}
         </Link>
       </p>
     </div>

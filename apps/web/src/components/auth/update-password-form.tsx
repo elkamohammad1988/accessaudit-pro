@@ -6,37 +6,37 @@ import { updatePassword } from "@/app/(auth)/actions";
 import type { AuthState } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FloatingField } from "@/components/ui/floating-field";
 import { FormError, FormSuccess } from "@/components/ui/form-error";
+import { useTranslations } from "@/i18n/provider";
 
 const initialState: AuthState = { error: null, message: null };
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const t = useTranslations("auth.updatePassword");
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? "Saving…" : "Set new password"}
+      {pending ? t("saving") : t("submit")}
     </Button>
   );
 }
 
 export function UpdatePasswordForm() {
   const [state, formAction] = useActionState(updatePassword, initialState);
+  const t = useTranslations("auth.updatePassword");
 
   return (
     <form action={formAction} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="password">New password</Label>
+      <FloatingField id="password" label={t("newPassword")}>
         <Input
-          id="password"
           name="password"
           type="password"
           autoComplete="new-password"
           minLength={8}
           required
-          placeholder="At least 8 characters"
         />
-      </div>
+      </FloatingField>
 
       <FormError error={state.error} />
       <FormSuccess message={state.message} />

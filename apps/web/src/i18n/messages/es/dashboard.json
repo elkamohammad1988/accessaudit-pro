@@ -1,0 +1,30 @@
+{
+  "metaTitle": "Panel",
+  "title": "Panel",
+  "planBadge": "Plan {plan}",
+  "newScan": "Nuevo análisis",
+  "avgScore": "Puntuación media de accesibilidad",
+  "scoreTrendLabel": "Tendencia de la puntuación en {count} análisis",
+  "trendEmpty": "Ejecuta algunos análisis para ver aquí la tendencia de tu puntuación.",
+  "trendCaption": {
+    "one": "En tu último {count} análisis completado",
+    "other": "En tus últimos {count} análisis completados"
+  },
+  "usageTitle": "Uso este mes",
+  "meters": {
+    "scans": "Análisis",
+    "clients": "Clientes",
+    "projects": "Proyectos",
+    "aria": "Uso de {label}"
+  },
+  "pagesPerScan": "Páginas / análisis",
+  "severityHeading": "Problemas por gravedad",
+  "recentHeading": "Análisis recientes",
+  "pagesCount": {
+    "one": "{count} página",
+    "other": "{count} páginas"
+  },
+  "emptyTitle": "Aún no hay análisis",
+  "emptyDescription": "Ejecuta tu primera auditoría de accesibilidad para ver aquí tus puntuaciones, tendencias y problemas.",
+  "emptyAction": "Ejecuta tu primer análisis"
+}

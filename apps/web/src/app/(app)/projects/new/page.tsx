@@ -3,12 +3,16 @@ import Link from "next/link";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "@/i18n/server";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ProjectForm } from "@/components/projects/project-form";
 import { createProjectRecord } from "../actions";
 
-export const metadata: Metadata = { title: "New project" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("projects");
+  return { title: t("metaNew") };
+}
 
 export default async function NewProjectPage({
   searchParams,
@@ -16,6 +20,7 @@ export default async function NewProjectPage({
   searchParams: Promise<{ client?: string }>;
 }) {
   const { client: preselectedClient } = await searchParams;
+  const t = await getTranslations("projects");
   const { organization } = await requireSession();
   if (!organization) return null;
 
@@ -28,19 +33,17 @@ export default async function NewProjectPage({
     .order("name", { ascending: true });
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
+    <div className="mx-auto max-w-lg space-y-5">
       <div>
         <Link
           href="/projects"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          Projects
+          {t("title")}
         </Link>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">New project</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Point AccessAudit at a client&apos;s website. You can re-scan it any time.
-        </p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t("new")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("newIntro")}</p>
       </div>
 
       {clients && clients.length > 0 ? (
@@ -48,17 +51,17 @@ export default async function NewProjectPage({
           action={createProjectRecord}
           clients={clients}
           defaultClientId={preselectedClient}
-          submitLabel="Create project"
+          submitLabel={t("createSubmit")}
         />
       ) : (
         <EmptyState
           icon={UserPlus}
-          title="No clients yet"
-          description="You need a client before you can add a project (their website)."
+          title={t("noClientsTitle")}
+          description={t("noClientsDescription")}
           action={
             <ButtonLink href="/clients/new">
               <UserPlus className="h-4 w-4" aria-hidden="true" />
-              Add a client
+              {t("emptyActionNoClients")}
             </ButtonLink>
           }
         />

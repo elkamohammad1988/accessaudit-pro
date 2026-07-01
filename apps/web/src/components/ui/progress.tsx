@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 type Tone = "brand" | "success" | "warning" | "danger";
 
 const toneClass: Record<Tone, string> = {
-  brand: "bg-gradient-to-r from-brand to-brand-2",
-  success: "bg-gradient-to-r from-success to-success",
-  warning: "bg-gradient-to-r from-warning to-warning",
-  danger: "bg-gradient-to-r from-danger to-danger",
+  brand: "bg-brand",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-danger",
 };
 
 interface ProgressProps {
@@ -36,7 +36,9 @@ export function Progress({ value, max, tone = "brand", className, label }: Progr
     >
       <div
         className={cn(
-          "h-full origin-left rounded-full shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.25)] transition-all duration-700 ease-out",
+          // `lux-sheen` adds a slow gloss wipe across the filled portion in dark
+          // mode (a no-op in light mode), so the meter reads as lit, not flat.
+          "lux-sheen h-full origin-left rounded-full shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.25)] transition-all duration-700 ease-out",
           toneClass[tone],
         )}
         style={{ width: finite ? `${pct}%` : "8%" }}

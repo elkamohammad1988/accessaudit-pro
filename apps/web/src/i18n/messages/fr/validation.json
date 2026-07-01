@@ -1,0 +1,10 @@
+{
+  "required": "Le champ {field} est obligatoire.",
+  "tooLong": "Le champ {field} est trop long.",
+  "invalidUrl": "Le champ {field} doit être une URL valide.",
+  "httpsUrl": "Le champ {field} doit commencer par https://",
+  "email": "Saisissez une adresse e-mail valide.",
+  "passwordMin": "Le mot de passe doit comporter au moins 8 caractères.",
+  "generic": "Veuillez vérifier le formulaire et réessayer.",
+  "unexpected": "Une erreur est survenue. Veuillez réessayer."
+}

@@ -1,0 +1,18 @@
+{
+  "metaTitle": "Crea tu espacio de trabajo",
+  "title": "Crea tu espacio de trabajo",
+  "subtitle": "Este es el hogar de tu agencia. Puedes cambiar la marca más adelante.",
+  "agencyName": "Nombre de la agencia",
+  "agencyNamePlaceholder": "Pixel & Pine Studio",
+  "brandColor": "Color de marca",
+  "brandColorHint": "Se usa en tus informes de marca blanca.",
+  "submit": "Crear espacio de trabajo",
+  "creating": "Creando…",
+  "messages": {
+    "invalidInput": "Entrada no válida.",
+    "nameMin": "El nombre de la agencia debe tener al menos 2 caracteres.",
+    "brandColorHex": "El color de marca debe ser un valor hexadecimal como #A24425.",
+    "createFailed": "No se pudo crear tu espacio de trabajo. Inténtalo de nuevo.",
+    "slugFailed": "No se pudo generar una URL única para el espacio de trabajo. Prueba con otro nombre."
+  }
+}

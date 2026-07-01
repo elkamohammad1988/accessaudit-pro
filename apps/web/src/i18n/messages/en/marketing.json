@@ -1,0 +1,160 @@
+{
+  "header": {
+    "guides": "Guides",
+    "pricing": "Pricing",
+    "signIn": "Sign in",
+    "startFree": "Start free"
+  },
+  "landing": {
+    "meta": {
+      "title": "WCAG accessibility audits & white-label reports for agencies",
+      "description": "Scan any site against WCAG 2.2, get a prioritized report mapped to the EAA / EN 301 549, and hand clients a white-label deliverable. Free to start — no card required.",
+      "ogTitle": "AccessAudit Pro — WCAG audits your clients can actually read",
+      "ogDescription": "On-demand WCAG 2.2 accessibility audits and white-label reports for agencies. Free to start."
+    },
+    "hero": {
+      "badge": "WCAG 2.2 · EAA / EN 301 549",
+      "titleLead": "Accessibility audits your clients can",
+      "titleEmphasis": "actually read.",
+      "subtitle": "The European Accessibility Act is now in force. Scan any site, get a prioritized WCAG report, and hand over a white-labeled deliverable — built for agencies, not just developers.",
+      "ctaPrimary": "Start free",
+      "ctaSecondary": "See a sample report",
+      "reassurance": "No credit card required · Free forever plan · Powered by axe-core"
+    },
+    "how": {
+      "heading": "From URL to client-ready report in three steps",
+      "subheading": "No setup, no browser extensions, no spreadsheets.",
+      "steps": [
+        {
+          "title": "Add the site",
+          "body": "Create a client and project, then point AccessAudit at any public URL — or paste a list of pages."
+        },
+        {
+          "title": "Run the audit",
+          "body": "Our worker renders the page in real Chromium and runs axe-core against WCAG 2.2 AA. Watch progress live."
+        },
+        {
+          "title": "Deliver the report",
+          "body": "Hand the client a branded PDF or a shareable link — scored, prioritized, with fix guidance and manual-check notes."
+        }
+      ]
+    },
+    "features": {
+      "label": "Features",
+      "items": [
+        {
+          "title": "Scan in seconds",
+          "body": "Enter a URL (or a list). A headless-Chromium + axe-core worker audits the rendered page against WCAG 2.2 and scores it."
+        },
+        {
+          "title": "Reports clients can read",
+          "body": "Prioritized by impact, mapped to WCAG criteria, with plain-language fix guidance — not a wall of developer console output."
+        },
+        {
+          "title": "White-label deliverables",
+          "body": "Share a branded public link or export a PDF with your logo and colors. Sell audits as a service line."
+        },
+        {
+          "title": "Multi-client by design",
+          "body": "Organize work by client and project, re-scan over time, and keep every audit on record."
+        }
+      ]
+    },
+    "pricing": {
+      "heading": "Simple, agency-friendly pricing",
+      "subheading": "Start free, no card required. Upgrade when you need more.",
+      "mostPopular": "Most popular",
+      "getStarted": "Get started",
+      "choose": "Choose {plan}",
+      "compare": "Compare all features →",
+      "disclaimer": "Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review is still required — protecting you and your clients. Workspaces are single-user in this release; team seats are on the roadmap."
+    },
+    "faq": {
+      "heading": "Questions agencies ask",
+      "items": [
+        {
+          "q": "Does an automated scan make a site compliant?",
+          "a": "No tool can — and we say so on every report. Automated testing (we use axe-core, the same engine behind Lighthouse and axe DevTools) reliably catches the ~30–50% of WCAG issues that are machine-detectable. Each report lists exactly which criteria still need human review, so you set the right expectations and stay protected legally."
+        },
+        {
+          "q": "Which standards do you check against?",
+          "a": "WCAG 2.2 Levels A & AA. Findings are mapped to the European Accessibility Act / EN 301 549 (our primary framing), plus ADA and Section 508 for US work — so one scan speaks to whichever obligation your client is under."
+        },
+        {
+          "q": "Can I put my own brand on the reports?",
+          "a": "Yes, on any paid plan: your logo and brand color on white-label PDFs, plus the option to remove the \"Powered by AccessAudit\" mark on the Agency plan and up. Reports become a deliverable you can sell."
+        },
+        {
+          "q": "Do I need a credit card to start?",
+          "a": "No. The Free plan needs no card — sign up and run your first scan in minutes. Upgrade only when you hit a limit."
+        },
+        {
+          "q": "Is my clients' data safe?",
+          "a": "We only fetch publicly accessible pages, and we store HTML snippets of flagged elements only — never a full copy of the site. Every workspace is isolated at the database row level, so no one else can see your audits. Cancel anytime from the billing portal."
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Run your first audit today",
+      "body": "Turn accessibility compliance into a service line. Free to start — no card, no commitment.",
+      "button": "Start free"
+    }
+  },
+  "pricing": {
+    "meta": {
+      "title": "Pricing",
+      "description": "Agency-friendly pricing for WCAG 2.2 accessibility audits — built for European Accessibility Act (EAA) compliance. Start free, no card. Monthly or annual (2 months free)."
+    },
+    "heading": "Pricing that scales with your client list",
+    "subheading": "Start free — no credit card. Move up when you take on more clients or need white-label deliverables. Monthly or annual (2 months free). Cancel anytime.",
+    "eaaTitle": "The European Accessibility Act is in force.",
+    "eaaBody": "Businesses selling to EU consumers must meet WCAG-based accessibility requirements or risk penalties. Audit every client site and ship proof in minutes —",
+    "eaaLink": "read the EAA guide",
+    "tableCaption": "Feature comparison across the Free, Starter, Agency, and Scale plans",
+    "feature": "Feature",
+    "perYear": "or ${yearly}/yr · save ${savings}",
+    "mostPopular": "Most popular",
+    "getStarted": "Get started",
+    "choose": "Choose",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "disclaimer": "Automated scanning catches ~30–50% of WCAG issues. Every report flags where manual review is still required — protecting you and your clients. Workspaces are single-user in this release; team seats are on the roadmap.",
+    "faqHeading": "Billing questions",
+    "faq": [
+      {
+        "q": "Can I start without a credit card?",
+        "a": "Yes. The Free plan needs no card — sign up, create your workspace, and run your first scan in minutes."
+      },
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes. Manage or cancel your subscription from the Stripe billing portal. Cancellation takes effect at the end of the current period; you keep access until then."
+      },
+      {
+        "q": "What happens when I upgrade or downgrade?",
+        "a": "Upgrades take effect immediately and your new limits apply right away. Downgrades apply at the next billing period. Billing is prorated by Stripe."
+      },
+      {
+        "q": "Do you offer refunds?",
+        "a": "Except where required by law, payments are non-refundable and we don't charge for unused scans — so the Free plan lets you evaluate the product fully before paying."
+      }
+    ],
+    "ctaHeading": "Try it free — no card required",
+    "ctaBody": "Run a real WCAG audit and see the report your clients would get, before you pay a cent.",
+    "ctaButton": "Start free"
+  },
+  "sample": {
+    "meta": {
+      "title": "Sample accessibility report",
+      "description": "See exactly what an AccessAudit Pro report looks like — a scored, WCAG 2.2 audit with prioritized violations and fix guidance, ready to hand to a client."
+    },
+    "bannerStrong": "This is a sample report.",
+    "bannerRest": "It's exactly what your clients receive — run a real one on any site, free.",
+    "bannerCta": "Audit my site",
+    "reportTitle": "Accessibility audit",
+    "poweredBy": "Powered by AccessAudit Pro",
+    "ctaHeading": "Generate a report like this for your client",
+    "ctaBody": "Free to start — no card. Add your logo and brand color, then export a PDF or share a link.",
+    "ctaPrimary": "Start free",
+    "ctaSecondary": "See pricing"
+  }
+}

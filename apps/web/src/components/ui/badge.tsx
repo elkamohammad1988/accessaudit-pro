@@ -14,7 +14,7 @@ export type BadgeVariant =
   | "minor";
 
 const variantClasses: Record<BadgeVariant, string> = {
-  default: "border-transparent bg-brand/10 text-brand",
+  default: "border-transparent bg-brand/10 text-brand ring-1 ring-inset ring-brand/20",
   secondary: "border-transparent bg-muted text-muted-foreground",
   outline: "border-border text-foreground",
   success: "border-transparent bg-success/10 text-success-strong ring-1 ring-inset ring-success/20",

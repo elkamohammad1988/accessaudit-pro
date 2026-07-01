@@ -82,6 +82,9 @@ accessaudit-pro/
 | [`docs/PRD.md`](docs/PRD.md) | Full product requirements & plans. |
 | [`docs/ERD.md`](docs/ERD.md) · [`docs/DB_REVIEW.md`](docs/DB_REVIEW.md) | Data model and the architecture decisions behind the 8-table MVP. |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | End-to-end go-live (Supabase + host + Railway + Stripe). |
+| [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) | Release process, environments, expand/contract migrations, rollback, upgrades. |
+| [`docs/RUNBOOKS.md`](docs/RUNBOOKS.md) | Incident playbooks — queue, scans, webhooks, DB, rollback, GDPR, security. |
+| [`docs/DISASTER_RECOVERY.md`](docs/DISASTER_RECOVERY.md) | Backups, PITR, RPO/RTO, restore & region-failure procedures, recovery drills. |
 | [`docs/PORTFOLIO.md`](docs/PORTFOLIO.md) | Showcase kit — screenshot shot-list, feature highlights, pitch. |
 | [`CHANGELOG.md`](CHANGELOG.md) | Version history. |
 

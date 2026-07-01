@@ -3,21 +3,26 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { effectivePlan, formatLimit, isWithinLimit, limitsFor } from "@accessaudit/shared";
+import { effectivePlan, isWithinLimit, limitsFor, rpcQuotaLimit } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
 import { normalizeScanUrl } from "@/lib/url-safety";
 import { genericWriteError } from "@/lib/errors";
+import { getTranslations } from "@/i18n/server";
+import { displayLimit } from "@/i18n/format";
+import type { Translator } from "@/i18n/translate";
 
 export type ProjectFormState = { error: string | null; upgrade?: boolean };
 
-const projectSchema = z.object({
-  name: z.string().trim().min(2, "Project name must be at least 2 characters.").max(80),
-  clientId: z.string().uuid("Choose a client for this project."),
-  baseUrl: z.string().trim().min(1, "Enter the website URL."),
-});
+function projectSchema(t: Translator) {
+  return z.object({
+    name: z.string().trim().min(2, t("messages.nameMin")).max(80),
+    clientId: z.string().uuid(t("messages.clientRequired")),
+    baseUrl: z.string().trim().min(1, t("messages.urlRequired")),
+  });
+}
 
-function parse(formData: FormData) {
-  return projectSchema.safeParse({
+function parse(formData: FormData, t: Translator) {
+  return projectSchema(t).safeParse({
     name: formData.get("name"),
     clientId: formData.get("clientId"),
     baseUrl: formData.get("baseUrl"),
@@ -44,19 +49,21 @@ export async function createProjectRecord(
   _prev: ProjectFormState,
   formData: FormData,
 ): Promise<ProjectFormState> {
-  const parsed = parse(formData);
+  const t = await getTranslations("projects");
+  const tp = await getTranslations("plans");
+  const parsed = parse(formData, t);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? t("messages.invalidInput") };
   }
   const baseUrl = normalizeScanUrl(parsed.data.baseUrl);
   if (!baseUrl) {
-    return { error: "Enter a valid website URL, e.g. https://example.com." };
+    return { error: t("messages.urlInvalid") };
   }
 
   const { supabase, organization } = await requireOrg();
 
   if (!(await activeClientExists(supabase, organization.id, parsed.data.clientId))) {
-    return { error: "Select a valid client." };
+    return { error: t("messages.selectValidClient") };
   }
 
   // Quota: only active (non-archived) projects count toward the plan limit.
@@ -73,54 +80,54 @@ export async function createProjectRecord(
       .is("archived_at", null),
   ]);
   const plan = effectivePlan(sub?.plan, sub?.status);
-  if (!isWithinLimit(plan, "projects", count ?? 0)) {
-    const limits = limitsFor(plan);
-    return {
-      error: `Your ${limits.label} plan allows ${formatLimit(limits.projects)} project(s). Archive one or upgrade to add more.`,
-      upgrade: true,
-    };
-  }
+  const limits = limitsFor(plan);
+  const quotaError = (): ProjectFormState => ({
+    error: t("messages.quota", { plan: limits.label, limit: displayLimit(limits.projects, tp) }),
+    upgrade: true,
+  });
+  // Friendly pre-check for the common case; the RPC below is the atomic guard.
+  if (!isWithinLimit(plan, "projects", count ?? 0)) return quotaError();
 
-  const { data, error } = await supabase
-    .from("projects")
-    .insert({
-      organization_id: organization.id,
-      client_id: parsed.data.clientId,
-      name: parsed.data.name,
-      base_url: baseUrl,
-    })
-    .select("id")
-    .single();
-
-  if (error) return { error: genericWriteError("createProject", error) };
+  // Atomic create: counts active projects and inserts under a row lock, so two
+  // concurrent requests can't both slip past the cap. NULL id ⇒ over quota.
+  const { data: newId, error } = await supabase.rpc("create_project_if_within_quota", {
+    p_org_id: organization.id,
+    p_client_id: parsed.data.clientId,
+    p_name: parsed.data.name,
+    p_base_url: baseUrl,
+    p_limit: rpcQuotaLimit(limits.projects),
+  });
+  if (error) return { error: genericWriteError("createProject", error, t("messages.saveFailed")) };
+  if (!newId) return quotaError();
 
   revalidatePath("/projects");
   revalidatePath(`/clients/${parsed.data.clientId}`);
   revalidatePath("/dashboard");
-  redirect(`/projects/${data.id}`);
+  redirect(`/projects/${newId}`);
 }
 
 export async function updateProjectRecord(
   _prev: ProjectFormState,
   formData: FormData,
 ): Promise<ProjectFormState> {
+  const t = await getTranslations("projects");
   const id = formData.get("id");
   if (typeof id !== "string" || !id) {
-    return { error: "Missing project id." };
+    return { error: t("messages.missingId") };
   }
-  const parsed = parse(formData);
+  const parsed = parse(formData, t);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+    return { error: parsed.error.issues[0]?.message ?? t("messages.invalidInput") };
   }
   const baseUrl = normalizeScanUrl(parsed.data.baseUrl);
   if (!baseUrl) {
-    return { error: "Enter a valid website URL, e.g. https://example.com." };
+    return { error: t("messages.urlInvalid") };
   }
 
   const { supabase, organization } = await requireOrg();
 
   if (!(await activeClientExists(supabase, organization.id, parsed.data.clientId))) {
-    return { error: "Select a valid client." };
+    return { error: t("messages.selectValidClient") };
   }
 
   const { error } = await supabase
@@ -133,7 +140,7 @@ export async function updateProjectRecord(
     .eq("id", id)
     .eq("organization_id", organization.id);
 
-  if (error) return { error: genericWriteError("updateProject", error) };
+  if (error) return { error: genericWriteError("updateProject", error, t("messages.saveFailed")) };
 
   revalidatePath("/projects");
   revalidatePath(`/projects/${id}`);

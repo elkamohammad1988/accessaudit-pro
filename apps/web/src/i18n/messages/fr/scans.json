@@ -1,0 +1,166 @@
+{
+  "wcagShort": "WCAG {level}",
+  "auditHeading": "Audit d'accessibilité",
+  "logoAlt": "Logo de {name}",
+  "poweredBy": "Propulsé par AccessAudit Pro",
+  "status": {
+    "queued": "En file d'attente",
+    "running": "En cours",
+    "completed": "Terminé",
+    "partial": "Partiel",
+    "failed": "Échoué"
+  },
+  "impact": {
+    "critical": "Critique",
+    "serious": "Sérieux",
+    "moderate": "Modéré",
+    "minor": "Mineur"
+  },
+  "severityBar": {
+    "none": "Aucune violation détectée",
+    "distribution": "Répartition des violations par gravité : {distribution}"
+  },
+  "report": {
+    "inProgressNote": "Le worker audite votre/vos page(s). Cette vue se met à jour automatiquement.",
+    "inProgressAria": "Analyse en cours",
+    "failedTitle": "Échec de l'analyse",
+    "unknownError": "Erreur inconnue.",
+    "partialAria": "Analyse partielle",
+    "partialTitle": {
+      "one": "Analyse partielle — {count} page n'a pas pu être chargée",
+      "other": "Analyse partielle — {count} pages n'ont pas pu être chargées"
+    },
+    "partialBody": {
+      "one": "Le score et les totaux ci-dessous ne reflètent que la {count} page qui s'est chargée correctement. Consultez la liste page par page pour repérer les URL en échec, puis ré-analysez si nécessaire.",
+      "other": "Le score et les totaux ci-dessous ne reflètent que les {count} pages qui se sont chargées correctement. Consultez la liste page par page pour repérer les URL en échec, puis ré-analysez si nécessaire."
+    },
+    "summaryAria": "Résumé",
+    "accessibilityScore": "Score d'accessibilité",
+    "issuesFound": "Problèmes détectés",
+    "criticalOrSerious": "critiques ou sérieux",
+    "pagesScanned": "Pages analysées",
+    "wcagLevel": "WCAG 2.2 niveau {level}",
+    "byImpactAria": "Par impact",
+    "manualChecksAria": "Vérifications manuelles recommandées",
+    "honestyTitle": "Analyse automatisée — des vérifications manuelles restent recommandées",
+    "honestyBody": "Cet audit cible le niveau {level} de WCAG 2.2 à l'aide de règles automatisées (axe-core), qui détectent environ 30 à 50 % des problèmes. Il ne remplace pas une revue humaine de points tels que la qualité réelle des textes alternatifs, l'ordre logique de lecture et de focus, les pièges au clavier, les sous-titres et la clarté cognitive. Utilisez-le pour corriger rapidement les échecs manifestes, puis examinez le reste manuellement.",
+    "byPageAria": "Par page",
+    "pagesHeading": "Pages",
+    "issuesCount": {
+      "one": "{count} problème",
+      "other": "{count} problèmes"
+    },
+    "error": "Erreur",
+    "errorHttp": "Erreur · HTTP {status}",
+    "violationsAria": "Violations",
+    "violationsHeading": "Violations ({count})",
+    "truncatedNotice": {
+      "one": "Affichage de la {count} règle la plus grave, couvrant les {shown} premiers constats sur {total}. Exportez le CSV pour le relevé complet et faisant foi.",
+      "other": "Affichage des {count} règles les plus graves, couvrant les {shown} premiers constats sur {total}. Exportez le CSV pour le relevé complet et faisant foi."
+    },
+    "loadedFindings": "chargés",
+    "manyFindings": "nombreux",
+    "noViolations": "Aucune violation WCAG {level} détectée automatiquement. Très bien — une revue manuelle reste néanmoins utile.",
+    "wcagCriteria": "WCAG {criteria}",
+    "elementsCount": {
+      "one": "{count} élément",
+      "other": "{count} éléments"
+    },
+    "howToFix": "Comment corriger →",
+    "moreElements": {
+      "one": "+ {count} élément affecté supplémentaire. Exportez le CSV pour la liste complète.",
+      "other": "+ {count} éléments affectés supplémentaires. Exportez le CSV pour la liste complète."
+    },
+    "completed": "Terminé le {date}."
+  },
+  "new": {
+    "metaTitle": "Nouvelle analyse",
+    "dashboard": "Tableau de bord",
+    "title": "Nouvelle analyse",
+    "subtitle": "Lancez un audit d'accessibilité WCAG 2.2 sur une page ou une liste de pages.",
+    "emptyTitle": "Pas encore de projet à analyser",
+    "emptyDescription": "Vous devez avoir un projet (le site web d'un client) avant de pouvoir lancer une analyse.",
+    "emptyAction": "Créer un projet",
+    "form": {
+      "project": "Projet",
+      "scope": "Périmètre",
+      "singlePageTitle": "Page unique",
+      "singlePageDesc": "Auditer une URL spécifique.",
+      "urlListTitle": "Liste d'URL",
+      "urlListDesc": {
+        "one": "Auditez jusqu'à {count} page à la fois.",
+        "other": "Auditez jusqu'à {count} pages à la fois."
+      },
+      "urlListUpgrade": "Passez à un forfait supérieur pour analyser plusieurs pages.",
+      "url": "URL",
+      "urlHint": "Par défaut, l'URL de base du projet. Modifiez-la pour analyser une page spécifique.",
+      "urls": "URL",
+      "urlsHint": {
+        "one": "Une URL par ligne, jusqu'à {count} page avec votre forfait.",
+        "other": "Une URL par ligne, jusqu'à {count} pages avec votre forfait."
+      },
+      "wcagTarget": "Cible WCAG",
+      "wcagA": "WCAG 2.2 — niveau A",
+      "wcagAA": "WCAG 2.2 — niveau AA (recommandé)",
+      "wcagAAA": "WCAG 2.2 — niveau AAA",
+      "submit": "Lancer l'analyse",
+      "submitPending": "Lancement de l'analyse…",
+      "authorizationLabel": "Je confirme être autorisé à auditer ce site web."
+    }
+  },
+  "share": {
+    "createLink": "Créer un lien de partage",
+    "linkAria": "Lien du rapport public",
+    "revoke": "Révoquer"
+  },
+  "detail": {
+    "metaTitle": "Rapport d'analyse",
+    "title": "Rapport d'analyse",
+    "rescan": "Ré-analyser",
+    "deletePrompt": "Supprimer définitivement ?",
+    "shareExportAria": "Partager et exporter",
+    "exportPdf": "Exporter en PDF",
+    "exportCsv": "Exporter en CSV",
+    "upgradeExport": "Passez à un forfait supérieur pour exporter un PDF et un CSV à votre marque",
+    "liveStatus": "Statut de l'analyse : {status}.",
+    "notices": {
+      "rateLimited": "Vous lancez des analyses trop rapidement. Patientez un instant et réessayez.",
+      "rescanFailed": "Impossible de lancer la ré-analyse. Veuillez réessayer.",
+      "deleteFailed": "Impossible de supprimer cette analyse. Veuillez réessayer.",
+      "shareFailed": "Impossible de mettre à jour le lien de partage. Veuillez réessayer."
+    }
+  },
+  "print": {
+    "metaTitle": "Rapport (impression)",
+    "printButton": "Imprimer / Enregistrer en PDF"
+  },
+  "public": {
+    "metaTitle": "Rapport d'accessibilité"
+  },
+  "export": {
+    "forbidden": "L'export CSV est disponible avec les forfaits payants. Passez à un forfait supérieur pour l'activer.",
+    "notFound": "Analyse introuvable.",
+    "headers": {
+      "pageUrl": "URL de la page",
+      "impact": "Impact",
+      "rule": "Règle",
+      "wcag": "WCAG",
+      "description": "Description",
+      "helpUrl": "URL d'aide",
+      "selector": "Sélecteur",
+      "failureSummary": "Résumé de l'échec"
+    }
+  },
+  "messages": {
+    "chooseProject": "Choisissez un projet à analyser.",
+    "urlListTooLarge": "Cette liste d'URL est trop volumineuse.",
+    "invalidInput": "Saisie invalide.",
+    "rateLimited": "Vous lancez des analyses trop rapidement. Patientez un instant et réessayez.",
+    "selectValidProject": "Sélectionnez un projet valide.",
+    "enterValidUrl": "Saisissez une URL valide à analyser.",
+    "addOneUrl": "Ajoutez au moins une URL valide (une par ligne).",
+    "pagesQuota": "Votre forfait {plan} autorise {limit} page(s) par analyse. Retirez des URL ou passez à un forfait supérieur.",
+    "scansQuota": "Vous avez utilisé la totalité des {limit} analyses du forfait {plan} ce mois-ci. Passez à un forfait supérieur pour en obtenir davantage.",
+    "saveFailed": "Une erreur est survenue lors de l'enregistrement de vos modifications. Veuillez réessayer."
+  }
+}

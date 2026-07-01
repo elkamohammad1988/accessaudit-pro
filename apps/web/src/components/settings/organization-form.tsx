@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import type { Organization } from "@accessaudit/database";
+import { useTranslations } from "@/i18n/provider";
 import { Input } from "@/components/ui/input";
 import { ColorInput } from "@/components/ui/color-input";
 import { Label } from "@/components/ui/label";
@@ -12,17 +13,18 @@ import { updateOrganization, type SettingsState } from "@/app/(app)/settings/act
 const initialState: SettingsState = { error: null, ok: false };
 
 export function OrganizationForm({ organization }: { organization: Organization }) {
+  const t = useTranslations("settings");
   const [state, formAction] = useActionState(updateOrganization, initialState);
 
   return (
     <form action={formAction} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Agency name</Label>
+        <Label htmlFor="name">{t("workspace.nameLabel")}</Label>
         <Input id="name" name="name" required maxLength={80} defaultValue={organization.name} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="slug">Workspace URL slug</Label>
+        <Label htmlFor="slug">{t("workspace.slugLabel")}</Label>
         <Input
           id="slug"
           name="slug"
@@ -32,12 +34,12 @@ export function OrganizationForm({ organization }: { organization: Organization 
           aria-describedby="slug-hint"
         />
         <p id="slug-hint" className="text-xs text-muted-foreground">
-          Lowercase letters, numbers, and hyphens. Used in links and public reports.
+          {t("workspace.slugHint")}
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="brandColor">Brand color</Label>
+        <Label htmlFor="brandColor">{t("workspace.brandColorLabel")}</Label>
         <div className="flex items-center gap-3">
           <ColorInput
             id="brandColor"
@@ -46,30 +48,30 @@ export function OrganizationForm({ organization }: { organization: Organization 
             aria-describedby="brandColor-hint"
           />
           <span id="brandColor-hint" className="text-sm text-muted-foreground">
-            Applied to your white-label reports.
+            {t("workspace.brandColorHint")}
           </span>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="logoUrl">Logo URL</Label>
+        <Label htmlFor="logoUrl">{t("workspace.logoUrlLabel")}</Label>
         <Input
           id="logoUrl"
           name="logoUrl"
           type="url"
           defaultValue={organization.logo_url ?? ""}
-          placeholder="https://…/logo.png"
+          placeholder={t("workspace.logoUrlPlaceholder")}
           aria-describedby="logoUrl-hint"
         />
         <p id="logoUrl-hint" className="text-xs text-muted-foreground">
-          Shown on branded reports. Paste a hosted image URL.
+          {t("workspace.logoUrlHint")}
         </p>
       </div>
 
       <FormError error={state.error} />
-      <FormSuccess message={state.ok ? "Workspace saved." : null} />
+      <FormSuccess message={state.ok ? t("workspace.saved") : null} />
 
-      <SubmitButton>Save workspace</SubmitButton>
+      <SubmitButton>{t("workspace.submit")}</SubmitButton>
     </form>
   );
 }

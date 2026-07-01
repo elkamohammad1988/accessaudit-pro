@@ -1,0 +1,205 @@
+{
+  "backToGuides": "← Todas las guías",
+  "index": {
+    "metaTitle": "Guías",
+    "metaDescription": "Guías en lenguaje claro sobre accesibilidad web, WCAG 2.2 y la Ley Europea de Accesibilidad, escritas para agencias.",
+    "title": "Guías",
+    "intro": "Explicaciones prácticas y en lenguaje claro sobre el cumplimiento de la accesibilidad, escritas para las agencias que tienen que entregarlo.",
+    "readGuide": "Leer la guía",
+    "items": [
+      {
+        "title": "La Ley Europea de Accesibilidad: lo que las agencias web deben saber",
+        "summary": "A quién cubre la EAA, el estándar al que apunta y cómo las agencias pueden convertir el plazo de junio de 2025 en una línea de servicio."
+      },
+      {
+        "title": "WCAG 2.2 AA: una lista de comprobación práctica de auditoría para agencias",
+        "summary": "La lista de comprobación completa del Nivel AA organizada según los principios POUR, incluidos los nuevos criterios de la 2.2, y lo que un análisis automatizado puede y no puede detectar."
+      }
+    ]
+  },
+  "eaa": {
+    "metaTitle": "La Ley Europea de Accesibilidad: lo que las agencias web deben saber",
+    "metaDescription": "Una guía en lenguaje claro sobre la Ley Europea de Accesibilidad (EAA) para agencias web: a quién cubre, el plazo de junio de 2025, el estándar EN 301 549 / WCAG 2.2 y cómo convertir el cumplimiento en una línea de servicio.",
+    "eyebrow": "Guía",
+    "title": "La Ley Europea de Accesibilidad: lo que las agencias web deben saber",
+    "summaryLabel": "En un minuto",
+    "summary": "La Ley Europea de Accesibilidad (Directiva (UE) 2019/882) se aplica desde el 28 de junio de 2025. Exige que muchos productos y servicios digitales vendidos a consumidores de la UE —comercio electrónico, banca, libros electrónicos, transporte y más— sean accesibles, medidos según la EN 301 549, que se basa en las WCAG. Para las agencias, eso convierte la accesibilidad de un valor añadido en un servicio recurrente y facturable.",
+    "sections": [
+      {
+        "heading": "Qué es la Ley Europea de Accesibilidad",
+        "body": [
+          "La Ley Europea de Accesibilidad (EAA) es la Directiva (UE) 2019/882, una ley de ámbito comunitario que establece requisitos de accesibilidad comunes para una lista definida de productos y servicios. El objetivo es un único listón de accesibilidad en toda la UE, de modo que un producto o servicio que sea accesible en un Estado miembro lo sea en todos ellos.",
+          "Se adoptó en 2019 y los Estados miembros debían aplicar sus medidas nacionales a partir del 28 de junio de 2025. Esa fecha ya ha pasado: los requisitos están en vigor."
+        ]
+      },
+      {
+        "heading": "A quién y a qué cubre",
+        "body": [
+          "La EAA se aplica a las empresas que introducen determinados productos en el mercado de la UE o prestan determinados servicios a consumidores de la UE. El ámbito cubierto incluye, entre otros:",
+          {
+            "type": "ul",
+            "items": [
+              "Comercio electrónico (tiendas en línea y los sitios web/aplicaciones que venden a consumidores)",
+              "Servicios bancarios para consumidores y terminales de autoservicio como cajeros automáticos y terminales de pago",
+              "Servicios de comunicaciones electrónicas y sus puntos de acceso",
+              "Acceso a servicios de comunicación audiovisual (p. ej., las interfaces de plataformas de streaming)",
+              "Elementos de los servicios de transporte de viajeros por vía aérea, autobús, ferrocarril y marítima",
+              "Libros electrónicos y software de lectura específico, y máquinas de venta de billetes/facturación",
+              "Hardware informático de consumo, sistemas operativos, teléfonos inteligentes y equipos de televisión"
+            ]
+          },
+          "Hay una exención notable: las microempresas que prestan servicios (a grandes rasgos, menos de 10 personas y menos de 2 millones de euros de facturación o balance total) están exentas de las obligaciones de servicio, aunque las normas sobre productos y otras leyes pueden seguir aplicándose. El ámbito y las exenciones son detallados y dependen de los hechos, así que confirma las obligaciones exactas de un cliente antes de asesorarle."
+        ]
+      },
+      {
+        "heading": "El estándar al que apunta: EN 301 549 y WCAG",
+        "body": [
+          "La propia EAA establece resultados funcionales en lugar de reglas técnicas detalladas punto por punto. En la práctica, la conformidad de sitios web y aplicaciones se demuestra frente al estándar armonizado de la UE, la EN 301 549, cuyos requisitos web se basan directamente en las Pautas de Accesibilidad para el Contenido Web (WCAG) en el Nivel AA. Así que, cuando auditas el sitio de un cliente según WCAG 2.2 AA, estás comprobando la esencia de lo que la EAA espera para la web."
+        ]
+      },
+      {
+        "heading": "Qué significa esto para las agencias",
+        "body": [
+          "Todo cliente de agencia que venda a consumidores de la UE —una tienda, un flujo de reservas, un portal bancario— tiene ahora un motivo concreto para preocuparse por la accesibilidad, con un plazo ya cumplido. Eso es una necesidad recurrente, no algo puntual:",
+          {
+            "type": "ul",
+            "items": [
+              "Auditorías: un informe claro y priorizado de dónde un sitio no llega a WCAG 2.2 AA, en un lenguaje sobre el que el cliente pueda actuar.",
+              "Corrección: solucionar los problemas y volver a auditar para mostrar el progreso.",
+              "Documentación: una declaración de accesibilidad y un rastro de pruebas al que el cliente pueda remitirse.",
+              "Monitorización: volver a analizar con el tiempo para que las regresiones no reaparezcan tras el lanzamiento."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Cómo realizar una auditoría de accesibilidad",
+        "body": [
+          {
+            "type": "ol",
+            "items": [
+              "Define el alcance del sitio. Elige las plantillas y recorridos clave: la portada, una página de producto o artículo, el carrito/pago o el formulario de contacto, el área de la cuenta.",
+              "Ejecuta un análisis automatizado. Herramientas como axe-core renderizan cada página y señalan rápidamente los fallos detectables por máquina (contraste, etiquetas faltantes, texto alternativo, estructura).",
+              "Prioriza por impacto. Corrige primero los problemas críticos y graves: son los que realmente bloquean a los usuarios de tecnología de asistencia.",
+              "Añade revisión manual. Comprueba lo que la automatización no puede: la calidad de un texto alternativo significativo, la operabilidad con teclado, el orden de foco, los subtítulos y un lenguaje claro.",
+              "Informa y vuelve a probar. Entrega al cliente un informe legible, corrige y vuelve a analizar para confirmar que las carencias están resueltas."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Dónde encajan las pruebas automatizadas, y dónde no",
+        "body": [
+          "El análisis automatizado es la forma más rápida de encontrar la mayoría de los fallos claros y repetibles, pero solo detecta aproximadamente entre el 30 % y el 50 % de los problemas WCAG. Un informe automatizado limpio es un buen comienzo, no un certificado de cumplimiento. Los problemas restantes requieren juicio humano y pruebas con tecnología de asistencia. Un entregable honesto dice exactamente qué comprobaciones siguen necesitando a una persona: eso os protege a ti y a tu cliente."
+        ]
+      }
+    ],
+    "cta": {
+      "title": "Ejecuta una auditoría WCAG 2.2 en el sitio de un cliente, gratis",
+      "body": "Mira el informe priorizado y listo para el cliente que produce AccessAudit Pro. Sin tarjeta de crédito.",
+      "primary": "Empezar gratis",
+      "secondary": "Ver un informe de muestra"
+    },
+    "closing": {
+      "heading": "Una nota sobre la exactitud legal",
+      "body": [
+        "Esta guía es información general para agencias, no asesoramiento jurídico. La EAA se aplica a través de leyes nacionales que difieren según el Estado miembro, y las obligaciones, exenciones y plazos exactos de un cliente dependen de sus productos, servicios y tamaño. Anima a los clientes a confirmar su situación con un asesor cualificado."
+      ]
+    }
+  },
+  "wcag": {
+    "metaTitle": "WCAG 2.2 AA: una lista de comprobación práctica de auditoría para agencias",
+    "metaDescription": "Una lista de comprobación de WCAG 2.2 Nivel AA en lenguaje claro para agencias, organizada según los principios POUR, con los nuevos criterios de conformidad de la 2.2 y una división clara de lo que un análisis automatizado puede y no puede detectar.",
+    "eyebrow": "Guía",
+    "title": "WCAG 2.2 AA: una lista de comprobación práctica de auditoría para agencias",
+    "summaryLabel": "En un minuto",
+    "summary": "El Nivel AA de WCAG 2.2 es el listón al que apuntan la mayoría de las leyes de accesibilidad. Sus requisitos se agrupan en cuatro principios: Perceptible, Operable, Comprensible y Robusto (POUR). Usa la lista de comprobación de abajo como tu recorrido de auditoría. Un análisis automatizado resuelve rápido los elementos comprobables por máquina; el resto necesita a una persona.",
+    "sections": [
+      {
+        "heading": "Qué significa realmente «WCAG 2.2 AA»",
+        "body": [
+          "Las Pautas de Accesibilidad para el Contenido Web (WCAG) se organizan en criterios de conformidad en tres niveles: A (esencial), AA (el estándar que exige la mayoría de las normativas) y AAA (mejorado). Para el trabajo de agencia, apunta al Nivel AA: cubre los criterios A y AA. La versión 2.2 (la recomendación actual) añade varios criterios nuevos sobre la 2.1, principalmente en torno al foco, los objetivos de puntero y la autenticación.",
+          "Cada criterio asciende hasta uno de los cuatro principios POUR. Aquí tienes la lista de comprobación de trabajo."
+        ]
+      },
+      {
+        "heading": "Perceptible",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Alternativas de texto (1.1.1): toda imagen informativa tiene un texto alternativo significativo; las imágenes decorativas usan alt=\"\" vacío.",
+              "Subtítulos y audio (1.2.x): el vídeo tiene subtítulos; el contenido solo de audio tiene una transcripción.",
+              "Información y relaciones (1.3.1): la estructura (encabezados, listas, tablas, etiquetas de formulario) se transmite en el marcado, no solo visualmente.",
+              "Contraste (1.4.3): el texto tiene al menos 4,5:1 frente a su fondo (3:1 para texto grande); los componentes de la interfaz y los gráficos cumplen 3:1 (1.4.11).",
+              "Readaptación y redimensionado (1.4.4, 1.4.10): el contenido funciona con un zoom del 200 % y en un viewport estrecho sin desplazamiento horizontal ni pérdida de información."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Operable",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Teclado (2.1.1, 2.1.2): todo funciona solo con el teclado y el foco nunca queda atrapado.",
+              "Foco visible (2.4.7): el elemento enfocado siempre tiene un indicador visible claro.",
+              "Foco no oculto (2.4.11, nuevo en 2.2): los encabezados/pies fijos no ocultan el elemento enfocado.",
+              "Tamaño del objetivo (2.5.8, nuevo en 2.2): los objetivos interactivos miden al menos 24×24 píxeles CSS (o tienen un espaciado adecuado).",
+              "Movimientos de arrastre (2.5.7, nuevo en 2.2): toda acción de arrastre tiene una alternativa de un solo puntero (p. ej., un toque).",
+              "Evitar bloques y títulos (2.4.1, 2.4.2): hay un enlace para saltar contenido y cada página tiene un <title> único y descriptivo."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Comprensible",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Idioma (3.1.1): la página declara su idioma con <html lang>.",
+              "Etiquetas e instrucciones (3.3.2): todo campo de formulario tiene una etiqueta visible y programática.",
+              "Identificación y sugerencia de errores (3.3.1, 3.3.3): los errores se nombran en texto y, cuando es posible, se sugiere la corrección.",
+              "Ayuda coherente (3.2.6, nuevo en 2.2): los mecanismos de ayuda aparecen en el mismo orden relativo en todas las páginas.",
+              "Autenticación accesible (3.3.8, nuevo en 2.2): el inicio de sesión no depende de una prueba cognitiva (como recordar o transcribir) sin alternativa.",
+              "Entrada redundante (3.3.7, nuevo en 2.2): no obligues a los usuarios a volver a introducir información que ya proporcionaron en el mismo proceso."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Robusto",
+        "body": [
+          {
+            "type": "ul",
+            "items": [
+              "Análisis sintáctico y nombre/función/valor (4.1.2): los controles personalizados exponen un nombre, una función y un estado correctos a la tecnología de asistencia (ARIA correcto, no ARIA roto).",
+              "Mensajes de estado (4.1.3): las actualizaciones dinámicas (p. ej., «3 resultados encontrados», errores de formulario) se anuncian sin mover el foco."
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Qué cubre un análisis automatizado, y qué no",
+        "body": [
+          "Una buena herramienta automatizada (AccessAudit usa axe-core) detecta de forma fiable el subconjunto detectable por máquina —aproximadamente entre el 30 % y el 50 % de los problemas WCAG—: atributos alt faltantes, contraste bajo, etiquetas de formulario faltantes, enlaces/botones vacíos, idioma del documento faltante, uso incorrecto de ARIA y problemas estructurales. Eso resuelve la mayoría de los fallos claros en segundos.",
+          "El resto necesita a una persona: si el texto alternativo es significativo, si el orden de lectura y de foco tiene sentido, si el recorrido con teclado es realmente usable, la calidad de los subtítulos y la claridad cognitiva. El flujo de trabajo correcto es automatizar los fallos claros y luego revisar las cuestiones de criterio, y decir claramente en tu informe cuál es cuál."
+        ]
+      }
+    ],
+    "cta": {
+      "title": "Resuelve la mitad automatizable en segundos",
+      "body": "Ejecuta un análisis WCAG 2.2 AA gratuito y obtén un informe priorizado y listo para el cliente con orientación de corrección.",
+      "primary": "Empezar gratis",
+      "secondary": "Ver un informe de muestra"
+    },
+    "closing": {
+      "heading": "Mantén esto honesto",
+      "body": [
+        "Ningún recorrido automatizado —ni ninguna lista de comprobación por sí sola— garantiza el cumplimiento. Usa esto como una guía de trabajo, automatiza lo que pueda automatizarse, documenta las comprobaciones manuales e incorpora una revisión experta y jurídica cuando lo que está en juego lo exija."
+      ]
+    }
+  }
+}
