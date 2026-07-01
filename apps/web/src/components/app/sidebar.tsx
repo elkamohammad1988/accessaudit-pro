@@ -74,10 +74,10 @@ function SidebarBody({
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
                 active
-                  ? "bg-background text-foreground shadow-xs ring-1 ring-inset ring-border/70"
-                  : "text-muted-foreground hover:bg-background/60 hover:text-foreground",
+                  ? "bg-elevated text-foreground shadow-sm ring-1 ring-inset ring-border/70 dark:bg-white/[0.05] dark:ring-gold/20"
+                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
               )}
             >
               {/* Active accent bar — the Linear/Vercel cue for "you are here".
