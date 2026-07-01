@@ -48,10 +48,11 @@ export function LogoMark({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* The gold crossbar — the conformance "bar". */}
+      {/* The conformance "bar" crossbar — gold on the light clay tile; dark ink on
+          the dark-mode gold tile (where a gold-on-gold bar would vanish). */}
       <path
         d="M12.5 18 L19.5 18"
-        className="stroke-gold"
+        className="stroke-gold dark:stroke-brand-fg"
         strokeWidth="2.7"
         strokeLinecap="round"
       />

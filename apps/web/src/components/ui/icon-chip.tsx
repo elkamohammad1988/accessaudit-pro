@@ -79,7 +79,7 @@ export function IconChip({
       aria-hidden="true"
       className={cn(
         "relative inline-flex shrink-0 items-center justify-center overflow-hidden",
-        "shadow-sm ring-1 ring-inset transition-[box-shadow,transform,background-color] duration-300",
+        "shadow-sm ring-1 ring-inset transition-[box-shadow,transform,background-color] duration-200",
         chipSize[size],
         chipTone[tone],
         chipGlow[tone],

@@ -122,93 +122,96 @@
 }
 
 .dark {
-  /* ── "Bronze Atelier" — a warm, luxurious dark identity ────────────────────
-   * Backgrounds are warm GRAPHITE / volcanic-stone / obsidian (hue ~22–28, low
-   * saturation) — deliberately NOT the cool blue-slate (hue ~220) that reads as
-   * stock AI-SaaS, and never pure #000. Burnt copper is the functional primary
-   * (AA with its dark ink); metallic gold is the decorative accent (borders,
-   * glows, gauges, highlights — large/non-text uses, so AA 3:1 holds, with a
-   * lighter `--gold-strong` reserved for emphasis text). */
+  /* ── "Aubergine & Gold" — a single-accent luxury dark identity ───────────────
+   * Surfaces are a warm AUBERGINE / PLUM graphite (hue ~326–330, low saturation)
+   * — richly tinted, never neutral gray, never pure #000, and deliberately NOT
+   * cool blue-slate (the stock AI-SaaS look). GOLD is the ONE accent: the primary
+   * is an amber-gold and the decorative accent is gold, so everything interactive
+   * and every highlight speaks one warm metal — no second, clashing accent.
+   * Semantic severity/status colours stay distinct because they encode meaning
+   * (impact level, success/error), not brand. Warm ivory ink rides on the plum.
+   * Every pairing here is AA-verified (we sell WCAG conformance). */
 
-  /* Burnt-copper primary — luminous on dark, dark ink rides on top. */
-  --brand: 18 74% 56%;
-  --brand-2: 26 82% 62%;
-  --brand-fg: 24 35% 7%;
+  /* Amber-gold primary — luminous on plum; dark plum ink rides on top (AA ~8:1). */
+  --brand: 38 80% 58%;
+  --brand-2: 44 86% 68%;
+  --brand-fg: 330 42% 8%;
 
-  /* Metallic gold — the luxury accent. Lighter `strong` clears AA as text on the
-   * deep graphite; the metal tone is held a touch desaturated vs. amber. */
-  --gold: 42 64% 56%;
-  --gold-2: 46 72% 66%;
-  --gold-strong: 44 72% 70%;
-  --gold-fg: 26 38% 7%;
+  /* Gold accent — same warm-metal family as the primary. `strong` is the AA text
+   * variant reserved for emphasis on the deep plum. */
+  --gold: 42 76% 60%;
+  --gold-2: 46 86% 70%;
+  --gold-strong: 44 82% 77%;
+  --gold-fg: 330 42% 8%;
 
-  /* Warm graphite / obsidian / gunmetal — never pure black, never blue-gray. */
-  --background: 24 14% 6%;
-  --foreground: 38 22% 91%;
-  --card: 26 16% 9%;
-  --card-foreground: 38 22% 91%;
-  --elevated: 28 14% 12.5%;
-  --popover: 26 18% 8%;
-  --popover-foreground: 38 22% 91%;
-  --muted: 28 12% 15%;
-  --muted-foreground: 36 12% 65%;
-  --accent: 28 13% 16.5%;
-  --accent-foreground: 38 22% 91%;
+  /* Warm aubergine / plum graphite — layered surfaces, each a clear step lighter
+   * so depth comes from stacked planes, not just shadow. Never pure black. */
+  --background: 330 15% 6.5%;
+  --foreground: 38 24% 91%;
+  --card: 328 14% 9.5%;
+  --card-foreground: 38 24% 91%;
+  --elevated: 326 13% 13%;
+  --popover: 330 16% 8%;
+  --popover-foreground: 38 24% 91%;
+  --muted: 326 11% 16.5%;
+  --muted-foreground: 328 9% 67%;
+  --accent: 324 12% 19%;
+  --accent-foreground: 38 24% 91%;
 
-  /* Warm bronze hairline; interactive boundary lifted to clear 3:1 (1.4.11). */
-  --border: 30 14% 17%;
-  --input: 32 12% 44%;
-  --ring: 20 80% 60%;
+  /* Warm plum hairline; interactive boundary lifted to clear 3:1 (1.4.11). */
+  --border: 328 12% 18%;
+  --input: 322 10% 47%;
+  --ring: 40 80% 62%;
 
-  --sev-critical: 0 84% 64%;
-  --sev-serious: 25 95% 60%;
-  --sev-moderate: 41 96% 58%;
-  --sev-minor: 199 92% 60%;
+  --sev-critical: 0 84% 66%;
+  --sev-serious: 25 95% 62%;
+  --sev-moderate: 41 96% 60%;
+  --sev-minor: 205 90% 64%;
 
-  /* On dark surfaces the bright severity values already clear 4.5:1 as text, so
+  /* On the dark plum the bright severity values already clear 4.5:1 as text, so
    * the strong variants stay bright (not darkened, unlike the light theme). */
-  --sev-critical-strong: 0 90% 72%;
-  --sev-serious-strong: 25 95% 64%;
-  --sev-moderate-strong: 41 96% 62%;
-  --sev-minor-strong: 199 92% 64%;
+  --sev-critical-strong: 0 90% 74%;
+  --sev-serious-strong: 25 95% 66%;
+  --sev-moderate-strong: 42 96% 64%;
+  --sev-minor-strong: 205 92% 68%;
 
-  /* Emerald / amber / ruby — warm-harmonized, dark ink on the bright fills. */
-  --success: 158 60% 47%;
-  --success-foreground: 24 35% 7%;
-  --success-strong: 156 56% 61%;
-  --warning: 38 95% 56%;
-  --warning-foreground: 24 35% 7%;
-  --warning-strong: 40 95% 64%;
+  /* Emerald / amber / ruby — dark plum ink on the bright fills. */
+  --success: 158 62% 47%;
+  --success-foreground: 330 42% 8%;
+  --success-strong: 156 58% 62%;
+  --warning: 40 96% 57%;
+  --warning-foreground: 330 42% 8%;
+  --warning-strong: 42 96% 66%;
   /* Ruby fill darkened enough that white labels clear 4.5:1; strong text stays bright. */
-  --danger: 352 64% 48%;
+  --danger: 352 66% 50%;
   --danger-foreground: 0 0% 100%;
-  --danger-strong: 352 84% 73%;
+  --danger-strong: 352 86% 74%;
 
-  /* Multi-layer depth tuned for the warm theme: a near-black ambient drop plus a
-   * faint warm under-glow, so cards read as objects lifted off the graphite. */
-  --shadow-xs: 0 1px 2px 0 hsl(20 30% 2% / 0.40);
-  --shadow-sm: 0 1px 3px 0 hsl(20 30% 2% / 0.50), 0 1px 2px -1px hsl(20 30% 2% / 0.40);
+  /* Multi-layer depth: a near-black PLUM ambient drop plus a soft, deep blur, so
+   * cards read as objects floating above the aubergine rather than boxes drawn on it. */
+  --shadow-xs: 0 1px 2px 0 hsl(330 45% 2% / 0.45);
+  --shadow-sm: 0 1px 3px 0 hsl(330 45% 2% / 0.55), 0 1px 2px -1px hsl(330 45% 2% / 0.45);
   --shadow-md:
-    0 4px 16px -2px hsl(20 30% 2% / 0.58), 0 2px 6px -2px hsl(20 30% 2% / 0.45);
+    0 6px 20px -3px hsl(330 45% 2% / 0.62), 0 2px 6px -2px hsl(330 45% 2% / 0.5);
   --shadow-lg:
-    0 16px 44px -10px hsl(20 30% 2% / 0.66), 0 4px 12px -4px hsl(20 30% 2% / 0.50);
+    0 18px 48px -12px hsl(330 45% 2% / 0.7), 0 5px 14px -4px hsl(330 45% 2% / 0.55);
   --shadow-xl:
-    0 28px 66px -12px hsl(20 30% 2% / 0.74), 0 10px 22px -6px hsl(20 30% 2% / 0.55);
+    0 30px 72px -14px hsl(330 45% 2% / 0.78), 0 12px 26px -8px hsl(330 45% 2% / 0.6);
 
-  /* Form controls — polished-obsidian variant of the ceramic field (warm). */
-  --field-bg: 26 18% 10%;
-  --field-bg-2: 26 20% 8.5%;
-  --field-border: 30 16% 22%;
-  --field-border-hover: 32 16% 31%;
-  --field-ink: 40 30% 95%;
-  --field-autofill: 26 18% 11%;
+  /* Form controls — polished aubergine-obsidian ceramic (warm), gold focus bloom. */
+  --field-bg: 330 15% 10.5%;
+  --field-bg-2: 330 17% 9%;
+  --field-border: 328 13% 22%;
+  --field-border-hover: 40 40% 36%;
+  --field-ink: 38 26% 95%;
+  --field-autofill: 330 15% 11.5%;
   --field-shadow:
-    inset 0 1px 0 0 hsl(40 60% 90% / 0.05),
-    inset 0 1.5px 3px 0 hsl(20 30% 2% / 0.45),
-    0 1px 2px 0 hsl(20 30% 2% / 0.35);
+    inset 0 1px 0 0 hsl(44 60% 90% / 0.05),
+    inset 0 1.5px 3px 0 hsl(330 45% 2% / 0.5),
+    0 1px 2px 0 hsl(330 45% 2% / 0.4);
   --field-glow:
-    0 0 0 4px hsl(var(--ring) / 0.24),
-    0 10px 28px -8px hsl(var(--brand) / 0.5);
+    0 0 0 4px hsl(var(--ring) / 0.22),
+    0 10px 28px -8px hsl(var(--brand) / 0.45);
 }
 
 @layer base {
@@ -247,9 +250,9 @@
    * fixed attachment keeps it calm while content scrolls. */
   .dark body {
     background-image:
-      radial-gradient(58% 48% at 16% -6%, hsl(var(--brand) / 0.10) 0%, transparent 60%),
-      radial-gradient(48% 42% at 94% 6%, hsl(var(--gold) / 0.07) 0%, transparent 58%),
-      radial-gradient(90% 70% at 50% 118%, hsl(18 38% 7% / 0.55) 0%, transparent 72%);
+      radial-gradient(56% 46% at 15% -6%, hsl(var(--brand) / 0.09) 0%, transparent 60%),
+      radial-gradient(50% 44% at 92% 3%, hsl(322 55% 34% / 0.12) 0%, transparent 58%),
+      radial-gradient(95% 72% at 50% 120%, hsl(330 45% 6% / 0.6) 0%, transparent 72%);
     background-attachment: fixed;
     background-repeat: no-repeat;
   }

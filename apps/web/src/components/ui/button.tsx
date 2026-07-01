@@ -6,11 +6,13 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link";
 type Size = "sm" | "md" | "lg" | "icon";
 
-// One quiet hover per variant (a tone shift, nothing more), a single flat
-// shadow on filled buttons. No sheen highlights, inner rings, or colored glows —
-// the color and the press (active:scale) carry the interaction.
+// Light mode stays quiet (a tone shift + flat shadow). Dark mode gives the filled
+// primary a lit, metallic-gold treatment: a top-down gradient, a catch-light on
+// the top edge, and a soft gold glow that blooms on hover — the "expensive" cue,
+// kept subtle (no flashy effects). The press (active:scale) carries the tactile.
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-brand text-brand-fg shadow-sm hover:bg-brand/90",
+  primary:
+    "bg-brand text-brand-fg shadow-sm hover:bg-brand/90 dark:bg-gradient-to-b dark:from-brand-2 dark:to-brand dark:shadow-[inset_0_1px_0_0_hsl(46_90%_82%/0.30),var(--shadow-sm)] dark:hover:shadow-[inset_0_1px_0_0_hsl(46_90%_82%/0.30),0_0_22px_-4px_hsl(var(--brand)/0.6)]",
   secondary: "border border-input bg-background shadow-xs hover:bg-muted",
   outline: "border border-input bg-transparent hover:bg-muted",
   ghost: "bg-transparent hover:bg-muted",
@@ -27,7 +29,7 @@ const sizeClasses: Record<Size, string> = {
 
 const baseClasses = cn(
   "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium",
-  "transition-[background-color,box-shadow,transform,opacity,border-color] duration-150 active:scale-[0.97]",
+  "transition-[background-color,background-image,box-shadow,transform,opacity,border-color] duration-200 active:scale-[0.97]",
   "[&_svg]:pointer-events-none [&_svg]:shrink-0",
   "disabled:pointer-events-none disabled:opacity-50",
 );

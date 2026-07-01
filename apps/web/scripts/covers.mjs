@@ -49,10 +49,10 @@ function html({ w, h, layout, img, title, sub, badges }) {
     .copy{flex:${layout==="banner"?"1.1":"1"};min-width:0;${layout==="square"?"align-items:center":""};display:flex;flex-direction:column;gap:22px}
     .brand{display:flex;align-items:center;gap:14px}
     .word{font-weight:800;font-size:${layout==="banner"?26:30}px;letter-spacing:-.02em}
-    .word b{color:hsl(26 82% 62%);font-weight:800}
+    .word b{color:hsl(44 84% 66%);font-weight:800}
     h1{font-weight:800;letter-spacing:-.03em;line-height:1.04;
       font-size:${layout==="banner"?42:layout==="thumb"?46:layout==="square"?60:64}px}
-    h1 .g{color:hsl(26 82% 62%)}
+    h1 .g{color:hsl(44 84% 66%)}
     p{color:hsl(36 12% 70%);line-height:1.5;max-width:${layout==="square"?"640px":"560px"};
       font-size:${layout==="thumb"?18:22}px}
     .badges{display:flex;gap:12px;flex-wrap:wrap;${layout==="square"?"justify-content:center":""}}

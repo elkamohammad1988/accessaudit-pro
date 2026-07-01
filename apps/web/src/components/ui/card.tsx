@@ -20,9 +20,9 @@ export function Card({
         // `lux-rim` adds a hairline gold catch-light along the top edge, and a
         // top-down gloss gradient lifts the flat fill into lit material. All scoped
         // to `dark:` so light mode keeps its warm ceramic card.
-        "lux-rim dark:border-white/[0.06] dark:bg-card/70 dark:bg-gradient-to-b dark:from-white/[0.04] dark:to-white/0 dark:shadow-md dark:backdrop-blur-xl dark:ring-1 dark:ring-inset dark:ring-gold/[0.08]",
+        "lux-rim dark:border-white/[0.06] dark:bg-card/70 dark:bg-gradient-to-b dark:from-white/[0.05] dark:to-white/0 dark:shadow-md dark:backdrop-blur-xl dark:ring-1 dark:ring-inset dark:ring-gold/[0.12]",
         interactive &&
-          "transition-[box-shadow,transform,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-lg dark:hover:border-gold/30 dark:hover:shadow-lg dark:hover:ring-gold/20",
+          "transition-[box-shadow,transform,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-lg dark:hover:border-gold/35 dark:hover:shadow-lg dark:hover:ring-gold/25",
         className,
       )}
       {...props}
