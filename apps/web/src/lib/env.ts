@@ -10,6 +10,18 @@ export const publicEnv = {
 };
 
 /**
+ * Demo mode — active when no Supabase project is configured. In this mode the app
+ * runs entirely on the local in-memory dataset (lib/demo): `createClient`,
+ * `createAdminClient` and the browser client all return a mock Supabase client,
+ * and the middleware skips auth routing. `NEXT_PUBLIC_SUPABASE_URL` is inlined at
+ * build time, so this resolves identically on server and client. Fill the Supabase
+ * keys in `.env.local` to switch back to the real backend.
+ */
+export function isDemoMode(): boolean {
+  return !process.env.NEXT_PUBLIC_SUPABASE_URL;
+}
+
+/**
  * The app's public origin — used for canonical URLs, OG tags, the sitemap,
  * Stripe redirect URLs, and auth email links. `NEXT_PUBLIC_APP_URL` is inlined
  * at build time, so a missing value silently poisons every absolute URL with
@@ -20,6 +32,9 @@ export const publicEnv = {
 export function appBaseUrl(): string {
   const url = process.env.NEXT_PUBLIC_APP_URL;
   if (url) return url.replace(/\/$/, "");
+  // Demo mode has no configured origin by design — fall back to localhost so the
+  // app builds and runs with zero env (rather than failing the production build).
+  if (isDemoMode()) return "http://localhost:3000";
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       "NEXT_PUBLIC_APP_URL is required in production. Set it to the deployed origin " +
