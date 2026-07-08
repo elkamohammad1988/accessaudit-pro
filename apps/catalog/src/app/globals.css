@@ -1,0 +1,395 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * ── Verdant · Design System ──────────────────────────────────────────────────
+ * A premium, light-first emerald catalogue. The identity is calm and horticultural:
+ * a barely-tinted mint page (#F8FFF8), pure-white cards floating on soft layered
+ * shadows, and a single confident emerald (#22C55E) that earns attention because
+ * nothing else competes for it. Generous whitespace, one radius language, one
+ * shadow language, one motion language — restraint is the luxury.
+ *
+ * Tokens are HSL channels (no hsl() wrapper) so Tailwind applies opacity via
+ * `hsl(var(--token) / <alpha>)`. LIGHT is `:root` (the primary identity); DARK is
+ * `.dark` — a deep forest-charcoal, never a flat neutral black, so the emerald
+ * still reads as living pigment at night.
+ */
+:root {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* Emerald ladder — the exact brand palette, tuned to HSL.
+   *   brand      #22C55E  primary
+   *   brand-soft #4ADE80  secondary
+   *   brand-mist #86EFAC  accent / tints
+   *   brand-deep #16A34A  hover / pressed / brand-as-text (AA on white)
+   */
+  --brand: 142 71% 45%;
+  --brand-soft: 142 69% 58%;
+  --brand-mist: 142 77% 73%;
+  --brand-deep: 142 72% 29%;
+  --brand-fg: 0 0% 100%;
+  --brand-tint: 141 84% 93%; /* #DCFCE7 — the wash behind pills, chips, hovers */
+
+  /* Surfaces & ink. The page is a whisper-mint paper (#F8FFF8); cards are pure white
+   * lifted by shadow, not by a brighter fill. Ink is near-slate-900 (#111827) for a
+   * crisp editorial contrast (~16:1 on white); muted is gray-500 (#6B7280, ~4.8:1). */
+  --background: 120 60% 99%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --elevated: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --muted: 140 30% 96%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 141 70% 96%;
+  --accent-foreground: 142 72% 24%;
+
+  /* Lines & controls. `--border` is the hairline emerald-tinted rule (#DCFCE7-ish);
+   * `--input` is the interactive control boundary, darkened so it clears 3:1 for
+   * WCAG 1.4.11; `--ring` is the single focus colour used everywhere. */
+  --border: 141 60% 91%;
+  --input: 142 20% 78%;
+  --ring: 142 71% 40%;
+
+  /* Status — kept in the same green-adjacent family where possible so alerts feel
+   * part of the system, with a warm amber and a clear red for the two off-brand
+   * signals. All AA as text on their own /12 tint. */
+  --success: 142 71% 33%;
+  --success-foreground: 0 0% 100%;
+  --warning: 32 90% 40%;
+  --warning-foreground: 0 0% 100%;
+  --danger: 0 72% 46%;
+  --danger-foreground: 0 0% 100%;
+
+  --radius: 0.875rem;
+
+  /* One shadow ladder — cool-neutral with a faint emerald undertone. Each is a tight
+   * contact shadow plus a wider, softer ambient one so a card reads as lifted paper.
+   * `--shadow-ring` is the emerald-tinted hover lift used on interactive cards. */
+  --shadow-xs: 0 1px 2px 0 hsl(150 30% 20% / 0.05);
+  --shadow-sm: 0 1px 2px 0 hsl(150 24% 20% / 0.06), 0 1px 3px -1px hsl(150 24% 20% / 0.07);
+  --shadow-md: 0 4px 8px -3px hsl(150 24% 18% / 0.08), 0 10px 24px -8px hsl(150 24% 18% / 0.12);
+  --shadow-lg: 0 8px 16px -6px hsl(150 24% 16% / 0.10), 0 22px 44px -14px hsl(150 24% 16% / 0.16);
+  --shadow-xl: 0 12px 28px -8px hsl(150 24% 14% / 0.12), 0 36px 72px -20px hsl(150 24% 14% / 0.22);
+  --shadow-ring: 0 10px 30px -10px hsl(var(--brand) / 0.28), 0 4px 10px -4px hsl(var(--brand) / 0.16);
+}
+
+.dark {
+  /* ── Verdant · Nightfall ────────────────────────────────────────────────────
+   * A deep forest-charcoal ground (a greenhouse after dark), never a flat black.
+   * Surfaces step up in warm-cool green-greys; the emerald brightens a touch so it
+   * still glows as living pigment. All pairings AA-verified. */
+  --brand: 142 69% 52%;
+  --brand-soft: 142 66% 60%;
+  --brand-mist: 142 55% 40%;
+  --brand-deep: 142 60% 66%;
+  --brand-fg: 150 40% 8%;
+  --brand-tint: 150 40% 16%;
+
+  --background: 155 24% 7%;
+  --foreground: 140 18% 94%;
+  --card: 156 18% 10%;
+  --card-foreground: 140 18% 94%;
+  --elevated: 156 16% 14%;
+  --popover: 156 18% 11%;
+  --popover-foreground: 140 18% 94%;
+  --muted: 156 14% 15%;
+  --muted-foreground: 145 12% 66%;
+  --accent: 154 20% 17%;
+  --accent-foreground: 142 60% 78%;
+
+  --border: 155 14% 20%;
+  --input: 150 12% 34%;
+  --ring: 142 66% 52%;
+
+  --success: 142 60% 52%;
+  --success-foreground: 150 40% 8%;
+  --warning: 36 88% 58%;
+  --warning-foreground: 150 40% 8%;
+  --danger: 0 72% 62%;
+  --danger-foreground: 150 40% 8%;
+
+  --shadow-xs: 0 1px 2px 0 hsl(155 40% 2% / 0.5);
+  --shadow-sm: 0 1px 3px 0 hsl(155 40% 2% / 0.6), 0 1px 2px -1px hsl(155 40% 2% / 0.5);
+  --shadow-md: 0 6px 20px -6px hsl(155 40% 2% / 0.6), 0 2px 6px -2px hsl(155 40% 2% / 0.5);
+  --shadow-lg: 0 20px 48px -14px hsl(155 40% 2% / 0.7), 0 6px 16px -6px hsl(155 40% 2% / 0.55);
+  --shadow-xl: 0 34px 80px -20px hsl(155 40% 2% / 0.78), 0 12px 28px -10px hsl(155 40% 2% / 0.6);
+  --shadow-ring: 0 12px 34px -10px hsl(var(--brand) / 0.4), 0 4px 12px -4px hsl(var(--brand) / 0.28);
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /* The page is never a dead flat fill: two barely-there emerald washes settle into
+   * the mint paper (a bright light top-left, a soft one top-right), fixed so they
+   * stay calm while content scrolls. Dark deepens them into a greenhouse glow. */
+  body {
+    background-image:
+      radial-gradient(60% 50% at 8% -8%, hsl(var(--brand) / 0.06) 0%, transparent 60%),
+      radial-gradient(52% 44% at 96% 0%, hsl(var(--brand-mist) / 0.14) 0%, transparent 58%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(58% 48% at 6% -8%, hsl(142 60% 40% / 0.14) 0%, transparent 60%),
+      radial-gradient(50% 44% at 98% 0%, hsl(150 50% 30% / 0.16) 0%, transparent 58%),
+      radial-gradient(70% 50% at 50% 116%, hsl(150 40% 24% / 0.18) 0%, transparent 70%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
+  /* Editorial display headings: high-contrast serif, optically thinned, balanced wrap. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* One accessible focus ring, everywhere, following each control's own shape. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background-color: hsl(var(--brand) / 0.22);
+  }
+
+  /* Quiet, themed scrollbars. */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.45);
+  }
+}
+
+@layer components {
+  /* ── Surfaces ───────────────────────────────────────────────────────────────
+   * Two moves compose the whole UI: a `.surface` (a white sheet lifted by shadow)
+   * and `.glass` (near-opaque sticky chrome). No neon, no heavy gradients. */
+
+  .surface {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius);
+  }
+
+  /* Sticky chrome (header, filter bars): a near-opaque sheet with a hairline rule and
+   * a whisper of blur so scrolling content never ghosts hard-edged through it. */
+  .glass {
+    background-color: hsl(var(--background) / 0.82);
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    border-color: hsl(var(--border));
+  }
+
+  /* Emerald foil text — a living-pigment gradient for hero words and display accents. */
+  .text-brand-gradient {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--brand-deep)) 0%,
+      hsl(var(--brand)) 42%,
+      hsl(var(--brand-soft)) 72%,
+      hsl(var(--brand-deep)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: hsl(var(--brand-deep));
+  }
+
+  /* ── Range slider — the naked track/thumb for the dual price control ─────────
+   * The visible track/fill is drawn by the component; each <input type=range> is
+   * transparent and only contributes a draggable thumb. */
+  .range-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    pointer-events: none;
+  }
+  .range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    height: 20px;
+    width: 20px;
+    border-radius: 9999px;
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--brand));
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    transition: transform 0.15s ease;
+  }
+  .range-input::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+  }
+  .range-input::-moz-range-thumb {
+    pointer-events: auto;
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--brand));
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+  }
+  .range-input:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* ── Fields — one control surface shared by input/select/textarea ────────────
+   * A calm white sheet, a thin emerald-tinted border, an emerald bloom on focus. */
+  .field {
+    width: 100%;
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--input));
+    color: hsl(var(--foreground));
+    border-radius: calc(var(--radius) - 4px);
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .field::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+  .field:hover:not(:disabled):not(:focus) {
+    border-color: hsl(var(--brand) / 0.55);
+  }
+  .field:focus,
+  .field:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: hsl(var(--brand));
+    box-shadow: 0 0 0 4px hsl(var(--ring) / 0.16);
+  }
+  .field[aria-invalid="true"] {
+    border-color: hsl(var(--danger));
+  }
+  .field[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 4px hsl(var(--danger) / 0.16);
+  }
+  .field:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+@layer utilities {
+  /* Content column — one horizontal rhythm for the whole app. */
+  .container-page {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .font-display {
+    font-optical-sizing: auto;
+    font-feature-settings: "liga" 1, "onum" 1;
+    letter-spacing: -0.02em;
+  }
+
+  /* Scroll-reveal — rise + fade into place (the `is-visible` class is added by the
+   * <Reveal> observer). Vertical only, so it stays RTL-safe. Stagger via --reveal-delay. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Soft edge fade for horizontal marquees/scrollers. */
+  .edge-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  /* Hide scrollbar on horizontal scroll rails while keeping them scrollable. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Honour reduced-motion — both the OS setting and the in-app toggle (.reduce-motion
+ * is added to <html> by the preferences provider). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+.reduce-motion *,
+.reduce-motion ::before,
+.reduce-motion ::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
