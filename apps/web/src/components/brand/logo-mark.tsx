@@ -56,12 +56,12 @@ export function LogoMark({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* The conformance "bar" crossbar — a pale mint rule struck across the tile
-          (bright enough to clear it); on the bright mint night tile a near-black
-          ink reads cleanly instead. */}
+      {/* The conformance "bar" crossbar — a pale cream rule struck across the tile
+          (bright enough to clear it); on the bright terracotta night tile a
+          near-black ink reads cleanly instead. */}
       <path
         d="M12.5 18 L19.5 18"
-        className="stroke-[hsl(150_90%_86%)] dark:stroke-brand-fg"
+        className="stroke-[hsl(28_78%_88%)] dark:stroke-brand-fg"
         strokeWidth="2.7"
         strokeLinecap="round"
       />

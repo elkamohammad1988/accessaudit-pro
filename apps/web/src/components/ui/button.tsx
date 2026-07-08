@@ -14,7 +14,7 @@ type Size = "sm" | "md" | "lg" | "icon";
 // glass; destructive blooms madder on hover.
 const variantClasses: Record<Variant, string> = {
   primary:
-    "btn-sheen bg-brand text-brand-fg shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.32),inset_0_-2px_5px_0_hsl(160_60%_16%/0.35),var(--shadow-sm)] hover:shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.4),var(--glow-brand)]",
+    "btn-sheen bg-brand text-brand-fg shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.32),inset_0_-2px_5px_0_hsl(20_55%_14%/0.35),var(--shadow-sm)] hover:shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.4),var(--glow-brand)]",
   secondary:
     "border border-border bg-card/70 backdrop-blur-md text-foreground shadow-xs hover:-translate-y-px hover:border-brand-2/50 hover:bg-card hover:shadow-sm",
   outline:

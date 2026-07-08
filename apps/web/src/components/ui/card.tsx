@@ -17,7 +17,7 @@ export const cardSurfaceClass = cn(
   "bg-gradient-to-br from-white/85 via-card/65 to-white/45 backdrop-blur-xl",
   "shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.9),var(--shadow-md)]",
   "dark:border-white/10 dark:from-card/75 dark:via-card/55 dark:to-card/40",
-  "dark:shadow-[inset_0_1px_0_0_hsl(150_40%_80%/0.06),var(--shadow-md)]",
+  "dark:shadow-[inset_0_1px_0_0_hsl(30_30%_80%/0.06),var(--shadow-md)]",
 );
 
 /** Hover treatment for clickable surfaces — a real lift with a mint-warming rim
