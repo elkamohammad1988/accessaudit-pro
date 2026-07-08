@@ -6,29 +6,34 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link";
 type Size = "sm" | "md" | "lg" | "icon";
 
-// Light mode stays quiet (a tone shift + flat shadow). Dark mode gives the filled
-// primary a lit, metallic-gold treatment: a top-down gradient, a catch-light on
-// the top edge, and a soft gold glow that blooms on hover — the "expensive" cue,
-// kept subtle (no flashy effects). The press (active:scale) carries the tactile.
+// The primary is a glossy EMERALD pill: a solid brand fill (token-driven so it stays
+// AA and inverts to bright mint-on-dark automatically) lit by an inner top catch-light
+// so it reads as a soft-gradient dome, and — on hover — a colored EMERALD bloom (the
+// signature glow) plus a thin band of light that sweeps edge-to-edge (`btn-sheen`).
+// The base `active:scale` carries the tactile press. Secondary/outline are frosted
+// glass; destructive blooms madder on hover.
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-brand text-brand-fg shadow-sm hover:bg-brand/90 dark:bg-gradient-to-b dark:from-brand-2 dark:to-brand dark:shadow-[inset_0_1px_0_0_hsl(46_90%_82%/0.30),var(--shadow-sm)] dark:hover:shadow-[inset_0_1px_0_0_hsl(46_90%_82%/0.30),0_0_22px_-4px_hsl(var(--brand)/0.6)]",
-  secondary: "border border-input bg-background shadow-xs hover:bg-muted",
-  outline: "border border-input bg-transparent hover:bg-muted",
-  ghost: "bg-transparent hover:bg-muted",
-  destructive: "bg-danger text-danger-foreground shadow-sm hover:bg-danger/90",
+    "btn-sheen bg-brand text-brand-fg shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.32),inset_0_-2px_5px_0_hsl(160_60%_16%/0.35),var(--shadow-sm)] hover:shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.4),var(--glow-brand)]",
+  secondary:
+    "border border-border bg-card/70 backdrop-blur-md text-foreground shadow-xs hover:-translate-y-px hover:border-brand-2/50 hover:bg-card hover:shadow-sm",
+  outline:
+    "border border-input bg-transparent hover:border-brand-2/50 hover:bg-accent/60",
+  ghost: "bg-transparent hover:bg-accent/70",
+  destructive:
+    "bg-danger text-danger-foreground shadow-sm hover:shadow-[var(--shadow-sm),0_8px_26px_-6px_hsl(var(--danger)/0.55)]",
   link: "bg-transparent text-brand underline-offset-4 hover:underline",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
-  lg: "h-11 px-6 text-[15px]",
-  icon: "h-9 w-9",
+  sm: "h-9 px-4 text-sm",
+  md: "h-10 px-5 text-sm",
+  lg: "h-12 px-7 text-[15px]",
+  icon: "h-10 w-10",
 };
 
 const baseClasses = cn(
-  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium",
+  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium",
   "transition-[background-color,background-image,box-shadow,transform,opacity,border-color] duration-200 active:scale-[0.97]",
   "[&_svg]:pointer-events-none [&_svg]:shrink-0",
   "disabled:pointer-events-none disabled:opacity-50",

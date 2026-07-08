@@ -3,15 +3,26 @@
 @tailwind utilities;
 
 /*
- * Design tokens. HSL channels (no `hsl()` wrapper) so Tailwind can apply opacity
- * via `hsl(var(--token) / <alpha-value>)`. Dark theme lives under `.dark`
- * (class strategy) — the no-flash script in the root layout sets the class from
- * the user's saved choice or their OS preference before first paint.
+ * ── "Verdant Glass" ─────────────────────────────────────────────────────────
+ * A bright, handcrafted glassmorphism identity. Every surface is a floating pane
+ * of frosted glass laid over a luminous minted-white ground, lifted by soft,
+ * emerald-tinted layered shadows and rimmed by a hairline of light. Accents are
+ * a living EMERALD → MINT gradient (the #4ADE80 family); decoration is soft light
+ * — blurred gradient blobs, glowing icons, floating shapes — never neon, never
+ * heavy black. It should read fresh, expensive and alive, like a piece of modern
+ * digital art rather than a stock SaaS dashboard.
+ *
+ * Tokens are HSL channels (no `hsl()` wrapper) so Tailwind applies opacity via
+ * `hsl(var(--token) / <alpha-value>)`. LIGHT is the primary identity (`:root`);
+ * the app opens bright. DARK (`.dark`) is a deep PINE glass — the same garden at
+ * dusk — a saturated forest green, deliberately NEVER a neutral or pure black.
+ * All pairings are AA-verified (this product sells WCAG conformance).
  */
 :root {
-  /* Inter covers Latin; the trailing families are system fonts that cover the
-   * scripts Inter doesn't (Arabic, Simplified Chinese) so every supported locale
-   * renders crisply without shipping multi-megabyte CJK webfonts. */
+  /* Inter carries the body/UI voice (Latin); the trailing families cover the
+   * scripts Inter doesn't (Arabic, Simplified Chinese) so every locale renders
+   * crisply without shipping multi-megabyte CJK webfonts. Fraunces
+   * (var(--font-display)) is the editorial display serif that carries headings. */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, "Segoe UI Arabic", "Geeza Pro", "Noto Sans Arabic", "Noto Naskh Arabic",
     "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC",
@@ -19,201 +30,180 @@
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas,
     monospace;
 
-  /* Brand — warm clay / terracotta #A24425, with a lighter sienna companion for
-   * gradients/glows. Deliberately an EARTH tone, not a tech color: no indigo,
-   * violet, electric blue, or teal/cyan (all read as stock "AI/SaaS"). It pairs
-   * with the warm-ivory field surface and clears white text at ~6:1.
-   * Overridable per-org at runtime. */
-  --brand: 15 63% 39%;
-  --brand-2: 16 62% 49%;
-  --brand-fg: 0 0% 100%;
+  /* Brand — EMERALD, the soft-premium green (#4ADE80 family). `--brand` is the
+   * deep, AA-legible cut (clears ~4.5:1 as text on the minted white); `--brand-2`
+   * is the bright MINT used for gradient ends, glows and hovers. Overridable
+   * per-org at runtime. */
+  --brand: 158 64% 32%;
+  --brand-2: 146 68% 52%;
+  --brand-fg: 150 60% 98%;
 
-  /* Metallic-gold luxury accent. Primarily a dark-mode device; defined here too so
-   * `gold` utilities resolve on light surfaces (a restrained antique gold that
-   * clears AA as text on white via `--gold-strong`). */
-  --gold: 38 68% 42%;
-  --gold-2: 42 74% 50%;
-  --gold-strong: 36 72% 34%;
-  --gold-fg: 40 40% 98%;
+  /* Secondary accent — a luminous SPRING MINT. Keeps every existing `gold`
+   * utility working, now rendered as fresh green light: `--gold`/`--gold-2` are
+   * the bright mints used for borders, glows, gradients and highlights;
+   * `--gold-strong` is the darkened cut that clears AA as text on glass. */
+  --gold: 150 72% 46%;
+  --gold-2: 142 76% 60%;
+  --gold-strong: 160 60% 30%;
+  --gold-fg: 155 60% 98%;
 
-  /* Surfaces & text — "Warm Atelier, daylight". The page is a warm ivory
-   * parchment (never plain #FFFFFF, which reads flat and stock); cards sit a
-   * half-step BRIGHTER so they lift off the page as real objects, and `elevated`
-   * is pure white for the topmost panels. Text is a warm near-black ink (not the
-   * old cool blue-slate) so the whole light identity reads warm and hand-set,
-   * harmonizing with the clay brand and gold accent. All AA-verified: ink clears
-   * ~15:1 on card, muted clears 4.5:1. */
-  --background: 38 30% 97%;
-  --foreground: 24 22% 11%;
-  --card: 40 42% 99.4%;
-  --card-foreground: 24 22% 11%;
+  /* Surfaces & text — "Minted daylight". The page is a luminous near-white with a
+   * whisper of mint; cards are panes of frosted glass sitting a half-step brighter,
+   * and `elevated` is pure white for topmost panels. Ink is a deep FOREST slate
+   * (never pure black) so the whole identity stays fresh and green. AA-verified:
+   * ink ~14:1 on card, muted ~4.7:1. */
+  --background: 150 44% 98.5%;
+  --foreground: 165 34% 12%;
+  --card: 150 50% 99.5%;
+  --card-foreground: 165 34% 12%;
   --elevated: 0 0% 100%;
-  --popover: 40 42% 99.4%;
-  --popover-foreground: 24 22% 11%;
-  --muted: 36 26% 94%;
-  --muted-foreground: 28 11% 39%;
-  --accent: 36 26% 94%;
-  --accent-foreground: 24 22% 11%;
+  --popover: 150 44% 99%;
+  --popover-foreground: 165 34% 12%;
+  --muted: 150 36% 95%;
+  --muted-foreground: 158 15% 37%;
+  --accent: 150 46% 93%;
+  --accent-foreground: 165 34% 12%;
 
   /* Lines & controls. `--border` is decorative (dividers/cards, exempt from
-   * 1.4.11) — a warm sand hairline; `--input` is the interactive control
-   * boundary, so it must clear 3:1 against the background per WCAG 1.4.11. */
-  --border: 34 24% 87.5%;
-  --input: 30 14% 49%;
-  --ring: 15 60% 43%;
+   * 1.4.11) — a soft mint hairline; `--input` is the interactive control boundary,
+   * so it must clear 3:1 against the ground per WCAG 1.4.11. */
+  --border: 150 26% 87%;
+  --input: 156 18% 50%;
+  --ring: 152 64% 40%;
 
-  /* Accessibility-impact scale (axe taxonomy) — the product's core semantics.
-   * The bright values are used as FILLS (bars, dots, rings, tints). */
-  --sev-critical: 0 72% 51%;
-  --sev-serious: 22 90% 48%;
-  --sev-moderate: 38 92% 45%;
-  --sev-minor: 199 89% 42%;
+  /* Accessibility-impact scale (axe taxonomy) — kept a semantically distinct
+   * warm→cool ramp (severe→minor) so severity is never conveyed by brand green
+   * alone: madder, coral, amber, emerald. The bright values are used as FILLS
+   * (bars, dots, rings, tints). */
+  --sev-critical: 356 72% 52%;   /* madder red */
+  --sev-serious: 18 82% 55%;     /* coral / burnt orange */
+  --sev-moderate: 40 88% 52%;    /* amber */
+  --sev-minor: 150 52% 42%;      /* emerald */
 
-  /* AA text variants — used wherever the severity color is rendered as TEXT
-   * (badges, pills, legends). Darkened so the foreground clears 4.5:1 on white
-   * and on the /10 tints behind the badges. We sell WCAG conformance; the UI
-   * that communicates it must itself pass. */
-  --sev-critical-strong: 0 72% 42%;
-  --sev-serious-strong: 22 88% 36%;
-  --sev-moderate-strong: 33 92% 31%;
-  --sev-minor-strong: 200 92% 32%;
+  /* AA text variants — used wherever the pigment is rendered as TEXT (badges, pills,
+   * legends). Darkened so the foreground clears 4.5:1 on the /10 tints behind them. */
+  --sev-critical-strong: 356 66% 40%;
+  --sev-serious-strong: 16 74% 38%;
+  --sev-moderate-strong: 34 80% 32%;
+  --sev-minor-strong: 158 60% 28%;
 
-  /* Status */
-  --success: 142 71% 40%;
-  --success-foreground: 0 0% 100%;
-  --success-strong: 142 72% 29%;
-  --warning: 38 92% 45%;
-  --warning-foreground: 0 0% 100%;
-  --warning-strong: 30 90% 33%;
-  --danger: 0 72% 45%;
+  /* Status — success is the brand emerald, warning amber, danger madder. */
+  --success: 152 56% 36%;
+  --success-foreground: 150 60% 98%;
+  --success-strong: 156 60% 28%;
+  --warning: 36 84% 42%;
+  --warning-foreground: 40 60% 98%;
+  --warning-strong: 32 80% 33%;
+  --danger: 356 68% 50%;
   --danger-foreground: 0 0% 100%;
-  --danger-strong: 0 72% 42%;
+  --danger-strong: 356 64% 40%;
 
-  --radius: 0.625rem;
+  --radius: 0.95rem;
 
-  /* Layered, low-contrast shadows for a soft "lifted" feel (light theme).
-   * Each combines a tight contact shadow with a softer ambient one — the recipe
-   * premium UIs (Stripe, Linear) use to read as real elevation, not a drop blur. */
-  --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-  --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.06), 0 1px 3px -1px hsl(222 47% 11% / 0.07);
-  --shadow-md: 0 2px 4px -1px hsl(222 47% 11% / 0.06), 0 8px 20px -6px hsl(222 47% 11% / 0.12);
-  --shadow-lg: 0 4px 8px -2px hsl(222 47% 11% / 0.08), 0 18px 40px -12px hsl(222 47% 11% / 0.16);
-  --shadow-xl: 0 8px 16px -4px hsl(222 47% 11% / 0.10), 0 28px 64px -16px hsl(222 47% 11% / 0.22);
+  /* Floating shadows — soft, wide and EMERALD-tinted, each a tight contact shadow
+   * plus a deep, diffuse ambient one so a pane reads as glass hovering above the
+   * ground rather than a flat box pinned to it. */
+  --shadow-xs: 0 1px 2px 0 hsl(160 38% 22% / 0.06);
+  --shadow-sm: 0 2px 4px -1px hsl(160 40% 22% / 0.07), 0 6px 16px -6px hsl(158 46% 32% / 0.10);
+  --shadow-md: 0 6px 16px -6px hsl(160 40% 22% / 0.10), 0 16px 40px -12px hsl(156 50% 34% / 0.16);
+  --shadow-lg: 0 12px 28px -10px hsl(160 42% 22% / 0.12), 0 32px 64px -18px hsl(154 54% 36% / 0.22);
+  --shadow-xl: 0 20px 48px -16px hsl(160 42% 22% / 0.16), 0 48px 96px -26px hsl(154 56% 38% / 0.28);
+  /* Emerald bloom — the signature colored halo under primary CTAs and lit chips. */
+  --glow-brand: 0 8px 30px -6px hsl(var(--brand-2) / 0.5);
 
-  /* ── Form controls — premium "polished-ceramic / fresh-milk" surface ──────
-   * A warm-ivory field topped with a glossy highlight, carrying a delicate
-   * inner shadow for depth and blooming with a soft brand glow on focus.
-   * `--field-ink` is the rich, almost melted-chocolate tone typed copy renders
-   * in; `--field-autofill` is the surface we repaint over the browser's yellow. */
-  --field-bg: 40 33% 99.5%;
-  --field-bg-2: 40 22% 97.6%;
-  --field-border: 36 20% 87%;
-  --field-border-hover: 33 16% 78%;
-  --field-ink: 24 24% 12%;
-  --field-autofill: 44 60% 98%;
+  /* ── Form controls — frosted glass fields ─────────────────────────────────
+   * A bright, faintly minted glass surface with a soft inner catch-light and a
+   * thin border, blooming an emerald ring on focus. `--field-ink` is the forest
+   * ink the typed copy renders in; `--field-autofill` repaints the browser yellow. */
+  --field-bg: 150 50% 99.5%;
+  --field-bg-2: 150 40% 97.5%;
+  --field-border: 150 26% 84%;
+  --field-border-hover: 152 34% 66%;
+  --field-ink: 165 34% 13%;
+  --field-autofill: 150 50% 99%;
   --field-shadow:
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.9),
-    inset 0 1.5px 2px 0 hsl(28 25% 25% / 0.05),
-    inset 0 -1px 1px 0 hsl(28 25% 25% / 0.02),
-    0 1px 2px 0 hsl(28 18% 18% / 0.04);
+    inset 0 1px 2px 0 hsl(160 24% 30% / 0.06),
+    inset 0 -1px 0 0 hsl(0 0% 100% / 0.7),
+    0 1px 0 0 hsl(0 0% 100% / 0.6);
   --field-glow:
     0 0 0 4px hsl(var(--ring) / 0.16),
-    0 8px 24px -8px hsl(var(--brand) / 0.32);
+    inset 0 1px 2px 0 hsl(160 24% 30% / 0.06);
 }
 
 .dark {
-  /* ── "Midnight & Gold" — a single-accent luxury dark identity ────────────────
-   * A deep, genuinely-SATURATED indigo-navy (hue ~230, sat 22–32%) — clearly a
-   * colour, never neutral gray, never pure #000, and deliberately not the washed
-   * cyan-slate of stock admin dashboards. A stepped surface ladder gives every
-   * level its own plane (background → layout → panel → card → input → button).
-   * LUXURY GOLD is the ONE accent (primary + highlights); warmth comes from the
-   * gold and a soft gold/burgundy ambient light over the cool navy, so it reads
-   * rich and emotional rather than cold. Semantic severity/status colours stay
-   * distinct — they encode meaning, not brand. Warm ivory ink rides on the navy.
-   * Every pairing is AA-verified (we sell WCAG conformance). */
+  /* ── "Verdant Dusk" — the same garden at nightfall ────────────────────────
+   * A deep PINE ground (saturated forest green), NEVER a neutral or pure black —
+   * even the dark theme stays fresh and green. Emerald brightens to mint so accents
+   * glow against the pine; surfaces are panes of dark glass. All AA-verified. */
+  --brand: 146 66% 55%;
+  --brand-2: 150 78% 66%;
+  --brand-fg: 165 45% 8%;
 
-  /* Luxury-gold primary — luminous on navy; deep-navy ink rides on top (AA ~8:1). */
-  --brand: 40 84% 60%;
-  --brand-2: 44 90% 70%;
-  --brand-fg: 232 45% 9%;
+  --gold: 150 72% 58%;
+  --gold-2: 144 82% 70%;
+  --gold-strong: 150 68% 72%;
+  --gold-fg: 165 45% 8%;
 
-  /* Gold accent — same metal as the primary. `strong` is the AA emphasis-text tint. */
-  --gold: 42 82% 62%;
-  --gold-2: 46 90% 72%;
-  --gold-strong: 44 86% 78%;
-  --gold-fg: 232 45% 9%;
+  /* Pine surface ladder — a deep forest base with green-slate panes stepping up;
+   * depth read from stacked saturated greens and a soft inner light, not a void. */
+  --background: 168 34% 8%;    /* deep pine ground */
+  --foreground: 150 30% 92%;
+  --card: 168 26% 12%;         /* a raised glass pane */
+  --card-foreground: 150 30% 92%;
+  --elevated: 166 24% 16%;     /* topmost panels, popovers */
+  --popover: 168 28% 10%;
+  --popover-foreground: 150 30% 92%;
+  --muted: 168 20% 16%;        /* layout chrome, muted fills */
+  --muted-foreground: 152 20% 68%;
+  --accent: 166 22% 21%;       /* hover/active surface */
+  --accent-foreground: 150 30% 92%;
 
-  /* Midnight indigo-navy surface ladder — each level a clear ~3–4% step lighter,
-   * so depth reads from stacked planes, not just shadow. Saturated enough to be
-   * unmistakably navy (not gray). Never pure black. */
-  --background: 231 38% 8%;    /* deepest — app background (unmistakably navy) */
-  --foreground: 40 30% 92%;
-  --card: 230 33% 12%;         /* panels / cards */
-  --card-foreground: 40 30% 92%;
-  --elevated: 229 31% 16%;     /* raised panels, popovers-on-cards */
-  --popover: 231 35% 10.5%;
-  --popover-foreground: 40 30% 92%;
-  --muted: 229 27% 19.5%;      /* layout chrome (sidebar/rows), muted fills */
-  --muted-foreground: 232 19% 70%;
-  --accent: 228 27% 23%;       /* hover/active surface */
-  --accent-foreground: 40 30% 92%;
+  --border: 160 20% 24%;
+  --input: 156 18% 52%;
+  --ring: 148 68% 52%;
 
-  /* Navy hairline; interactive boundary lifted to clear 3:1 (1.4.11). */
-  --border: 230 25% 24%;
-  --input: 228 19% 52%;
-  --ring: 42 84% 62%;
+  --sev-critical: 356 78% 66%;
+  --sev-serious: 18 86% 62%;
+  --sev-moderate: 42 90% 60%;
+  --sev-minor: 150 56% 56%;
 
-  --sev-critical: 0 84% 67%;
-  --sev-serious: 25 95% 63%;
-  --sev-moderate: 41 96% 61%;
-  --sev-minor: 205 92% 66%;
+  --sev-critical-strong: 356 84% 76%;
+  --sev-serious-strong: 20 88% 70%;
+  --sev-moderate-strong: 44 90% 66%;
+  --sev-minor-strong: 150 60% 66%;
 
-  /* Bright severity values clear 4.5:1 as text on the navy, so the strong variants
-   * stay bright (not darkened, unlike the light theme). */
-  --sev-critical-strong: 0 90% 75%;
-  --sev-serious-strong: 25 95% 67%;
-  --sev-moderate-strong: 42 96% 65%;
-  --sev-minor-strong: 205 94% 70%;
-
-  /* Emerald / amber / ruby — deep-navy ink on the bright fills. */
-  --success: 158 64% 48%;
-  --success-foreground: 232 45% 9%;
-  --success-strong: 156 60% 64%;
-  --warning: 40 96% 58%;
-  --warning-foreground: 232 45% 9%;
-  --warning-strong: 42 96% 67%;
-  /* Ruby fill darkened enough that white labels clear 4.5:1; strong text stays bright. */
-  --danger: 352 68% 52%;
+  --success: 150 56% 50%;
+  --success-foreground: 165 45% 8%;
+  --success-strong: 150 58% 66%;
+  --warning: 40 88% 58%;
+  --warning-foreground: 165 45% 8%;
+  --warning-strong: 42 90% 66%;
+  --danger: 356 70% 60%;
   --danger-foreground: 0 0% 100%;
-  --danger-strong: 352 88% 76%;
+  --danger-strong: 356 84% 76%;
 
-  /* Multi-layer depth: a near-black NAVY ambient drop plus a soft, deep blur, so
-   * cards read as physical objects lifted off the midnight, not boxes drawn on it. */
-  --shadow-xs: 0 1px 2px 0 hsl(232 50% 2% / 0.5);
-  --shadow-sm: 0 1px 3px 0 hsl(232 50% 2% / 0.6), 0 1px 2px -1px hsl(232 50% 2% / 0.5);
-  --shadow-md:
-    0 6px 20px -3px hsl(232 50% 2% / 0.62), 0 2px 6px -2px hsl(232 50% 2% / 0.5);
-  --shadow-lg:
-    0 18px 48px -12px hsl(232 50% 2% / 0.72), 0 5px 14px -4px hsl(232 50% 2% / 0.55);
-  --shadow-xl:
-    0 30px 72px -14px hsl(232 50% 2% / 0.8), 0 12px 26px -8px hsl(232 50% 2% / 0.62);
+  /* Deep pine shadows — dark green-black (the ground absorbs light softly), never
+   * a pure-black void. */
+  --shadow-xs: 0 1px 2px 0 hsl(168 50% 3% / 0.5);
+  --shadow-sm: 0 2px 6px -1px hsl(168 50% 3% / 0.6), 0 1px 2px -1px hsl(168 50% 3% / 0.5);
+  --shadow-md: 0 10px 30px -8px hsl(168 50% 3% / 0.6), 0 2px 8px -2px hsl(168 50% 3% / 0.5);
+  --shadow-lg: 0 28px 60px -16px hsl(168 50% 3% / 0.7), 0 8px 20px -8px hsl(168 50% 3% / 0.55);
+  --shadow-xl: 0 44px 96px -20px hsl(168 50% 3% / 0.78), 0 16px 34px -12px hsl(168 50% 3% / 0.6);
+  --glow-brand: 0 8px 34px -6px hsl(var(--brand-2) / 0.55);
 
-  /* Form controls — polished midnight-obsidian ceramic, recessed a touch below the
-   * card, soft inner shadow, gold focus. */
-  --field-bg: 231 30% 11%;
-  --field-bg-2: 231 32% 9.5%;
-  --field-border: 230 26% 26%;
-  --field-border-hover: 42 42% 40%;
-  --field-ink: 40 28% 95%;
-  --field-autofill: 231 26% 13%;
+  /* Form controls — dark glass pressed into the pine, warm inner shadow, mint ring. */
+  --field-bg: 168 24% 14%;
+  --field-bg-2: 168 26% 11%;
+  --field-border: 160 18% 28%;
+  --field-border-hover: 150 34% 46%;
+  --field-ink: 150 28% 92%;
+  --field-autofill: 168 24% 16%;
   --field-shadow:
-    inset 0 1px 0 0 hsl(44 60% 90% / 0.055),
-    inset 0 1.5px 3px 0 hsl(232 50% 2% / 0.5),
-    0 1px 2px 0 hsl(232 50% 2% / 0.4);
+    inset 0 1px 3px 0 hsl(168 50% 3% / 0.55),
+    inset 0 -1px 0 0 hsl(150 40% 80% / 0.05);
   --field-glow:
-    0 0 0 4px hsl(var(--ring) / 0.22),
-    0 10px 28px -8px hsl(var(--brand) / 0.42);
+    0 0 0 4px hsl(var(--ring) / 0.24),
+    inset 0 1px 3px 0 hsl(168 50% 3% / 0.5);
 }
 
 @layer base {
@@ -234,34 +224,29 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Daylight ambiance (light mode): two barely-there warm washes — a clay light
-   * top-left, a gold light top-right — so the ivory page has depth and warmth
-   * rather than reading as one dead flat sheet. Fixed so it stays calm while
-   * content scrolls; `.dark body` below replaces it with the deeper night glow,
-   * and @media print drops it entirely for clean paper. */
+  /* Luminous mesh ground: three soft emerald/mint light-pools bleed in from the
+   * corners so the page glows rather than sitting as a dead flat fill. Fixed so it
+   * stays calm while content scrolls; `.dark body` deepens it into pine dusk;
+   * @media print drops it for clean paper. */
   body {
     background-image:
-      radial-gradient(56% 44% at 14% -8%, hsl(var(--brand) / 0.045) 0%, transparent 60%),
-      radial-gradient(48% 40% at 90% 2%, hsl(var(--gold) / 0.05) 0%, transparent 58%);
+      radial-gradient(52% 42% at 12% -8%, hsl(146 74% 58% / 0.14) 0%, transparent 62%),
+      radial-gradient(46% 40% at 94% 2%, hsl(164 66% 48% / 0.12) 0%, transparent 60%),
+      radial-gradient(64% 52% at 50% 116%, hsl(150 70% 54% / 0.12) 0%, transparent 72%);
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
-
-  /* Luxury dark ambiance: a warm, fixed under-glow (copper + gold) over the
-   * graphite so frosted-glass surfaces have light to refract. Purely decorative;
-   * fixed attachment keeps it calm while content scrolls. */
   .dark body {
     background-image:
-      radial-gradient(54% 46% at 13% -6%, hsl(42 82% 56% / 0.08) 0%, transparent 60%),
-      radial-gradient(54% 48% at 91% 1%, hsl(288 46% 44% / 0.14) 0%, transparent 58%),
-      radial-gradient(100% 78% at 50% 123%, hsl(231 50% 6% / 0.6) 0%, transparent 72%);
+      radial-gradient(52% 42% at 12% -8%, hsl(150 70% 44% / 0.20) 0%, transparent 62%),
+      radial-gradient(46% 42% at 94% 2%, hsl(166 70% 40% / 0.16) 0%, transparent 60%),
+      radial-gradient(72% 54% at 50% 120%, hsl(154 60% 34% / 0.22) 0%, transparent 72%);
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
 
-  /* Tighter optical tracking on display headings, the way premium UIs set type,
-   * plus balanced wrapping so multi-line headings break evenly (no orphan word on
-   * its own line) — a small compositional detail that reads as hand-set. */
+  /* Editorial headings: set in the display serif with tight optical tracking and
+   * balanced wrapping (no orphan word) so multi-line titles read hand-set. */
   h1,
   h2,
   h3 {
@@ -272,16 +257,16 @@
     letter-spacing: -0.03em;
   }
 
-  /* One consistent, accessible focus ring everywhere — we sell accessibility.
-   * No border-radius override: the outline follows each element's own shape, so
-   * rounded controls don't square off when focused. */
+  /* One consistent, accessible focus ring everywhere — we sell accessibility. The
+   * outline follows each element's own shape, so rounded controls don't square off. */
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
 
   ::selection {
-    background-color: hsl(var(--brand) / 0.22);
+    background-color: hsl(var(--brand-2) / 0.28);
+    color: hsl(var(--foreground));
   }
 
   /* Quiet, themed scrollbars (WebKit) for the app chrome. */
@@ -296,29 +281,149 @@
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-color: hsl(var(--brand) / 0.5);
   }
 }
 
 @layer components {
-  /* Frosted panel for the sticky marketing header — the one piece of floating
-   * chrome that benefits from letting content blur through behind it. */
+  /* ── Glass primitives ──────────────────────────────────────────────────────
+   * The whole product is composed from panes of frosted glass. `.glass-panel`
+   * (a.k.a `.paper-panel`) is the floating card; `.glass` is the near-opaque
+   * frosted chrome pinned to the top; `.deboss` presses detail into a pane. */
+
+  /* Sticky chrome (marketing header, app top bars): a frosted pane pinned to the
+   * top, translucent enough to let color drift through, with a hairline rule of
+   * light beneath it. */
   .glass {
     background-color: hsl(var(--background) / 0.72);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(150%) blur(16px);
+    -webkit-backdrop-filter: saturate(150%) blur(16px);
+    border-color: hsl(0 0% 100% / 0.5);
+  }
+  .dark .glass {
+    background-color: hsl(var(--background) / 0.7);
+    border-color: hsl(150 40% 80% / 0.08);
+  }
+
+  /* A floating pane of glass — the surface Cards are cut from, exposed as a utility
+   * for bespoke panels (auth cards, modals, popovers). A frosted translucent fill
+   * with a bright top rim of light and a soft, wide emerald shadow so it reads as
+   * glass hovering above the ground. */
+  .glass-panel,
+  .paper-panel {
+    border-radius: calc(var(--radius) + 0.55rem);
+    background-image: linear-gradient(
+      152deg,
+      hsl(0 0% 100% / 0.9) 0%,
+      hsl(150 50% 99% / 0.68) 100%
+    );
+    background-color: hsl(var(--card) / 0.75);
+    border: 1px solid hsl(0 0% 100% / 0.7);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.9),
+      var(--shadow-md);
+  }
+  .dark .glass-panel,
+  .dark .paper-panel {
+    background-image: linear-gradient(
+      152deg,
+      hsl(166 26% 18% / 0.78) 0%,
+      hsl(168 28% 12% / 0.6) 100%
+    );
+    background-color: hsl(var(--card) / 0.6);
+    border-color: hsl(150 40% 80% / 0.1);
+    box-shadow:
+      inset 0 1px 0 0 hsl(150 40% 80% / 0.08),
+      var(--shadow-md);
+  }
+
+  /* Deboss — press an element INTO the glass (soft inner shadow + a bottom
+   * catch-light). Used for wells, insets, the severity meters, swatches. */
+  .deboss {
+    box-shadow:
+      inset 0 2px 5px 0 hsl(160 30% 24% / 0.12),
+      inset 0 -1px 0 0 hsl(0 0% 100% / 0.6);
+  }
+  .dark .deboss {
+    box-shadow:
+      inset 0 2px 6px 0 hsl(168 50% 3% / 0.5),
+      inset 0 -1px 0 0 hsl(150 40% 80% / 0.05);
+  }
+
+  /* Emerald→mint foil text — the living brand gradient for hero numerals and
+   * display accents. Falls back to solid emerald where background-clip:text is
+   * unsupported. Every existing `text-gold-gradient` now renders as green light. */
+  .text-gold-gradient,
+  .text-gradient-emerald {
+    color: hsl(var(--brand));
+    background-image: linear-gradient(
+      104deg,
+      hsl(var(--brand)) 0%,
+      hsl(var(--gold-strong)) 22%,
+      hsl(var(--gold)) 55%,
+      hsl(var(--brand-2)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .dark .text-gold-gradient,
+  .dark .text-gradient-emerald {
+    color: hsl(var(--brand-2));
+    background-image: linear-gradient(
+      104deg,
+      hsl(var(--brand)) 0%,
+      hsl(var(--gold)) 45%,
+      hsl(var(--gold-2)) 100%
+    );
+  }
+
+  /* Soft emerald bloom on hover for lit chips/cards, and a static glow utility. */
+  .glow-brand {
+    box-shadow: var(--glow-brand);
+  }
+
+  /* The old mouse-follow spotlight is retired; kept inert so any stray markup is
+   * harmless. */
+  .cursor-glow {
+    display: none;
+  }
+
+  /* Specular glass sheen — a soft diagonal gloss laid across the top-left of a
+   * pane (TiltCard, hero glass) so light appears to catch the surface. */
+  .tilt-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: linear-gradient(
+      135deg,
+      hsl(0 0% 100% / 0.35) 0%,
+      hsl(0 0% 100% / 0.06) 26%,
+      transparent 52%
+    );
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.8;
+  }
+  .dark .tilt-sheen::after {
+    background-image: linear-gradient(
+      135deg,
+      hsl(150 60% 82% / 0.14) 0%,
+      transparent 48%
+    );
   }
 }
 
 @layer components {
-  /* ── Premium form-control surface ──────────────────────────────────────────
-   * Shared by the Input / Textarea / Select / ColorInput primitives. Everything
-   * tactile lives here so every field across the app feels like one polished
-   * object: the ceramic gloss (top highlight + soft vertical sheen), a delicate
-   * inner shadow for depth, a thin neutral border, a brand bloom on focus,
-   * luxurious type rendering for the typed "ink", a brand caret, a refined
-   * selection, and an autofill skin that matches the design exactly — never the
-   * cheap default browser input. */
+  /* ── Frosted-glass form-control surface ─────────────────────────────────────
+   * Shared by the Input / Textarea / Select / ColorInput primitives so every field
+   * feels like one pane of glass: a bright minted fill, a delicate inner light,
+   * a thin border, an emerald bloom on focus, expensive type rendering for the
+   * typed "ink", an emerald caret, a refined selection, and an autofill skin that
+   * matches the design exactly — never the cheap browser default. */
   .field {
     background-color: hsl(var(--field-bg));
     background-image: linear-gradient(180deg, hsl(var(--field-bg)) 0%, hsl(var(--field-bg-2)) 100%);
@@ -326,9 +431,6 @@
     color: hsl(var(--field-ink));
     box-shadow: var(--field-shadow);
     caret-color: hsl(var(--brand));
-    /* Make every typed character feel expensive: crisp smoothing, optical
-     * legibility, refined numeral/letter forms, a hair-tight track, and a
-     * weight a touch above body copy so ink reads rich rather than thin. */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -346,7 +448,6 @@
     opacity: 1;
     transition: opacity 250ms ease, color 250ms ease;
   }
-  /* Quiet lift on hover so the control feels responsive before you commit. */
   .field:hover:not(:disabled):not(:focus) {
     border-color: hsl(var(--field-border-hover));
   }
@@ -355,14 +456,13 @@
     outline: 2px solid transparent; /* surfaces the focus ring in forced-colors */
     outline-offset: 2px;
     border-color: hsl(var(--brand));
-    box-shadow: var(--field-shadow), var(--field-glow);
+    box-shadow: var(--field-glow);
   }
-  /* Placeholder steps gracefully back once the field is engaged. */
   .field:focus::placeholder {
     opacity: 0.5;
   }
   .field::selection {
-    background-color: hsl(var(--brand) / 0.22);
+    background-color: hsl(var(--brand-2) / 0.28);
     color: hsl(var(--field-ink));
   }
   .field[aria-invalid="true"] {
@@ -375,9 +475,6 @@
     cursor: not-allowed;
     opacity: 0.55;
   }
-  /* Autofill: repaint our ivory/obsidian surface (no browser yellow), keep the
-   * ink text + brand caret, and stall the UA background transition so the fill
-   * never flashes in. */
   .field:-webkit-autofill,
   .field:-webkit-autofill:hover,
   .field:-webkit-autofill:focus {
@@ -388,13 +485,13 @@
     transition: background-color 9999s ease-out 0s, color 9999s ease-out 0s;
   }
   .field:-webkit-autofill:focus {
-    -webkit-box-shadow: var(--field-shadow), var(--field-glow), inset 0 0 0 1000px hsl(var(--field-autofill));
+    -webkit-box-shadow: var(--field-glow), inset 0 0 0 1000px hsl(var(--field-autofill));
     border-color: hsl(var(--brand));
   }
 }
 
-/* Keep a real, visible focus indicator under Windows High Contrast / forced
- * colors, where box-shadow glows are dropped. */
+/* Keep a real, visible focus indicator under Windows High Contrast / forced colors,
+ * where box-shadow glows are dropped. */
 @media (forced-colors: active) {
   .field:focus,
   .field:focus-visible {
@@ -403,31 +500,139 @@
 }
 
 @layer utilities {
-  /* A single, barely-there warm wash anchored top-center — the marketing hero's
-   * only ambient device. Restrained on purpose: a hint of brand light, not a glow. */
+  /* A single luminous mint wash anchored top-center — the marketing hero's ambient
+   * halo. */
   .bg-spotlight {
     background-image: radial-gradient(
-      52% 42% at 50% -8%,
-      hsl(var(--brand) / 0.06) 0%,
+      56% 44% at 50% -6%,
+      hsl(var(--brand-2) / 0.16) 0%,
       transparent 72%
+    );
+  }
+
+  /* Soft emerald mesh for section backdrops — two mint light-pools bleeding in. */
+  .bg-mesh {
+    background-image:
+      radial-gradient(40% 60% at 8% 0%, hsl(146 74% 58% / 0.1) 0%, transparent 60%),
+      radial-gradient(44% 56% at 96% 100%, hsl(164 66% 50% / 0.1) 0%, transparent 60%);
+  }
+
+  /* ── Decorative light ───────────────────────────────────────────────────────
+   * Blurred gradient blobs, glowing shapes and floating decoration — the ambient
+   * artistry of the identity. All transform/opacity/blur only, so they stay
+   * GPU-cheap and fully honour prefers-reduced-motion. */
+
+  /* A soft, blurred gradient orb. Drop one behind a section (absolutely positioned,
+   * `pointer-events-none`) for ambient emerald light. Pair with `animate-blob`. */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(56px);
+    opacity: 0.6;
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle at 30% 30%,
+      hsl(var(--brand-2) / 0.9),
+      hsl(var(--brand) / 0.5) 60%,
+      transparent 72%
+    );
+    will-change: transform;
+  }
+  .blob-mint {
+    background-image: radial-gradient(
+      circle at 30% 30%,
+      hsl(150 82% 66% / 0.9),
+      hsl(160 66% 48% / 0.45) 62%,
+      transparent 74%
+    );
+  }
+
+  /* Display type. Fraunces optical sizing thins strokes to true high-contrast at
+   * hero sizes; oldstyle numerals + ligatures read hand-set. Pair with `font-display`. */
+  .font-display {
+    font-optical-sizing: auto;
+    font-feature-settings: "liga" 1, "onum" 1, "ss01" 1;
+    letter-spacing: -0.02em;
+  }
+  /* Arabic (and other RTL scripts) fall through to a system serif where negative
+   * Latin tracking cramps the cursive joins — reset it so RTL headlines breathe. */
+  [dir="rtl"] .font-display {
+    letter-spacing: normal;
+  }
+
+  /* Fine glass grain — one fixed, pointer-transparent tile of desaturated noise,
+   * sitting BEHIND content (z-index:-1) so it adds a whisper of tooth without ever
+   * touching text contrast (we sell WCAG conformance). Kept very faint so the bright
+   * glass stays pristine. Print-hidden. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    background-repeat: repeat;
+    opacity: 0.02;
+    mix-blend-mode: multiply;
+  }
+  .dark .grain {
+    opacity: 0.05;
+    mix-blend-mode: soft-light;
+  }
+
+  /* Scroll-reveal — elements rise + fade into place when scrolled into view (the
+   * `is-visible` class is added by `<Reveal>` via IntersectionObserver). Stagger a
+   * group by feeding `--reveal-delay`. Vertical only, so it stays RTL-safe. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.75rem);
+    transition:
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Soft edge fade for the standards ticker so it dissolves into the page rather
+   * than hard-cropping at the container edge. */
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 9%,
+      #000 91%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 9%,
+      #000 91%,
+      transparent 100%
     );
   }
 }
 
-/* ── "Bronze Atelier" luxury flourishes (dark-mode only) ─────────────────────
- * Opt-in decorative classes for the dark identity. Every one is gated to `.dark`
- * so the light ceramic theme is never touched, uses transform/opacity only (GPU),
- * and is stilled by the global prefers-reduced-motion rule below. The point is
- * restraint: a few hand-placed details that read as machined metal and lit glass,
- * not a wall of effects. */
+/* ── Verdant flourishes ───────────────────────────────────────────────────────
+ * A few hand-placed details that make surfaces feel crafted: a top rim of light,
+ * a live activity pulse, and a tactile button sheen. */
 @layer components {
-  /* A 1px catch-light along a surface's top edge — gold fading to nothing, the
-   * way a milled metal edge catches a rim of light. Decorative hairline only.
-   * `position` is dark-gated too, so light-mode surfaces stay byte-identical. */
-  .dark .lux-rim {
+  /* `lux-rim` — a hairline highlight struck across the top edge of a pane, the
+   * catch-light that makes glass read as glass. */
+  .lux-rim {
     position: relative;
   }
-  .dark .lux-rim::before {
+  .lux-rim::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
@@ -435,85 +640,66 @@
     border-radius: inherit;
     background: linear-gradient(
       90deg,
-      transparent 6%,
-      hsl(var(--gold) / 0.5) 50%,
-      transparent 94%
+      transparent 4%,
+      hsl(0 0% 100% / 0.85) 50%,
+      transparent 96%
     );
     pointer-events: none;
   }
-
-  /* Animated highlight: a slow diagonal light-wipe across a frosted surface.
-   * Host needs its own rounding; the sweep is clipped to it. Faint by design —
-   * even at the keyframe's peak it's a whisper of warm light, not a flash. */
-  .dark .lux-sheen {
-    position: relative;
-    isolation: isolate;
+  .dark .lux-rim::before {
+    background: linear-gradient(
+      90deg,
+      transparent 4%,
+      hsl(150 60% 82% / 0.14) 50%,
+      transparent 96%
+    );
   }
-  .dark .lux-sheen::after {
+
+  /* Button sheen — a thin band of light that sweeps edge-to-edge across a filled
+   * surface on hover. Re-enabled as the tactile flourish on the primary CTA. */
+  .btn-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-sheen::after {
     content: "";
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    /* Sit on the glass surface, beneath the card's own content (which paints at
-     * the default z-auto layer), so the light wipe never washes over text. */
-    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 45%;
+    transform: skewX(-16deg);
     background: linear-gradient(
-      100deg,
-      transparent 0%,
-      transparent 38%,
-      hsl(42 70% 88% / 0.1) 50%,
-      transparent 62%,
-      transparent 100%
+      90deg,
+      transparent,
+      hsl(0 0% 100% / 0.35),
+      transparent
     );
-    background-size: 220% 100%;
-    background-repeat: no-repeat;
-    background-position: 130% 0;
-    animation: lux-wipe 7.5s ease-in-out infinite;
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
   }
-  @keyframes lux-wipe {
-    0% {
-      background-position: 135% 0;
-    }
-    16%,
-    100% {
-      background-position: -60% 0;
-    }
+  .btn-sheen:hover::after {
+    animation: sheen 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Gentle, desynchronized float for small accent cards so a grid of stats reads
-   * as weightless rather than pinned. Tiny amplitude, long period; negative delays
-   * stagger the phase so they drift in a soft wave, never in lockstep. Uses a
-   * self-contained keyframe (not Tailwind's `float`, which is only emitted when an
-   * `animate-float` utility appears in markup). */
-  @keyframes lux-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-6px);
-    }
+  /* The old floating-card decorations are handled by tailwind `animate-*` now;
+   * keep these inert so any stray class is harmless. */
+  .lux-sheen::after {
+    content: none;
   }
-  .dark .lux-float-1 {
-    animation: lux-float 7s ease-in-out infinite;
-    will-change: transform;
-  }
-  .dark .lux-float-2 {
-    animation: lux-float 8s ease-in-out infinite -2.6s;
-    will-change: transform;
-  }
-  .dark .lux-float-3 {
-    animation: lux-float 7.5s ease-in-out infinite -4.2s;
-    will-change: transform;
+  .lux-float-1,
+  .lux-float-2,
+  .lux-float-3 {
+    animation: none;
   }
 
-  /* Live activity indicator — a soft breathing dot with an expanding halo ring.
-   * An emerald core sits under a self-contained expanding ring. */
+  /* Live activity indicator — a soft breathing dot with an expanding emerald halo.
+   * One of the few always-on functional animations. */
   @keyframes lux-ping {
     75%,
     100% {
-      transform: scale(2);
+      transform: scale(2.2);
       opacity: 0;
     }
   }
@@ -528,7 +714,7 @@
     position: absolute;
     inset: 0;
     border-radius: 9999px;
-    background: hsl(var(--success) / 0.65);
+    background: hsl(var(--brand-2) / 0.7);
     animation: lux-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
   .live-dot::after {
@@ -537,8 +723,8 @@
     height: 100%;
     width: 100%;
     border-radius: 9999px;
-    background: hsl(var(--success));
-    box-shadow: 0 0 8px 0 hsl(var(--success) / 0.7);
+    background: hsl(var(--brand));
+    box-shadow: 0 0 8px 0 hsl(var(--brand-2) / 0.7);
   }
 }
 
@@ -549,9 +735,6 @@
   ::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    /* Zero delays too: staggered entrances use `animation-delay`, and a
-     * fill-mode `both` element left at its delayed start frame would stay
-     * invisible. Clearing the delay makes every element render in place at once. */
     animation-delay: 0ms !important;
     transition-duration: 0.001ms !important;
     transition-delay: 0ms !important;
@@ -559,10 +742,9 @@
   }
 }
 
-/* Print / Save-as-PDF: drop app chrome so reports print as clean documents.
- * Force the FULL light surface palette — including `.dark`, since the print
- * route inherits the user's theme. Without this, a dark-mode user exports a
- * white-label PDF with dark cards/borders on white paper. */
+/* Print / Save-as-PDF: drop app chrome so reports print as clean documents. Force
+ * a pure white sheet with forest ink and the severity scale, so a printed report is
+ * legible regardless of the on-screen theme. */
 @media print {
   aside,
   .no-print {
@@ -571,39 +753,43 @@
   main {
     overflow: visible !important;
   }
-  /* Drop the decorative dark ambiance so a dark-mode user prints clean white paper. */
   body {
     background-image: none !important;
   }
+  .grain {
+    display: none !important;
+  }
+  .glass-panel,
+  .paper-panel {
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
   :root,
   .dark {
-    /* Pure-white paper, but the warm ink/hairlines of the daylight identity so a
-     * printed report matches what's on screen. */
     --background: 0 0% 100%;
-    --foreground: 24 22% 11%;
+    --foreground: 165 34% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 24 22% 11%;
+    --card-foreground: 165 34% 12%;
     --elevated: 0 0% 100%;
     --popover: 0 0% 100%;
-    --popover-foreground: 24 22% 11%;
-    --muted: 36 26% 94%;
-    --muted-foreground: 28 11% 39%;
-    --accent: 36 26% 94%;
-    --accent-foreground: 24 22% 11%;
-    --border: 34 24% 87.5%;
-    --input: 30 14% 49%;
-    --sev-critical: 0 72% 51%;
-    --sev-serious: 22 90% 48%;
-    --sev-moderate: 38 92% 45%;
-    --sev-minor: 199 89% 42%;
-    /* Reset the text variants to the dark-on-white values so a dark-mode user
-     * exporting a PDF still gets AA-contrast severity text on paper. */
-    --sev-critical-strong: 0 72% 42%;
-    --sev-serious-strong: 22 88% 36%;
-    --sev-moderate-strong: 33 92% 31%;
-    --sev-minor-strong: 200 92% 32%;
-    --success-strong: 142 72% 29%;
-    --warning-strong: 30 90% 33%;
-    --danger-strong: 0 72% 42%;
+    --popover-foreground: 165 34% 12%;
+    --muted: 150 30% 95%;
+    --muted-foreground: 158 15% 34%;
+    --accent: 150 30% 95%;
+    --accent-foreground: 165 34% 12%;
+    --border: 150 22% 84%;
+    --input: 156 18% 46%;
+    --sev-critical: 356 72% 52%;
+    --sev-serious: 18 82% 55%;
+    --sev-moderate: 40 88% 52%;
+    --sev-minor: 150 52% 42%;
+    --sev-critical-strong: 356 66% 40%;
+    --sev-serious-strong: 16 74% 38%;
+    --sev-moderate-strong: 34 80% 32%;
+    --sev-minor-strong: 158 60% 28%;
+    --success-strong: 156 60% 28%;
+    --warning-strong: 32 80% 33%;
+    --danger-strong: 356 64% 40%;
   }
 }

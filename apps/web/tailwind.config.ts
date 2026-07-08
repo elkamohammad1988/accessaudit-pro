@@ -80,11 +80,30 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+        // Editorial display serif (Fraunces) for marketing headlines. Latin only,
+        // so the stack appends the system Arabic/CJK serifs — a non-Latin heading
+        // falls through to a real script face per-glyph instead of rendering tofu.
+        display: [
+          "var(--font-display)",
+          "ui-serif",
+          "Georgia",
+          "Cambria",
+          "Segoe UI Arabic",
+          "Geeza Pro",
+          "Noto Naskh Arabic",
+          "Noto Serif SC",
+          "Songti SC",
+          "SimSun",
+          "serif",
+        ],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 3px)",
         sm: "calc(var(--radius) - 5px)",
+        // Oversized card radii — the "floating pane" language (24–32px).
+        "4xl": "1.75rem",
+        "5xl": "2.25rem",
       },
       boxShadow: {
         xs: "var(--shadow-xs)",
@@ -93,6 +112,8 @@ const config: Config = {
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
         xl: "var(--shadow-xl)",
+        // Signature emerald bloom for CTAs, lit chips and hovered glass panes.
+        glow: "var(--glow-brand)",
       },
       keyframes: {
         "fade-in": {
@@ -116,6 +137,23 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
         },
+        // Larger, slower drift for decorative floating shapes/orbs.
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "50%": { transform: "translateY(-18px) translateX(8px)" },
+        },
+        // Ambient gradient blobs: a slow squash-and-drift so ambient light
+        // breathes behind glass. Transform-only, GPU-cheap.
+        blob: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)", borderRadius: "50%" },
+          "33%": { transform: "translate(6%, -8%) scale(1.12)", borderRadius: "42% 58% 63% 37% / 41% 44% 56% 59%" },
+          "66%": { transform: "translate(-5%, 6%) scale(0.92)", borderRadius: "60% 40% 38% 62% / 55% 58% 42% 45%" },
+        },
+        // Animated gradient position for gradient-text/borders that shimmer.
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
         breathe: {
           "0%, 100%": { opacity: "0.35" },
           "50%": { opacity: "0.8" },
@@ -133,6 +171,39 @@ const config: Config = {
           from: { strokeDashoffset: "var(--draw-length)" },
           to: { strokeDashoffset: "0" },
         },
+        // Slow drifting aurora for ambient backdrops (auth/marketing): a large
+        // gold light that glides and breathes behind frosted glass. Transform +
+        // opacity only, so it stays GPU-cheap.
+        aurora: {
+          "0%, 100%": { transform: "translate3d(-4%, -2%, 0) scale(1)", opacity: "0.55" },
+          "50%": { transform: "translate3d(4%, 3%, 0) scale(1.12)", opacity: "0.85" },
+        },
+        // Gold specular sweep across a filled surface (primary button, gold pills):
+        // a thin band of light that travels edge-to-edge on hover.
+        sheen: {
+          "0%": { transform: "translateX(-120%) skewX(-12deg)" },
+          "100%": { transform: "translateX(220%) skewX(-12deg)" },
+        },
+        // Page-enter: rise + un-blur into place. Paired with `template.tsx`.
+        "enter-blur": {
+          from: { opacity: "0", transform: "translateY(8px)", filter: "blur(6px)" },
+          to: { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
+        },
+        // Seamless ticker for the standards marquee. Content is duplicated in the
+        // markup so a -50% translate loops with no visible seam.
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        // Slow orbit for the hallmark seal's outer engraved ring (marketing hero).
+        orbit: {
+          to: { transform: "rotate(360deg)" },
+        },
+        // Counter-orbit for the inner tick ring, so the seal reads as a machined
+        // instrument with independently turning elements.
+        "orbit-reverse": {
+          to: { transform: "rotate(-360deg)" },
+        },
       },
       animation: {
         // Subtle fade for content that appears in place (alerts, menus).
@@ -143,11 +214,20 @@ const config: Config = {
         // Premium entrance + ambient motion.
         "rise-in": "rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
         float: "float 6s ease-in-out infinite",
+        "float-slow": "float-slow 11s ease-in-out infinite",
+        blob: "blob 18s ease-in-out infinite",
+        "gradient-x": "gradient-x 6s ease-in-out infinite",
         breathe: "breathe 4.5s ease-in-out infinite",
         "spin-slow": "spin-slow 9s linear infinite",
         // Slow, calm flourishes for the luxury dark surfaces.
         "glow-pulse": "glow-pulse 5.5s ease-in-out infinite",
         "draw-in": "draw-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
+        aurora: "aurora 16s ease-in-out infinite",
+        sheen: "sheen 1.1s cubic-bezier(0.16, 1, 0.3, 1)",
+        "enter-blur": "enter-blur 0.55s cubic-bezier(0.16, 1, 0.3, 1) both",
+        marquee: "marquee 42s linear infinite",
+        orbit: "orbit 34s linear infinite",
+        "orbit-reverse": "orbit-reverse 26s linear infinite",
       },
     },
   },

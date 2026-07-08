@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { GrainOverlay } from "@/components/ui/grain";
 import { appBaseUrl } from "@/lib/env";
 import { themeScript } from "@/lib/theme-script";
 import { directionOf, htmlLangOf } from "@/i18n/config";
@@ -16,6 +17,23 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
+// Fraunces — a high-contrast, "old-style" editorial serif with real character.
+// The signature display face of the "Hallmark" art direction: it carries the
+// marketing headlines (the seductive, hand-set voice) while Inter stays the
+// precise instrument voice inside the app. Latin only; the `font-display` stack
+// (tailwind.config) appends the system Arabic/CJK faces, so non-Latin headlines
+// fall through to a correct script face rather than tofu. Italic ships too — the
+// gold accent word in the hero is set in it.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
+  // Load the variable font (opsz + wght axes) rather than pinned static cuts, so
+  // `font-optical-sizing: auto` can thin the strokes into true high-contrast forms
+  // at hero sizes. Italic ships for the gold accent word.
+  style: ["normal", "italic"],
+});
+
 const TITLE = "AccessAudit Pro";
 const DESCRIPTION =
   "On-demand WCAG 2.2 accessibility audits and white-label reports for agencies.";
@@ -27,8 +45,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Do NOT set maximumScale/userScalable — pinch-zoom must stay enabled.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0f1e" },
+    { media: "(prefers-color-scheme: light)", color: "#f4fbf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c1f18" },
   ],
 };
 
@@ -101,7 +119,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={htmlLangOf(locale)}
       dir={directionOf(locale)}
-      className={inter.variable}
+      className={`${inter.variable} ${fraunces.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen">
@@ -111,6 +129,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData() }}
         />
+        {/* Paper fibre, mounted once site-wide (behind all content, print-hidden):
+            a fine grain that gives every surface the tooth of hand-made paper so the
+            flat fills never read digital-clean. Present in both themes. */}
+        <GrainOverlay />
+        {/* No-JS / crawler safety net: scroll-reveal elements start hidden and are
+            un-hidden by JS. Without scripting, force them visible so all content
+            and copy is present. */}
+        <noscript>
+          <style>{".reveal{opacity:1 !important;transform:none !important}"}</style>
+        </noscript>
         <Providers locale={locale} messages={messages}>
           {children}
         </Providers>

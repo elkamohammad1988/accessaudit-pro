@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, FolderKanban, Settings, LogOut, Menu, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo-mark";
+import { Avatar } from "@/components/ui/avatar";
 import { signOut } from "@/app/(auth)/actions";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
@@ -23,21 +24,18 @@ const NAV = [
 // panel so the element unmounts exactly when the slide-out finishes.
 const DRAWER_MS = 300;
 
-function initials(value: string): string {
-  const cleaned = value.trim();
-  if (!cleaned) return "?";
-  const parts = cleaned.split(/[\s@.]+/).filter(Boolean);
-  return (parts[0]?.[0] ?? cleaned[0]).concat(parts[1]?.[0] ?? "").toUpperCase();
-}
-
 /** The shared nav body, rendered in both the desktop rail and the mobile drawer. */
 function SidebarBody({
   orgName,
   email,
+  fullName,
+  avatarUrl,
   onNavigate,
 }: {
   orgName: string;
   email: string | undefined;
+  fullName: string | null;
+  avatarUrl: string | null;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
@@ -46,10 +44,7 @@ function SidebarBody({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <LogoMark
-          aria-hidden="true"
-          className="h-8 w-8 rounded-lg shadow-sm dark:shadow-[0_0_18px_-3px_hsl(var(--brand)/0.6)]"
-        />
+        <LogoMark aria-hidden="true" className="h-8 w-8 rounded-lg shadow-sm" />
         <div className="min-w-0">
           <Link
             href="/dashboard"
@@ -76,8 +71,8 @@ function SidebarBody({
               className={cn(
                 "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
                 active
-                  ? "bg-elevated text-foreground shadow-sm ring-1 ring-inset ring-border/70 dark:bg-white/[0.05] dark:ring-gold/20"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  ? "bg-white/70 text-foreground shadow-sm ring-1 ring-inset ring-brand/20 backdrop-blur-sm dark:bg-elevated/80 dark:ring-brand/25"
+                  : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
               )}
             >
               {/* Active accent bar — the Linear/Vercel cue for "you are here".
@@ -108,12 +103,7 @@ function SidebarBody({
       <div className="border-t p-3">
         <div className="flex items-center gap-2.5 rounded-md px-2 py-2">
           <span className="relative shrink-0">
-            <span
-              aria-hidden="true"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/10 text-xs font-semibold text-brand ring-1 ring-inset ring-brand/15"
-            >
-              {initials(email ?? orgName)}
-            </span>
+            <Avatar key={avatarUrl ?? "initials"} src={avatarUrl} name={fullName || email || orgName} />
             {/* Presence indicator — a breathing emerald dot, the universal "active
                 session" cue, ringed to read cleanly against the avatar. */}
             <span
@@ -121,9 +111,16 @@ function SidebarBody({
               className="live-dot absolute -bottom-0.5 -end-0.5 rounded-full ring-2 ring-muted/40 dark:ring-background"
             />
           </span>
-          <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={email}>
-            {email}
-          </p>
+          <div className="min-w-0 flex-1">
+            {fullName ? (
+              <p className="truncate text-xs font-medium text-foreground" title={fullName}>
+                {fullName}
+              </p>
+            ) : null}
+            <p className="truncate text-xs text-muted-foreground" title={email}>
+              {email}
+            </p>
+          </div>
           <ThemeToggle />
         </div>
         <div className="mt-1 px-1">
@@ -143,7 +140,17 @@ function SidebarBody({
   );
 }
 
-export function Sidebar({ orgName, email }: { orgName: string; email: string | undefined }) {
+export function Sidebar({
+  orgName,
+  email,
+  fullName,
+  avatarUrl,
+}: {
+  orgName: string;
+  email: string | undefined;
+  fullName: string | null;
+  avatarUrl: string | null;
+}) {
   const pathname = usePathname();
   const t = useTranslations("nav");
   const dir = directionOf(useLocale());
@@ -226,9 +233,10 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
 
   return (
     <>
-      {/* Desktop rail */}
-      <aside className="hidden w-64 shrink-0 flex-col border-e bg-muted/40 lg:flex">
-        <SidebarBody orgName={orgName} email={email} />
+      {/* Desktop rail — a pane of frosted glass pinned to the page edge, so the
+          workspace reads as content floating over the luminous mesh ground. */}
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-e border-white/50 bg-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-card/40 lg:flex">
+        <SidebarBody orgName={orgName} email={email} fullName={fullName} avatarUrl={avatarUrl} />
       </aside>
 
       {/* Mobile top bar */}
@@ -245,10 +253,7 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
           <Menu className="h-5 w-5" aria-hidden="true" />
         </button>
         <Link href="/dashboard" className="flex min-w-0 items-center gap-2">
-          <LogoMark
-            aria-hidden="true"
-            className="h-7 w-7 rounded-lg shadow-sm dark:shadow-[0_0_16px_-3px_hsl(var(--brand)/0.6)]"
-          />
+          <LogoMark aria-hidden="true" className="h-7 w-7 rounded-lg shadow-sm" />
           <span className="truncate text-sm font-bold tracking-tight">
             AccessAudit<span className="text-brand"> Pro</span>
           </span>
@@ -292,7 +297,13 @@ export function Sidebar({ orgName, email }: { orgName: string; email: string | u
             >
               <X className="h-5 w-5" aria-hidden="true" />
             </button>
-            <SidebarBody orgName={orgName} email={email} onNavigate={() => setOpen(false)} />
+            <SidebarBody
+              orgName={orgName}
+              email={email}
+              fullName={fullName}
+              avatarUrl={avatarUrl}
+              onNavigate={() => setOpen(false)}
+            />
           </aside>
         </div>
       ) : null}

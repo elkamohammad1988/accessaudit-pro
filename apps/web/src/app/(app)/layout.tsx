@@ -13,7 +13,7 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 // Protected shell. Every /(app) route requires a session AND a workspace.
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const { organization, email } = await requireSession();
+  const { organization, email, profile } = await requireSession();
   if (!organization) {
     redirect("/onboarding");
   }
@@ -27,10 +27,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       >
         {t("skipToContent")}
       </a>
+      {/* Ambient emerald light drifting behind the whole workspace — soft, fixed,
+          decorative, and reduced-motion safe. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="blob blob-mint animate-blob absolute -start-[6%] top-[-8%] h-[30rem] w-[30rem] opacity-30" />
+        <div className="blob animate-float-slow absolute end-[-6%] bottom-[-10%] h-[28rem] w-[28rem] opacity-25" />
+      </div>
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <Sidebar orgName={organization.name} email={email} />
+        <Sidebar
+          orgName={organization.name}
+          email={email}
+          fullName={profile?.full_name ?? null}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
         <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+          <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </>
