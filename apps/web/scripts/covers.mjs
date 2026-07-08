@@ -82,8 +82,8 @@ const BADGES = ["Enterprise SaaS", "Automated WCAG 2.2 AA", "White-label reports
 
 const covers = [
   { name: "cover-landscape-hero", w: 1600, h: 900, layout: "default", img: shot("01-landing__dark__16x9.png"), title: T, sub: SUB, badges: BADGES },
-  { name: "cover-square", w: 1200, h: 1200, layout: "square", img: shot("05-shared-report__dark__4x3.png"), title: T, sub: SUB, badges: BADGES.slice(0, 3) },
-  { name: "cover-thumbnail", w: 800, h: 600, layout: "thumb", img: shot("05-shared-report__dark__16x9.png"), title: `Accessibility reports, <span class="g">client-ready</span>.`, sub: "Scored, prioritized, WCAG-mapped — white-labeled.", badges: ["Enterprise SaaS", "WCAG 2.2 AA"] },
+  { name: "cover-square", w: 1200, h: 1200, layout: "square", img: shot("06-shared-report__dark__4x3.png"), title: T, sub: SUB, badges: BADGES.slice(0, 3) },
+  { name: "cover-thumbnail", w: 800, h: 600, layout: "thumb", img: shot("06-shared-report__dark__16x9.png"), title: `Accessibility reports, <span class="g">client-ready</span>.`, sub: "Scored, prioritized, WCAG-mapped — white-labeled.", badges: ["Enterprise SaaS", "WCAG 2.2 AA"] },
   { name: "cover-banner", w: 1500, h: 500, layout: "banner", img: shot("01-landing__dark__16x9.png"), title: `WCAG&nbsp;2.2 audits, <span class="g">client-ready</span>.`, sub: "Automated scans → white-label reports. Built for agencies.", badges: ["Enterprise SaaS", "Multi-tenant"] },
 ];
 
