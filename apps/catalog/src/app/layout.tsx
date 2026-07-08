@@ -25,6 +25,13 @@ const TITLE = "Verdant — A curated catalogue of considered goods";
 const DESCRIPTION =
   "Verdant is a premium catalogue of design objects, furniture, lighting and living things — collected with restraint and rendered with care.";
 
+// Canonical origin for absolute URLs (OG/Twitter cards, sitemap). Prefers an
+// explicit override, then Vercel's deploy URL, then a sensible localhost fallback
+// so `next build` never fails for want of a configured domain.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3100");
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -35,7 +42,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://verdant.example"),
+  metadataBase: new URL(SITE_URL),
   title: { default: TITLE, template: "%s · Verdant" },
   description: DESCRIPTION,
   applicationName: "Verdant",
