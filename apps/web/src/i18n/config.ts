@@ -30,8 +30,6 @@ export interface LocaleMeta {
   nativeName: string;
   /** Exonym — the English name (shown as a secondary label / aria text). */
   englishName: string;
-  /** Flag emoji for the switcher. */
-  flag: string;
   /** Writing direction; drives the `dir` attribute on <html>. */
   dir: Direction;
   /** `Intl`/`<html lang>` tag. Kept distinct from `code` so e.g. zh → zh-CN. */
@@ -39,11 +37,11 @@ export interface LocaleMeta {
 }
 
 export const LOCALE_META: Record<Locale, LocaleMeta> = {
-  en: { code: "en", nativeName: "English", englishName: "English", flag: "🇺🇸", dir: "ltr", htmlLang: "en" },
-  fr: { code: "fr", nativeName: "Français", englishName: "French", flag: "🇫🇷", dir: "ltr", htmlLang: "fr" },
-  ar: { code: "ar", nativeName: "العربية", englishName: "Arabic", flag: "🇸🇦", dir: "rtl", htmlLang: "ar" },
-  es: { code: "es", nativeName: "Español", englishName: "Spanish", flag: "🇪🇸", dir: "ltr", htmlLang: "es" },
-  zh: { code: "zh", nativeName: "中文", englishName: "Chinese (Simplified)", flag: "🇨🇳", dir: "ltr", htmlLang: "zh-CN" },
+  en: { code: "en", nativeName: "English", englishName: "English", dir: "ltr", htmlLang: "en" },
+  fr: { code: "fr", nativeName: "Français", englishName: "French", dir: "ltr", htmlLang: "fr" },
+  ar: { code: "ar", nativeName: "العربية", englishName: "Arabic", dir: "rtl", htmlLang: "ar" },
+  es: { code: "es", nativeName: "Español", englishName: "Spanish", dir: "ltr", htmlLang: "es" },
+  zh: { code: "zh", nativeName: "中文", englishName: "Chinese (Simplified)", dir: "ltr", htmlLang: "zh-CN" },
 };
 
 /** Ordered list for rendering the switcher (insertion order of LOCALES). */

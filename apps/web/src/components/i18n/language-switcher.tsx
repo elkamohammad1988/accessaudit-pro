@@ -122,9 +122,7 @@ export function LanguageSwitcher({
           <Languages className="h-4 w-4" aria-hidden="true" />
         ) : (
           <>
-            <span aria-hidden="true" className="text-base leading-none">
-              {activeMeta.flag}
-            </span>
+            <Languages className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="hidden sm:inline">{activeMeta.nativeName}</span>
           </>
         )}
@@ -160,8 +158,16 @@ export function LanguageSwitcher({
                   checked && "font-medium",
                 )}
               >
-                <span aria-hidden="true" className="text-base leading-none">
-                  {meta.flag}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "grid h-5 w-7 shrink-0 place-items-center rounded text-[0.625rem] font-semibold uppercase tracking-wide",
+                    checked
+                      ? "bg-brand/12 text-brand ring-1 ring-inset ring-brand/25"
+                      : "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {meta.code}
                 </span>
                 <span className="flex-1 text-start">
                   {meta.nativeName}
