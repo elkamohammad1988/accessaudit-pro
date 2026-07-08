@@ -6,6 +6,22 @@
     "startFree": "Empezar gratis"
   },
   "landing": {
+    "seal": {
+      "scoreLabel": "Puntuación de auditoría",
+      "aria": "Puntuación de conformidad de AccessAudit (ejemplo): {score} de 100, WCAG 2.2 AA"
+    },
+    "stats": [
+      { "value": "~30–50%", "label": "de los problemas WCAG detectados automáticamente" },
+      { "value": "WCAG 2.2", "label": "Niveles A y AA, asociados a la EAA" },
+      { "value": "< 60s", "label": "de una URL a un informe listo para el cliente" }
+    ],
+    "rail": {
+      "how": "Proceso",
+      "features": "Capacidades",
+      "pricing": "Planes",
+      "faq": "Respuestas"
+    },
+    "trust": "Un solo análisis responde a todas las obligaciones de tus clientes",
     "meta": {
       "title": "Auditorías de accesibilidad WCAG e informes de marca blanca para agencias",
       "description": "Analiza cualquier sitio según WCAG 2.2, obtén un informe priorizado asociado a la EAA / EN 301 549 y entrega a tus clientes un producto de marca blanca. Gratis para empezar, sin tarjeta.",

@@ -20,7 +20,7 @@ import { allowRequest } from "@/lib/rate-limit";
 import { getTranslations } from "@/i18n/server";
 import { displayLimit } from "@/i18n/format";
 
-export type NewScanState = { error: string | null; upgrade?: boolean };
+export type NewScanState = { error: string | null; upgrade?: boolean; scanId?: string };
 
 // Cap the raw URL-list body so a huge payload can't be parsed/normalized on the
 // request path (the per-plan page quota then governs how many actually run).
@@ -139,7 +139,9 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
 
   revalidatePath("/dashboard");
   revalidatePath(`/projects/${project.id}`);
-  redirect(`/scans/${newScanId}`);
+  // Return the id (rather than redirect) so the client can play the animated scan
+  // sequence (see ScanRunner) and navigate to the report when it finishes.
+  return { error: null, scanId: newScanId as string };
 }
 
 /** Re-run a scan with the same config. Limit-blocked re-scans route to billing. */

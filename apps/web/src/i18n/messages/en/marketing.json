@@ -6,6 +6,22 @@
     "startFree": "Start free"
   },
   "landing": {
+    "seal": {
+      "scoreLabel": "Assay score",
+      "aria": "Sample AccessAudit conformance score: {score} out of 100, WCAG 2.2 AA"
+    },
+    "stats": [
+      { "value": "~30–50%", "label": "of WCAG issues caught automatically" },
+      { "value": "WCAG 2.2", "label": "Levels A & AA, mapped to the EAA" },
+      { "value": "< 60s", "label": "from a URL to a client-ready report" }
+    ],
+    "rail": {
+      "how": "Process",
+      "features": "Capabilities",
+      "pricing": "Plans",
+      "faq": "Answers"
+    },
+    "trust": "One scan speaks to every obligation your clients answer to",
     "meta": {
       "title": "WCAG accessibility audits & white-label reports for agencies",
       "description": "Scan any site against WCAG 2.2, get a prioritized report mapped to the EAA / EN 301 549, and hand clients a white-label deliverable. Free to start — no card required.",

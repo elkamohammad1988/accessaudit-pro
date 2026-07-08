@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { appBaseUrl } from "@/lib/env";
+import { appBaseUrl, isDemoMode } from "@/lib/env";
 import { ENTITLED_STATUSES, type BillingInterval } from "@accessaudit/shared";
 import { getStripe, priceIdForPlan } from "@/lib/stripe";
 
@@ -12,6 +12,9 @@ const planSchema = z.enum(["starter", "agency", "scale"]);
 
 /** Start a Stripe Checkout session for the chosen plan, then redirect to it. */
 export async function startCheckout(formData: FormData): Promise<void> {
+  // Demo mode has no Stripe backend — surface an honest info banner rather than
+  // letting getStripe() throw into the generic "something went wrong" error path.
+  if (isDemoMode()) redirect("/settings/billing?status=demo");
   const parsed = planSchema.safeParse(formData.get("plan"));
   if (!parsed.success) {
     redirect("/settings/billing?status=error");
@@ -85,6 +88,9 @@ export async function startCheckout(formData: FormData): Promise<void> {
 
 /** Open the Stripe Customer Portal for plan changes, invoices, payment methods. */
 export async function openPortal(): Promise<void> {
+  // Demo mode has no Stripe backend — surface an honest info banner rather than
+  // letting getStripe() throw into the generic "something went wrong" error path.
+  if (isDemoMode()) redirect("/settings/billing?status=demo");
   const { organization } = await requireOrg();
   const admin = createAdminClient();
 

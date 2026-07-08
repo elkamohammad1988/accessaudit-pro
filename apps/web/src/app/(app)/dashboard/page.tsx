@@ -18,6 +18,8 @@ import { getTranslations, getLocale } from "@/i18n/server";
 import { bandLabel, displayLimit } from "@/i18n/format";
 import type { Translator } from "@/i18n/translate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TiltCard } from "@/components/ui/tilt-card";
+import { Magnetic } from "@/components/ui/magnetic";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -118,16 +120,21 @@ export default async function DashboardPage() {
             <Badge variant="secondary">{t("planBadge", { plan: limits.label })}</Badge>
           </p>
         </div>
-        <ButtonLink href="/scans/new">
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          {t("newScan")}
-        </ButtonLink>
+        <Magnetic>
+          <ButtonLink href="/scans/new" size="lg">
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            {t("newScan")}
+          </ButtonLink>
+        </Magnetic>
       </header>
 
-      {/* Score trend hero + usage meters */}
+      {/* Score trend hero + usage meters. The hero is a live 3D glass panel: it
+          tilts toward the cursor and catches a specular sheen (the outer wrapper
+          owns the entrance animation so its transform never fights the tilt). */}
       <section className="grid gap-3 lg:grid-cols-3">
-        <Card className="lux-sheen overflow-hidden lg:col-span-2 animate-rise-in">
-          <CardHeader>
+        <div className="animate-rise-in lg:col-span-2">
+          <TiltCard className="h-full overflow-hidden">
+            <CardHeader>
             <CardTitle className="text-sm font-medium text-muted-foreground">
               {t("avgScore")}
             </CardTitle>
@@ -135,11 +142,11 @@ export default async function DashboardPage() {
           <CardContent className="flex flex-col items-center gap-5 sm:flex-row">
             <div className="flex shrink-0 flex-col items-center gap-2">
               <div className="relative">
-                {/* Slow breathing gold halo behind the score — dark-mode luxury accent.
-                    `glow-pulse` blooms opacity + a hair of scale so it pulses like light. */}
+                {/* A faint, still brass burnish behind the score — the seal cue.
+                    Dark-mode only, no pulse (the breathing glow was the glass tell). */}
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 hidden rounded-full bg-gold/25 blur-2xl animate-glow-pulse dark:block"
+                  className="pointer-events-none absolute inset-0 hidden rounded-full bg-gold/[0.10] blur-2xl dark:block"
                 />
                 <ScoreGauge
                   score={avgScore}
@@ -165,7 +172,8 @@ export default async function DashboardPage() {
               </p>
             </div>
           </CardContent>
-        </Card>
+        </TiltCard>
+        </div>
 
         <Card className="animate-rise-in [animation-delay:90ms]">
           <CardHeader>

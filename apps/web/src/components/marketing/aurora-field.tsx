@@ -25,15 +25,36 @@ export function AuroraField({
   /** Which top corner the contour rings emanate from. */
   anchor?: "right" | "left";
 }) {
+  // Mass the light toward the focal (anchor) corner so it FRAMES the seal / headline
+  // and the opposite reading column stays calm — a crisp column for the copy, luminous
+  // depth for the focal element. Mirrors cleanly for the left-anchored CTA plate.
+  const isRight = anchor === "right";
   return (
     <div
       aria-hidden="true"
       className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden", className)}
     >
-      {/* Drifting emerald + mint light — the aurora. */}
-      <div className="blob blob-mint animate-blob absolute -start-[10%] -top-[22%] h-[42rem] w-[42rem] opacity-70" />
-      <div className="blob animate-float-slow absolute -end-[8%] -top-[10%] h-[34rem] w-[34rem] opacity-60" />
-      <div className="blob blob-mint animate-blob absolute end-[22%] top-[52%] h-[26rem] w-[26rem] opacity-40 [animation-delay:-6s]" />
+      {/* Drifting emerald + mint light — the aurora, drawn to the focal corner. A bright
+          bloom high on the anchor side, a softer pool beneath it, and just a whisper on
+          the reading side so the field reads balanced rather than lopsided. */}
+      <div
+        className={cn(
+          "blob blob-mint animate-blob absolute -top-[24%] h-[38rem] w-[38rem] opacity-75",
+          isRight ? "-end-[4%]" : "-start-[4%]",
+        )}
+      />
+      <div
+        className={cn(
+          "blob animate-float-slow absolute top-[34%] h-[26rem] w-[26rem] opacity-45",
+          isRight ? "-end-[2%]" : "-start-[2%]",
+        )}
+      />
+      <div
+        className={cn(
+          "blob blob-mint animate-blob absolute top-[58%] h-[20rem] w-[20rem] opacity-25 [animation-delay:-6s]",
+          isRight ? "-start-[6%]" : "-end-[6%]",
+        )}
+      />
 
       {/* Concentric contour rings — the assay motif. Anchored to a top corner and
           faded out with a radial mask so they read as a partial engraving. */}

@@ -18,7 +18,8 @@
     "cancel": "Checkout canceled — no changes were made.",
     "error": "Something went wrong with billing. Please try again.",
     "noCustomer": "No billing account yet — pick a plan to get started.",
-    "scanLimit": "You've reached your plan's scan limit for this month. Upgrade to run more."
+    "scanLimit": "You've reached your plan's scan limit for this month. Upgrade to run more.",
+    "demo": "Billing runs on Stripe in the live product. This is a demo, so subscription management is disabled."
   },
   "usage": {
     "aria": "Usage",

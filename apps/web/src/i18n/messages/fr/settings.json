@@ -35,7 +35,9 @@
   },
   "team": {
     "heading": "Équipe",
-    "description": "AccessAudit Pro est mono-propriétaire dans cette version. Les équipes multi-sièges et les rôles arriveront dans une mise à jour ultérieure."
+    "description": "AccessAudit Pro est mono-propriétaire dans cette version. Les équipes multi-sièges et les rôles arriveront dans une mise à jour ultérieure.",
+    "ownerRole": "Propriétaire",
+    "you": "Vous"
   },
   "messages": {
     "invalidInput": "Saisie invalide.",

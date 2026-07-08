@@ -108,6 +108,28 @@
       "authorizationLabel": "Je confirme être autorisé à auditer ce site web."
     }
   },
+  "runner": {
+    "title": "Audit d'accessibilité en cours",
+    "scanning": "Analyse de {project}",
+    "targetOne": "Page unique · WCAG {level}",
+    "targetMany": "Plusieurs pages · WCAG {level}",
+    "elementsLabel": "Éléments",
+    "elapsedLabel": "Écoulé",
+    "complete": "Analyse terminée",
+    "openingReport": "Ouverture de votre rapport…",
+    "consoleLabel": "Journal d'analyse",
+    "liveStatus": "{stage} — {percent}% terminé.",
+    "stages": {
+      "queue": "En file d'attente",
+      "browser": "Démarrage du navigateur headless",
+      "load": "Chargement des pages",
+      "analyze": "Analyse de la structure",
+      "wcag": "Tests WCAG 2.2 en cours",
+      "contrast": "Vérification des contrastes",
+      "score": "Calcul du score",
+      "report": "Génération du rapport"
+    }
+  },
   "share": {
     "createLink": "Créer un lien de partage",
     "linkAria": "Lien du rapport public",

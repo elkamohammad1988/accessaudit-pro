@@ -6,6 +6,22 @@
     "startFree": "Commencer gratuitement"
   },
   "landing": {
+    "seal": {
+      "scoreLabel": "Note d'audit",
+      "aria": "Score de conformité AccessAudit (exemple) : {score} sur 100, WCAG 2.2 AA"
+    },
+    "stats": [
+      { "value": "~30–50%", "label": "des problèmes WCAG détectés automatiquement" },
+      { "value": "WCAG 2.2", "label": "Niveaux A et AA, alignés sur l'EAA" },
+      { "value": "< 60s", "label": "d'une URL à un rapport prêt pour le client" }
+    ],
+    "rail": {
+      "how": "Processus",
+      "features": "Capacités",
+      "pricing": "Forfaits",
+      "faq": "Réponses"
+    },
+    "trust": "Une seule analyse répond à toutes les obligations de vos clients",
     "meta": {
       "title": "Audits d'accessibilité WCAG et rapports en marque blanche pour les agences",
       "description": "Analysez n'importe quel site selon WCAG 2.2, obtenez un rapport priorisé associé à l'EAA / EN 301 549, et remettez à vos clients un livrable en marque blanche. Gratuit pour démarrer — sans carte bancaire.",

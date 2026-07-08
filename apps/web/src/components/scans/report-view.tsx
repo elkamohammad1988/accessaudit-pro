@@ -139,22 +139,40 @@ export function ReportView({
         </section>
       ) : null}
 
-      {/* Summary */}
+      {/* Summary — the report's headline verdict, composed as a certificate band:
+          a focal score "seal" (a soft gold halo behind the gauge on screen) beside
+          two engraved stat cards. Mono eyebrows carry the editorial voice used
+          across the product; the numerals stay precise tabular Inter, because this
+          is a data document, not a marketing surface. */}
       <section aria-label={t("report.summaryAria")} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Card className="flex flex-col items-center justify-center gap-3 p-5 text-center">
-          <ScoreGauge
-            score={score}
-            ariaLabel={score != null ? ts("aria", { score }) : ts("none")}
-          />
-          <div className="space-y-1">
+        <Card className="relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 text-center">
+          <div className="relative">
+            {/* Faint brass burnish behind the score — the "seal" cue. Screen + dark
+                only (gated off the print/PDF route via `!expanded`), static, no motion. */}
+            {!expanded ? (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 hidden rounded-full bg-gold/[0.10] blur-2xl dark:block"
+              />
+            ) : null}
+            <ScoreGauge
+              score={score}
+              ariaLabel={score != null ? ts("aria", { score }) : ts("none")}
+            />
+          </div>
+          <div className="space-y-1.5">
             <Badge variant={band.tone === "muted" ? "secondary" : band.tone}>{bandLabel(band.tone, tb)}</Badge>
-            <p className="text-xs text-muted-foreground">{t("report.accessibilityScore")}</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              {t("report.accessibilityScore")}
+            </p>
           </div>
         </Card>
         <Card className="flex flex-col justify-center p-5">
-          <p className="text-sm text-muted-foreground">{t("report.issuesFound")}</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums">{issues}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            {t("report.issuesFound")}
+          </p>
+          <p className="mt-2 text-4xl font-bold tabular-nums">{issues}</p>
+          <p className="mt-1.5 text-xs text-muted-foreground">
             <span className={criticalAndSerious > 0 ? "font-semibold text-danger-strong" : undefined}>
               {criticalAndSerious}
             </span>{" "}
@@ -162,9 +180,11 @@ export function ReportView({
           </p>
         </Card>
         <Card className="flex flex-col justify-center p-5">
-          <p className="text-sm text-muted-foreground">{t("report.pagesScanned")}</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums">{pagesScanned}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{t("report.wcagLevel", { level: wcagLevel })}</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            {t("report.pagesScanned")}
+          </p>
+          <p className="mt-2 text-4xl font-bold tabular-nums">{pagesScanned}</p>
+          <p className="mt-1.5 text-xs text-muted-foreground">{t("report.wcagLevel", { level: wcagLevel })}</p>
         </Card>
       </section>
 

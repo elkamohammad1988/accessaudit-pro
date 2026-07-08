@@ -35,7 +35,9 @@
   },
   "team": {
     "heading": "团队",
-    "description": "本版本的 AccessAudit Pro 为单一所有者模式。多席位团队和角色将在后续更新中推出。"
+    "description": "本版本的 AccessAudit Pro 为单一所有者模式。多席位团队和角色将在后续更新中推出。",
+    "ownerRole": "所有者",
+    "you": "你"
   },
   "messages": {
     "invalidInput": "输入无效。",

@@ -1,13 +1,16 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormError } from "@/components/ui/form-error";
+import { ScanRunner } from "@/components/scans/scan-runner";
 import { createScan, type NewScanState } from "@/app/(app)/scans/actions";
+import { isDemoMode } from "@/lib/env";
 import { useTranslations } from "@/i18n/provider";
 
 export interface ProjectOption {
@@ -28,19 +31,47 @@ export function NewScanForm({
   pagesPerScan: number;
 }) {
   const t = useTranslations("scans.new.form");
-  const [state, formAction] = useActionState(createScan, initialState);
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(createScan, initialState);
   const [projectId, setProjectId] = useState(
     defaultProjectId && projects.some((p) => p.id === defaultProjectId)
       ? defaultProjectId
       : (projects[0]?.id ?? ""),
   );
   const [scanType, setScanType] = useState<"single" | "list">("single");
+  const [wcagLevel, setWcagLevel] = useState<"A" | "AA" | "AAA">("AA");
+  const [animationDone, setAnimationDone] = useState(false);
+  const navigatedRef = useRef(false);
 
   const selected = projects.find((p) => p.id === projectId);
   const multiAllowed = pagesPerScan > 1;
 
+  // The animated scan overlay runs from the moment the scan is submitted until
+  // both (a) its sequence finishes and (b) the new scan id is back — then we
+  // navigate to the report. `isPending` covers the brief window before the id
+  // returns; `state.scanId` keeps it up through the animation after.
+  const running = (isPending || Boolean(state.scanId)) && !state.error;
+
+  useEffect(() => {
+    if (state.scanId && animationDone && !navigatedRef.current) {
+      navigatedRef.current = true;
+      router.push(`/scans/${state.scanId}`);
+    }
+  }, [state.scanId, animationDone, router]);
+
   return (
-    <form action={formAction} className="space-y-5">
+    <>
+      {running ? (
+        <ScanRunner
+          projectName={selected?.name ?? ""}
+          url={selected?.base_url ?? "https://example.com"}
+          wcagLevel={wcagLevel}
+          scanType={scanType}
+          durationMs={isDemoMode() ? 10_000 : 600}
+          onDone={() => setAnimationDone(true)}
+        />
+      ) : null}
+      <form action={formAction} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="projectId">{t("project")}</Label>
         <Select
@@ -130,7 +161,13 @@ export function NewScanForm({
 
       <div className="space-y-2">
         <Label htmlFor="wcagLevel">{t("wcagTarget")}</Label>
-        <Select id="wcagLevel" name="wcagLevel" defaultValue="AA" className="max-w-xs">
+        <Select
+          id="wcagLevel"
+          name="wcagLevel"
+          value={wcagLevel}
+          onChange={(e) => setWcagLevel(e.target.value as "A" | "AA" | "AAA")}
+          className="max-w-xs"
+        >
           <option value="A">{t("wcagA")}</option>
           <option value="AA">{t("wcagAA")}</option>
           <option value="AAA">{t("wcagAAA")}</option>
@@ -151,9 +188,10 @@ export function NewScanForm({
         <span>{t("authorizationLabel")}</span>
       </label>
 
-      <FormError error={state.error} upgrade={state.upgrade} />
+        <FormError error={state.error} upgrade={state.upgrade} />
 
-      <SubmitButton pendingLabel={t("submitPending")}>{t("submit")}</SubmitButton>
-    </form>
+        <SubmitButton pendingLabel={t("submitPending")}>{t("submit")}</SubmitButton>
+      </form>
+    </>
   );
 }

@@ -18,7 +18,8 @@
     "cancel": "Paiement annulé — aucune modification n'a été effectuée.",
     "error": "Une erreur est survenue avec la facturation. Veuillez réessayer.",
     "noCustomer": "Pas encore de compte de facturation — choisissez un forfait pour commencer.",
-    "scanLimit": "Vous avez atteint la limite d'analyses de votre forfait pour ce mois-ci. Passez à un forfait supérieur pour en lancer davantage."
+    "scanLimit": "Vous avez atteint la limite d'analyses de votre forfait pour ce mois-ci. Passez à un forfait supérieur pour en lancer davantage.",
+    "demo": "La facturation utilise Stripe dans le produit en ligne. Ceci est une démo : la gestion de l'abonnement est désactivée."
   },
   "usage": {
     "aria": "Utilisation",

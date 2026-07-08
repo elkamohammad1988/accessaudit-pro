@@ -35,7 +35,9 @@
   },
   "team": {
     "heading": "Equipo",
-    "description": "En esta versión, AccessAudit Pro es de propietario único. Los equipos con varios puestos y los roles llegarán en una actualización posterior."
+    "description": "En esta versión, AccessAudit Pro es de propietario único. Los equipos con varios puestos y los roles llegarán en una actualización posterior.",
+    "ownerRole": "Propietario",
+    "you": "Tú"
   },
   "messages": {
     "invalidInput": "Entrada no válida.",

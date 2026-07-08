@@ -34,16 +34,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolved, setResolved] = useState<Resolved>("light");
 
   useEffect(() => {
-    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "system";
+    // Light-first: unset defaults to "light" (mirrors the no-flash themeScript), so
+    // a first-time visitor lands on the warm paper identity without a flip.
+    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "light";
     setThemeState(stored);
     setResolved(applyTheme(stored));
   }, []);
 
-  // Track OS changes while the user is on "system".
+  // Track OS changes only while the user has explicitly chosen "system".
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      if (((localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "system") === "system") {
+      if ((localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) === "system") {
         setResolved(applyTheme("system"));
       }
     };

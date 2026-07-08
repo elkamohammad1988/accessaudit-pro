@@ -53,6 +53,7 @@ export default async function BillingPage({
     error: { text: t("banner.error"), tone: "error" },
     "no-customer": { text: t("banner.noCustomer"), tone: "warning" },
     "scan-limit": { text: t("banner.scanLimit"), tone: "warning" },
+    demo: { text: t("banner.demo"), tone: "info" },
   };
 
   const supabase = await createClient();

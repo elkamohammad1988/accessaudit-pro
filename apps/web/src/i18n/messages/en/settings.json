@@ -35,7 +35,9 @@
   },
   "team": {
     "heading": "Team",
-    "description": "AccessAudit Pro is single-owner in this release. Multi-seat teams and roles arrive with a later update."
+    "description": "AccessAudit Pro is single-owner in this release. Multi-seat teams and roles arrive with a later update.",
+    "ownerRole": "Owner",
+    "you": "You"
   },
   "messages": {
     "invalidInput": "Invalid input.",

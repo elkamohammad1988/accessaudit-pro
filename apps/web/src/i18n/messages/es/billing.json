@@ -18,7 +18,8 @@
     "cancel": "Pago cancelado: no se realizó ningún cambio.",
     "error": "Algo salió mal con la facturación. Inténtalo de nuevo.",
     "noCustomer": "Aún no tienes cuenta de facturación: elige un plan para empezar.",
-    "scanLimit": "Has alcanzado el límite de análisis de tu plan para este mes. Mejora tu plan para ejecutar más."
+    "scanLimit": "Has alcanzado el límite de análisis de tu plan para este mes. Mejora tu plan para ejecutar más.",
+    "demo": "La facturación funciona con Stripe en el producto real. Esto es una demo, por lo que la gestión de la suscripción está desactivada."
   },
   "usage": {
     "aria": "Uso",

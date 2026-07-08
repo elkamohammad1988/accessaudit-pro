@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { requireSession } from "@/lib/auth";
 import { getTranslations } from "@/i18n/server";
+import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
+import { cardSurfaceClass } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar } from "@/components/ui/avatar";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { OrganizationForm } from "@/components/settings/organization-form";
 
@@ -10,11 +14,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
+/** Shared settings-section surface: the app card treatment on a labelled landmark. */
+const sectionClass = cn(cardSurfaceClass, "space-y-4 p-5 sm:p-6");
+
 export default async function SettingsPage() {
   const { organization, profile, email } = await requireSession();
   if (!organization) return null;
 
   const t = await getTranslations("settings");
+  const memberName = profile?.full_name || email || organization.name;
 
   return (
     <div className="space-y-6">
@@ -23,10 +31,7 @@ export default async function SettingsPage() {
         <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
       </header>
 
-      <section
-        aria-labelledby="profile-heading"
-        className="space-y-4 rounded-xl border bg-card p-5 shadow-sm"
-      >
+      <section aria-labelledby="profile-heading" className={sectionClass}>
         <div>
           <h2 id="profile-heading" className="text-lg font-semibold tracking-tight">
             {t("profile.heading")}
@@ -40,10 +45,7 @@ export default async function SettingsPage() {
         />
       </section>
 
-      <section
-        aria-labelledby="workspace-heading"
-        className="space-y-4 rounded-xl border bg-card p-5 shadow-sm"
-      >
+      <section aria-labelledby="workspace-heading" className={sectionClass}>
         <div>
           <h2 id="workspace-heading" className="text-lg font-semibold tracking-tight">
             {t("workspace.heading")}
@@ -53,10 +55,7 @@ export default async function SettingsPage() {
         <OrganizationForm organization={organization} />
       </section>
 
-      <section
-        aria-labelledby="billing-heading"
-        className="space-y-4 rounded-xl border bg-card p-5 shadow-sm"
-      >
+      <section aria-labelledby="billing-heading" className={sectionClass}>
         <div>
           <h2 id="billing-heading" className="text-lg font-semibold tracking-tight">
             {t("billing.heading")}
@@ -68,16 +67,35 @@ export default async function SettingsPage() {
         </ButtonLink>
       </section>
 
-      <section
-        aria-labelledby="team-heading"
-        className="space-y-4 rounded-xl border bg-card p-5 shadow-sm"
-      >
+      {/* Team — single-owner in this release (see copy). Rather than an empty stub,
+          the current owner is shown as a real, finished member row; multi-seat is
+          the deferred roadmap the description states honestly. */}
+      <section aria-labelledby="team-heading" className={sectionClass}>
         <div>
           <h2 id="team-heading" className="text-lg font-semibold tracking-tight">
             {t("team.heading")}
           </h2>
           <p className="text-sm text-muted-foreground">{t("team.description")}</p>
         </div>
+        <ul>
+          <li className="flex items-center gap-3 rounded-lg border bg-background/50 p-3 dark:bg-white/[0.02]">
+            <Avatar src={profile?.avatar_url ?? null} name={memberName} size="md" />
+            <div className="min-w-0 flex-1">
+              <p className="flex items-center gap-2 text-sm font-medium">
+                <span className="truncate">{memberName}</span>
+                <span className="shrink-0 rounded-full bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand ring-1 ring-inset ring-brand/20">
+                  {t("team.you")}
+                </span>
+              </p>
+              <p className="truncate text-xs text-muted-foreground" title={email}>
+                {email}
+              </p>
+            </div>
+            <Badge variant="default" className="shrink-0">
+              {t("team.ownerRole")}
+            </Badge>
+          </li>
+        </ul>
       </section>
     </div>
   );

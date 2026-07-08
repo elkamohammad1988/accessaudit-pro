@@ -8,9 +8,10 @@ import { getTranslations } from "@/i18n/server";
 import { displayLimit } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, cardSurfaceClass } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
+import { cn } from "@/lib/utils";
 import { restoreProjectRecord } from "./actions";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -128,7 +129,12 @@ export default async function ProjectsPage() {
       )}
 
       {archived.length > 0 ? (
-        <details className="group rounded-xl border bg-card px-4 py-3 shadow-xs transition-colors hover:border-foreground/15">
+        <details
+          className={cn(
+            cardSurfaceClass,
+            "group px-4 py-3 transition-colors hover:border-foreground/15 dark:hover:border-gold/25",
+          )}
+        >
           <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium [&::-webkit-details-marker]:hidden">
             {tc("labels.archivedCount", { count: archived.length })}
             <ChevronDown

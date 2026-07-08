@@ -100,6 +100,28 @@
       "authorizationLabel": "我确认我有权审计此网站。"
     }
   },
+  "runner": {
+    "title": "正在运行无障碍扫描",
+    "scanning": "正在审计 {project}",
+    "targetOne": "单个页面 · WCAG {level}",
+    "targetMany": "多个页面 · WCAG {level}",
+    "elementsLabel": "元素",
+    "elapsedLabel": "已用时",
+    "complete": "扫描完成",
+    "openingReport": "正在打开你的报告…",
+    "consoleLabel": "扫描日志",
+    "liveStatus": "{stage} — 已完成 {percent}%。",
+    "stages": {
+      "queue": "排队中",
+      "browser": "正在启动无头浏览器",
+      "load": "正在加载页面",
+      "analyze": "正在分析结构",
+      "wcag": "正在运行 WCAG 2.2 测试",
+      "contrast": "正在检查颜色对比度",
+      "score": "正在计算评分",
+      "report": "正在生成报告"
+    }
+  },
   "share": {
     "createLink": "创建分享链接",
     "linkAria": "公开报告链接",

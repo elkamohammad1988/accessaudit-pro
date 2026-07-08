@@ -140,6 +140,28 @@
       "authorizationLabel": "أؤكد أنني مخوَّل بتدقيق هذا الموقع الإلكتروني."
     }
   },
+  "runner": {
+    "title": "جارٍ تشغيل فحص إمكانية الوصول",
+    "scanning": "تدقيق {project}",
+    "targetOne": "صفحة واحدة · WCAG {level}",
+    "targetMany": "عدة صفحات · WCAG {level}",
+    "elementsLabel": "العناصر",
+    "elapsedLabel": "المنقضي",
+    "complete": "اكتمل الفحص",
+    "openingReport": "جارٍ فتح تقريرك…",
+    "consoleLabel": "سجل الفحص",
+    "liveStatus": "{stage} — اكتمل {percent}%.",
+    "stages": {
+      "queue": "في قائمة الانتظار",
+      "browser": "بدء المتصفح بدون واجهة",
+      "load": "تحميل الصفحات",
+      "analyze": "تحليل البنية",
+      "wcag": "تشغيل اختبارات WCAG 2.2",
+      "contrast": "فحص تباين الألوان",
+      "score": "حساب النتيجة",
+      "report": "إنشاء التقرير"
+    }
+  },
   "share": {
     "createLink": "إنشاء رابط مشاركة",
     "linkAria": "رابط التقرير العام",

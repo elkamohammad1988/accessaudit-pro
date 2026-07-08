@@ -6,6 +6,22 @@
     "startFree": "免费开始"
   },
   "landing": {
+    "seal": {
+      "scoreLabel": "评估得分",
+      "aria": "AccessAudit 合规评分示例：{score} / 100，WCAG 2.2 AA"
+    },
+    "stats": [
+      { "value": "~30–50%", "label": "的 WCAG 问题可自动检出" },
+      { "value": "WCAG 2.2", "label": "A 与 AA 级，对应 EAA" },
+      { "value": "< 60s", "label": "从网址到可交付客户的报告" }
+    ],
+    "rail": {
+      "how": "流程",
+      "features": "能力",
+      "pricing": "套餐",
+      "faq": "解答"
+    },
+    "trust": "一次扫描，满足客户面对的每一项合规要求",
     "meta": {
       "title": "面向代理机构的 WCAG 无障碍审计与白标报告",
       "description": "对照 WCAG 2.2 扫描任意网站，获取按优先级排序、对应 EAA / EN 301 549 的报告，并向客户交付白标成果。免费开始——无需信用卡。",

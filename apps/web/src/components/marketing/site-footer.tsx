@@ -17,12 +17,23 @@ export async function SiteFooter() {
   const t = await getTranslations("nav");
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t">
-      <div className="mx-auto max-w-5xl space-y-4 px-6 py-8 text-center text-sm text-muted-foreground">
-        <Link href="/" className="inline-flex items-center gap-2 font-semibold text-foreground">
-          <LogoMark aria-hidden="true" className="h-6 w-6 rounded-md" />
-          AccessAudit<span className="text-brand">&nbsp;Pro</span>
+    <footer className="lux-rim relative mt-8 border-t">
+      <div className="mx-auto max-w-6xl space-y-5 px-6 py-12 text-center text-sm text-muted-foreground">
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-2 text-foreground"
+        >
+          <LogoMark
+            aria-hidden="true"
+            className="h-6 w-6 rounded-md transition-transform duration-300 group-hover:-rotate-3 dark:shadow-[0_0_14px_-4px_hsl(var(--brand)/0.6)]"
+          />
+          <span className="font-display text-lg font-semibold tracking-tight">
+            AccessAudit<span className="text-brand dark:text-gold-strong">&nbsp;Pro</span>
+          </span>
         </Link>
+        <p className="mx-auto font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground/80">
+          WCAG 2.2 · EN 301 549 · axe-core
+        </p>
         <nav aria-label={t("footer")} className="flex flex-wrap justify-center gap-x-5 gap-y-2">
           {FOOTER_LINKS.map((link) => (
             <Link

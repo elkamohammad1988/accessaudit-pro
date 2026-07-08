@@ -108,6 +108,28 @@
       "authorizationLabel": "I confirm I'm authorized to audit this website."
     }
   },
+  "runner": {
+    "title": "Running accessibility scan",
+    "scanning": "Auditing {project}",
+    "targetOne": "Single page · WCAG {level}",
+    "targetMany": "Multiple pages · WCAG {level}",
+    "elementsLabel": "Elements",
+    "elapsedLabel": "Elapsed",
+    "complete": "Scan complete",
+    "openingReport": "Opening your report…",
+    "consoleLabel": "Scan log",
+    "liveStatus": "{stage} — {percent}% complete.",
+    "stages": {
+      "queue": "Queued",
+      "browser": "Starting headless browser",
+      "load": "Loading pages",
+      "analyze": "Analyzing structure",
+      "wcag": "Running WCAG 2.2 tests",
+      "contrast": "Checking color contrast",
+      "score": "Computing score",
+      "report": "Building report"
+    }
+  },
   "share": {
     "createLink": "Create share link",
     "linkAria": "Public report link",
