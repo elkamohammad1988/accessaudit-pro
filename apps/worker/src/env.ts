@@ -15,9 +15,17 @@ function numberEnv(name: string, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+// Demo/showcase mode: no Supabase configured. The web app runs entirely on its
+// local in-memory mock (scans complete instantly there), so the worker has
+// nothing to poll — it idles (see loop() in index.ts) instead of crashing on the
+// missing required vars or spamming "fetch failed" against an unreachable host.
+const demo = !process.env.SUPABASE_URL;
+
 export const env = {
-  supabaseUrl: required("SUPABASE_URL"),
-  serviceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
+  /** True when no Supabase is configured — the worker idles rather than polls. */
+  demo,
+  supabaseUrl: demo ? "http://demo.invalid" : required("SUPABASE_URL"),
+  serviceRoleKey: demo ? "demo-service-role-key" : required("SUPABASE_SERVICE_ROLE_KEY"),
   // Floors guard against a misconfigured env (e.g. POLL_INTERVAL_MS=0 busy-spins
   // the CPU; a negative timeout breaks the timing logic). Each clamps to a sane
   // minimum rather than trusting the raw value.

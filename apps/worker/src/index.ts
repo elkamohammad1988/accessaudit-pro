@@ -275,6 +275,22 @@ async function processScan(scan: Scan): Promise<void> {
 }
 
 async function loop(): Promise<void> {
+  // Demo/showcase mode: nothing to poll. Keep the health server alive and idle
+  // (so `pnpm dev` shows a clean, error-free worker) instead of hammering an
+  // unconfigured backend. Scans complete instantly in the web app's local mock.
+  if (env.demo) {
+    console.log(
+      "AccessAudit worker — demo mode: no SUPABASE_URL configured. Scans complete " +
+        "instantly in the web app's local mock, so the worker is idle. (Set SUPABASE_URL to enable real scanning.)",
+    );
+    while (!shuttingDown) {
+      markAlive();
+      await sleep(env.pollIntervalMs);
+    }
+    console.log("Worker stopped cleanly.");
+    return;
+  }
+
   console.log("AccessAudit scan worker started. Polling for queued scans…");
   while (!shuttingDown) {
     markAlive(); // liveness heartbeat for /health
