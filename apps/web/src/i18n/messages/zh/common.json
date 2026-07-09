@@ -67,6 +67,9 @@
     "system": "系统主题",
     "light": "浅色主题",
     "dark": "深色主题",
+    "systemShort": "系统",
+    "lightShort": "浅色",
+    "darkShort": "深色",
     "toggleAria": "{current}。切换到{next}。"
   },
   "meta": {

@@ -15,6 +15,10 @@
     "settings": "Settings",
     "signOut": "Sign out"
   },
+  "account": {
+    "menu": "Account menu",
+    "appearance": "Appearance"
+  },
   "mobile": {
     "open": "Open navigation menu",
     "close": "Close navigation menu",

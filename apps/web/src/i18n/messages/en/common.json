@@ -67,6 +67,9 @@
     "system": "System theme",
     "light": "Light theme",
     "dark": "Dark theme",
+    "systemShort": "System",
+    "lightShort": "Light",
+    "darkShort": "Dark",
     "toggleAria": "{current}. Switch to {next}."
   },
   "meta": {

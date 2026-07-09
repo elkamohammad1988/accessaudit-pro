@@ -67,6 +67,9 @@
     "system": "سمة النظام",
     "light": "السمة الفاتحة",
     "dark": "السمة الداكنة",
+    "systemShort": "النظام",
+    "lightShort": "فاتح",
+    "darkShort": "داكن",
     "toggleAria": "{current}. التبديل إلى {next}."
   },
   "meta": {

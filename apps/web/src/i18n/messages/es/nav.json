@@ -15,6 +15,10 @@
     "settings": "Configuración",
     "signOut": "Cerrar sesión"
   },
+  "account": {
+    "menu": "Menú de cuenta",
+    "appearance": "Apariencia"
+  },
   "mobile": {
     "open": "Abrir menú de navegación",
     "close": "Cerrar menú de navegación",

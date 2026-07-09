@@ -15,6 +15,10 @@
     "settings": "设置",
     "signOut": "退出登录"
   },
+  "account": {
+    "menu": "账户菜单",
+    "appearance": "外观"
+  },
   "mobile": {
     "open": "打开导航菜单",
     "close": "关闭导航菜单",

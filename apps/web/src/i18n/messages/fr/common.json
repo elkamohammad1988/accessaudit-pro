@@ -67,6 +67,9 @@
     "system": "Thème système",
     "light": "Thème clair",
     "dark": "Thème sombre",
+    "systemShort": "Système",
+    "lightShort": "Clair",
+    "darkShort": "Sombre",
     "toggleAria": "{current}. Passer au {next}."
   },
   "meta": {

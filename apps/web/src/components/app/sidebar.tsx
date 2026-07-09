@@ -3,10 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FolderKanban, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Users, FolderKanban, Settings, Menu, X } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo-mark";
-import { Avatar } from "@/components/ui/avatar";
-import { signOut } from "@/app/(auth)/actions";
+import { AccountMenu } from "@/components/app/account-menu";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { useTranslations, useLocale } from "@/i18n/provider";
@@ -100,41 +99,14 @@ function SidebarBody({
         })}
       </nav>
 
-      <div className="border-t p-3">
-        <div className="flex items-center gap-2.5 rounded-md px-2 py-2">
-          <span className="relative shrink-0">
-            <Avatar key={avatarUrl ?? "initials"} src={avatarUrl} name={fullName || email || orgName} />
-            {/* Presence indicator — a breathing emerald dot, the universal "active
-                session" cue, ringed to read cleanly against the avatar. */}
-            <span
-              aria-hidden="true"
-              className="live-dot absolute -bottom-0.5 -end-0.5 rounded-full ring-2 ring-muted/40 dark:ring-background"
-            />
-          </span>
-          <div className="min-w-0 flex-1">
-            {fullName ? (
-              <p className="truncate text-xs font-medium text-foreground" title={fullName}>
-                {fullName}
-              </p>
-            ) : null}
-            <p className="truncate text-xs text-muted-foreground" title={email}>
-              {email}
-            </p>
-          </div>
-          <ThemeToggle />
-        </div>
-        <div className="mt-1 px-1">
-          <LanguageSwitcher className="w-full" align="start" />
-        </div>
-        <form action={signOut} className="mt-1">
-          <button
-            type="submit"
-            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-background/60 hover:text-foreground"
-          >
-            <LogOut className="h-4 w-4" aria-hidden="true" />
-            {t("app.signOut")}
-          </button>
-        </form>
+      <div className="border-t p-2">
+        <AccountMenu
+          orgName={orgName}
+          email={email}
+          fullName={fullName}
+          avatarUrl={avatarUrl}
+          onNavigate={onNavigate}
+        />
       </div>
     </div>
   );
