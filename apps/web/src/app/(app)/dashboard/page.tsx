@@ -1,40 +1,60 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Plus, Users, FolderKanban, ScanLine } from "lucide-react";
+import {
+  ArrowUpRight,
+  FolderKanban,
+  Plus,
+  ScanLine,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import {
   effectivePlan,
+  IMPACT_LEVELS,
   limitsFor,
   scoreBand,
   sumTotals,
+  type ImpactLevel,
   type PlanTier,
   type ScanStatus,
 } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { startOfMonthIso, formatDateTime } from "@/lib/dates";
-import { parseTotals, scoreClassName } from "@/lib/scan-format";
-import { cn } from "@/lib/utils";
+import { parseTotals, scoreClassName, totalViolations } from "@/lib/scan-format";
 import { getTranslations, getLocale } from "@/i18n/server";
 import { bandLabel, displayLimit } from "@/i18n/format";
-import type { Translator } from "@/i18n/translate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TiltCard } from "@/components/ui/tilt-card";
-import { Magnetic } from "@/components/ui/magnetic";
+import { PageHeader } from "@/components/app/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { IconChip } from "@/components/ui/icon-chip";
 import { Progress } from "@/components/ui/progress";
 import { CountUp } from "@/components/ui/count-up";
-import { Sparkline } from "@/components/charts/sparkline";
-import { ScoreGauge } from "@/components/charts/score-gauge";
-import { SeverityBar } from "@/components/dashboard/severity-bar";
+import { AreaChart } from "@/components/charts/area-chart";
+import { Donut } from "@/components/charts/donut";
+import { StatCard, FilledStatCard } from "@/components/dashboard/stat-card";
 import { ScanStatusBadge } from "@/components/scans/scan-status-badge";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard");
   return { title: t("metaTitle") };
 }
+
+/** CSS custom property per impact level, for the severity donut + legend. */
+const SEV_VAR: Record<ImpactLevel, string> = {
+  critical: "--sev-critical",
+  serious: "--sev-serious",
+  moderate: "--sev-moderate",
+  minor: "--sev-minor",
+};
+const SEV_DOT: Record<ImpactLevel, string> = {
+  critical: "bg-critical",
+  serious: "bg-serious",
+  moderate: "bg-moderate",
+  minor: "bg-minor",
+};
 
 export default async function DashboardPage() {
   const { organization } = await requireSession();
@@ -43,7 +63,7 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const t = await getTranslations("dashboard");
   const tb = await getTranslations("common.band");
-  const ts = await getTranslations("common.score");
+  const ts = await getTranslations("scans");
   const tp = await getTranslations("plans");
   const locale = await getLocale();
 
@@ -99,85 +119,155 @@ export default async function DashboardPage() {
   const avgScore =
     trend.length > 0 ? Math.round((trend.reduce((a, b) => a + b, 0) / trend.length) * 10) / 10 : null;
   const band = scoreBand(avgScore);
+  const delta =
+    trend.length >= 2 ? Math.round((trend[trend.length - 1] - trend[0]) * 10) / 10 : null;
+
   const aggregateTotals = sumTotals((completedScans ?? []).map((s) => parseTotals(s.totals)));
+  const totalIssues = totalViolations(aggregateTotals);
+  const severitySegments = IMPACT_LEVELS.map((level) => ({
+    value: aggregateTotals[level],
+    colorVar: SEV_VAR[level],
+    label: ts(`impact.${level}`),
+  }));
+  const distributionLabel = IMPACT_LEVELS.filter((l) => aggregateTotals[l] > 0)
+    .map((l) => `${aggregateTotals[l]} ${ts(`impact.${l}`).toLowerCase()}`)
+    .join(", ");
 
   const meterTone = (used: number, max: number) =>
     Number.isFinite(max) && used / max >= 0.8 ? "warning" : "brand";
 
-  // Drives the live activity indicator on the Recent heading: true while any
-  // listed scan is still queued or running (i.e. work is happening right now).
+  // Drives the live activity indicator on the Recent heading.
   const hasLiveScans = (recentScans ?? []).some(
     (s) => s.status === "queued" || s.status === "running",
   );
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="space-y-5">
+      {/* Content header */}
+      <PageHeader
+        title={t("title")}
+        subtitle={
+          <>
             {organization.name}
             <Badge variant="secondary">{t("planBadge", { plan: limits.label })}</Badge>
-          </p>
-        </div>
-        <Magnetic>
+          </>
+        }
+        actions={
           <ButtonLink href="/scans/new" size="lg">
             <Plus className="h-4 w-4" aria-hidden="true" />
             {t("newScan")}
           </ButtonLink>
-        </Magnetic>
-      </header>
+        }
+      />
 
-      {/* Score trend hero + usage meters. The hero is a live 3D glass panel: it
-          tilts toward the cursor and catches a specular sheen (the outer wrapper
-          owns the entrance animation so its transform never fights the tilt). */}
-      <section className="grid gap-3 lg:grid-cols-3">
-        <div className="animate-rise-in lg:col-span-2">
-          <TiltCard className="h-full overflow-hidden">
-            <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {t("avgScore")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center gap-5 sm:flex-row">
-            <div className="flex shrink-0 flex-col items-center gap-2">
-              <div className="relative">
-                {/* A faint, still brass burnish behind the score — the seal cue.
-                    Dark-mode only, no pulse (the breathing glow was the glass tell). */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 hidden rounded-full bg-gold/[0.10] blur-2xl dark:block"
-                />
-                <ScoreGauge
-                  score={avgScore}
-                  ariaLabel={avgScore != null ? ts("aria", { score: avgScore }) : ts("none")}
-                />
-              </div>
-              {avgScore != null && (
-                <Badge variant={band.tone === "muted" ? "secondary" : band.tone}>
-                  {bandLabel(band.tone, tb)}
-                </Badge>
-              )}
-            </div>
-            <div className="w-full min-w-0 flex-1">
-              {trend.length >= 2 ? (
-                <Sparkline data={trend} label={t("scoreTrendLabel", { count: trend.length })} />
-              ) : (
-                <div className="flex h-16 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
-                  {t("trendEmpty")}
-                </div>
-              )}
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t.plural("trendCaption", trend.length)}
+      {/* Row 1 — KPI tiles */}
+      <section className="grid animate-rise-in gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <FilledStatCard
+          label={t("kpiAvgScore")}
+          value={avgScore}
+          unit="/ 100"
+          caption={avgScore != null ? bandLabel(band.tone, tb) : undefined}
+          spark={trend}
+          sparkLabel={t("scoreTrendLabel", { count: trend.length })}
+          locale={locale}
+        />
+        <StatCard
+          label={t("kpiScans")}
+          value={scansUsed}
+          caption={t("ofLimit", { limit: displayLimit(limits.scansPerMonth, tp) })}
+          icon={ScanLine}
+          tone="brand"
+          locale={locale}
+        />
+        <StatCard
+          label={t("meters.clients")}
+          value={clients}
+          caption={t("ofLimit", { limit: displayLimit(limits.clients, tp) })}
+          icon={Users}
+          tone="gold"
+          href="/clients"
+          locale={locale}
+        />
+        <StatCard
+          label={t("meters.projects")}
+          value={projects}
+          caption={t("ofLimit", { limit: displayLimit(limits.projects, tp) })}
+          icon={FolderKanban}
+          tone="success"
+          href="/projects"
+          locale={locale}
+        />
+      </section>
+
+      {/* Row 2 — trend + severity */}
+      <section className="grid animate-rise-in gap-4 [animation-delay:90ms] lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+            <div>
+              <CardTitle>{t("trendTitle")}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t.plural("trendSub", Math.max(trend.length, 0))}
               </p>
             </div>
+            {delta != null ? (
+              <Badge variant={delta >= 0 ? "success" : "danger"}>
+                {delta >= 0 ? (
+                  <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : (
+                  <TrendingDown className="h-3.5 w-3.5" aria-hidden="true" />
+                )}
+                {delta >= 0 ? "+" : ""}
+                {delta} {t("trendVsFirst")}
+              </Badge>
+            ) : null}
+          </CardHeader>
+          <CardContent>
+            {trend.length >= 2 ? (
+              <AreaChart data={trend} label={t("scoreTrendLabel", { count: trend.length })} height={200} />
+            ) : (
+              <div className="flex h-[200px] items-center justify-center rounded-xl border border-dashed text-sm text-muted-foreground">
+                {t("trendEmpty")}
+              </div>
+            )}
           </CardContent>
-        </TiltCard>
-        </div>
+        </Card>
 
-        <Card className="animate-rise-in [animation-delay:90ms]">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">{t("usageTitle")}</CardTitle>
+            <CardTitle>{t("severityHeading")}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-5">
+            <Donut
+              segments={severitySegments}
+              ariaLabel={
+                totalIssues > 0
+                  ? ts("severityBar.distribution", { distribution: distributionLabel })
+                  : ts("severityBar.none")
+              }
+            >
+              <span className="text-3xl font-bold tabular-nums leading-none">
+                <CountUp value={totalIssues} locale={locale} />
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">{t("donutTotal")}</span>
+            </Donut>
+            <ul className="grid w-full grid-cols-2 gap-x-4 gap-y-2">
+              {IMPACT_LEVELS.map((level) => (
+                <li key={level} className="flex items-center gap-2 text-sm">
+                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${SEV_DOT[level]}`} aria-hidden="true" />
+                  <span className="flex-1 truncate text-muted-foreground">{ts(`impact.${level}`)}</span>
+                  <span className="font-semibold tabular-nums">{aggregateTotals[level]}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Row 3 — usage + recent scans */}
+      <section className="grid animate-rise-in gap-4 [animation-delay:160ms] lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("usageTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Meter
@@ -209,108 +299,72 @@ export default async function DashboardPage() {
             />
           </CardContent>
         </Card>
-      </section>
 
-      {/* Quick stats — small accent cards drift on a gentle, staggered float in
-          dark mode (the float classes are no-ops in light mode and under
-          reduced-motion). */}
-      <section className="grid gap-3 sm:grid-cols-3 animate-rise-in [animation-delay:140ms]">
-        <QuickStat
-          href="/clients"
-          icon={Users}
-          label={t("meters.clients")}
-          value={clients}
-          maxLabel={displayLimit(limits.clients, tp)}
-          locale={locale}
-          className="lux-float-1"
-        />
-        <QuickStat
-          href="/projects"
-          icon={FolderKanban}
-          label={t("meters.projects")}
-          value={projects}
-          maxLabel={displayLimit(limits.projects, tp)}
-          locale={locale}
-          className="lux-float-2"
-        />
-        <Card className="lux-float-3">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">{t("pagesPerScan")}</p>
-              <IconChip icon={ScanLine} tone="gold" size="sm" />
-            </div>
-            <p className="mt-2 text-2xl font-semibold tabular-nums">{displayLimit(limits.pagesPerScan, tp)}</p>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Severity distribution */}
-      {completedScans && completedScans.length > 0 && (
-        <Card className="animate-rise-in [animation-delay:200ms]">
-          <CardHeader>
-            <CardTitle className="text-base">{t("severityHeading")}</CardTitle>
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
+            <CardTitle className="flex items-center gap-2.5">
+              {t("recentHeading")}
+              {hasLiveScans ? <span className="live-dot" aria-hidden="true" /> : null}
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <SeverityBar totals={aggregateTotals} />
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Recent scans */}
-      <section className="space-y-3 animate-rise-in [animation-delay:260ms]">
-        <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2.5 text-lg font-medium">
-            {t("recentHeading")}
-            {/* Live activity indicator — breathing emerald dot shown only while a
-                listed scan is actively queued or running. Decorative: the scan
-                badges below already convey status to assistive tech. */}
-            {hasLiveScans ? <span className="live-dot" aria-hidden="true" /> : null}
-          </h2>
-        </div>
-        {recentScans && recentScans.length > 0 ? (
-          <Card className="overflow-hidden">
-            <ul className="divide-y">
-              {recentScans.map((scan) => {
-                return (
+          {recentScans && recentScans.length > 0 ? (
+            <div>
+              {/* Column header — the Jumbo table rule, hidden on the stacked mobile view. */}
+              <div className="hidden grid-cols-[8rem_1fr_10rem_auto] items-center gap-4 border-b px-6 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground md:grid">
+                <span>{t("table.status")}</span>
+                <span>{t("table.pages")}</span>
+                <span>{t("table.date")}</span>
+                <span className="text-end">{t("table.score")}</span>
+              </div>
+              <ul className="divide-y">
+                {recentScans.map((scan) => (
                   <li key={scan.id}>
                     <Link
                       href={`/scans/${scan.id}`}
-                      className="group flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
+                      className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 px-6 py-3 transition-colors hover:bg-muted/40 md:grid-cols-[8rem_1fr_10rem_auto]"
                     >
-                      <div className="flex items-center gap-3">
-                        <ScanStatusBadge status={scan.status as ScanStatus} />
-                        <div>
-                          <p className="text-sm font-medium">
-                            {t.plural("pagesCount", scan.pages_scanned)}
-                          </p>
-                          <p className="text-xs text-muted-foreground">{formatDateTime(scan.created_at, locale)}</p>
-                        </div>
+                      <ScanStatusBadge status={scan.status as ScanStatus} />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">
+                          {t.plural("pagesCount", scan.pages_scanned)}
+                        </p>
+                        <p className="text-xs text-muted-foreground md:hidden">
+                          {formatDateTime(scan.created_at, locale)}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <span className="hidden text-sm text-muted-foreground md:block">
+                        {formatDateTime(scan.created_at, locale)}
+                      </span>
+                      <span className="flex items-center justify-end gap-2">
                         <span className={`text-sm font-semibold tabular-nums ${scoreClassName(scan.score)}`}>
                           {scan.score != null ? `${scan.score}/100` : "—"}
                         </span>
-                        <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                      </div>
+                        <ArrowUpRight
+                          className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          aria-hidden="true"
+                        />
+                      </span>
                     </Link>
                   </li>
-                );
-              })}
-            </ul>
-          </Card>
-        ) : (
-          <EmptyState
-            icon={ScanLine}
-            title={t("emptyTitle")}
-            description={t("emptyDescription")}
-            action={
-              <ButtonLink href="/scans/new">
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                {t("emptyAction")}
-              </ButtonLink>
-            }
-          />
-        )}
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <CardContent>
+              <EmptyState
+                icon={ScanLine}
+                title={t("emptyTitle")}
+                description={t("emptyDescription")}
+                action={
+                  <ButtonLink href="/scans/new">
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                    {t("emptyAction")}
+                  </ButtonLink>
+                }
+              />
+            </CardContent>
+          )}
+        </Card>
       </section>
     </div>
   );
@@ -343,43 +397,5 @@ function Meter({
       </div>
       <Progress value={used} max={max} tone={tone} label={ariaLabel} />
     </div>
-  );
-}
-
-function QuickStat({
-  href,
-  icon: Icon,
-  label,
-  value,
-  maxLabel,
-  locale,
-  className,
-}: {
-  href: "/clients" | "/projects";
-  icon: typeof Users;
-  label: string;
-  value: number;
-  maxLabel: string;
-  locale: string;
-  className?: string;
-}) {
-  return (
-    <Card interactive className={cn("group overflow-hidden", className)}>
-      <Link href={href} className="block p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <IconChip
-            icon={Icon}
-            tone="brand"
-            size="sm"
-            className="transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110"
-          />
-        </div>
-        <p className="mt-2 text-2xl font-semibold tabular-nums">
-          <CountUp value={value} locale={locale} />
-          <span className="text-base font-normal text-muted-foreground"> / {maxLabel}</span>
-        </p>
-      </Link>
-    </Card>
   );
 }

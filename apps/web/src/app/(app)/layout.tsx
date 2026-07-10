@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth";
 import { Sidebar } from "@/components/app/sidebar";
+import { TopBar } from "@/components/app/topbar";
 import { getTranslations } from "@/i18n/server";
 
 // These routes read auth cookies — always rendered per-request, never prerendered.
@@ -40,9 +41,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           fullName={profile?.full_name ?? null}
           avatarUrl={profile?.avatar_url ?? null}
         />
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">{children}</div>
-        </main>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <TopBar
+            orgName={organization.name}
+            email={email}
+            fullName={profile?.full_name ?? null}
+            avatarUrl={profile?.avatar_url ?? null}
+          />
+          <main id="main-content" tabIndex={-1} className="flex-1">
+            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</div>
+          </main>
+        </div>
       </div>
     </>
   );

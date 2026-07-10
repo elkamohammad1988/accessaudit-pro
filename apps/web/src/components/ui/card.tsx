@@ -5,27 +5,22 @@ import { cn } from "@/lib/utils";
  * The shared surface treatment, exported so bespoke surfaces (e.g. the 3D
  * `TiltCard`) render pixel-identical without re-declaring the recipe.
  *
- * "Verdant Glass" card: a floating pane of frosted glass. A translucent
- * emerald-tinted gradient fill with a backdrop blur lets the luminous mesh ground
- * drift through; a hairline of white light rims the top edge (`lux-rim`) and a
- * soft, wide emerald shadow lifts it clear of the page. Large 24px corners give it
- * the modern "product-design" silhouette. The pine-dusk (`dark`) variant swaps the
- * glass tint and border for their forest values.
+ * Clean "Material admin" card (Jumbo-inspired): a solid, near-opaque surface that
+ * sits a half-step above the page, lifted by one soft, wide shadow and bounded by
+ * a hairline clay border. Medium 16px corners give it the modern dashboard
+ * silhouette. No glass blur, no gradient wash — the calm, legible panel a
+ * data-dense admin UI is built from. The dark variant is the raised warm-slate pane.
  */
 export const cardSurfaceClass = cn(
-  "lux-rim relative rounded-3xl border border-white/60 text-card-foreground",
-  "bg-gradient-to-br from-white/85 via-card/65 to-white/45 backdrop-blur-xl",
-  "shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.9),var(--shadow-md)]",
-  "dark:border-white/10 dark:from-card/75 dark:via-card/55 dark:to-card/40",
-  "dark:shadow-[inset_0_1px_0_0_hsl(30_30%_80%/0.06),var(--shadow-md)]",
+  "relative rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm",
+  "dark:border-border/60",
 );
 
-/** Hover treatment for clickable surfaces — a real lift with a mint-warming rim
- *  and a soft emerald bloom. */
+/** Hover treatment for clickable surfaces — a gentle Material lift with a soft
+ *  clay-tinted border, the "this row is interactive" cue. */
 export const cardInteractiveClass = cn(
   "transition-[box-shadow,transform,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
-  "hover:-translate-y-1 hover:border-brand-2/50",
-  "hover:shadow-[var(--shadow-lg),var(--glow-brand)]",
+  "hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md",
 );
 
 /** Surface primitive. `interactive` adds hover lift for clickable cards. */
@@ -49,7 +44,7 @@ export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("font-display text-lg font-semibold leading-tight tracking-tight", className)}
+      className={cn("text-base font-semibold leading-tight tracking-tight", className)}
       {...props}
     />
   );

@@ -9,6 +9,21 @@
   "trendCaption": {
     "other": "基于您最近 {count} 次已完成的扫描"
   },
+  "kpiAvgScore": "平均评分",
+  "kpiScans": "本月扫描",
+  "ofLimit": "共 {limit}",
+  "trendTitle": "评分趋势",
+  "trendSub": {
+    "other": "最近 {count} 次已完成的扫描"
+  },
+  "trendVsFirst": "较首次",
+  "donutTotal": "个问题",
+  "table": {
+    "status": "状态",
+    "pages": "页面",
+    "date": "日期",
+    "score": "评分"
+  },
   "usageTitle": "本月用量",
   "meters": {
     "scans": "扫描",

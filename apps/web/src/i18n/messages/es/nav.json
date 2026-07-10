@@ -19,6 +19,10 @@
     "menu": "Menú de cuenta",
     "appearance": "Apariencia"
   },
+  "topbar": {
+    "workspace": "Espacio de trabajo",
+    "account": "Ajustes de la cuenta"
+  },
   "mobile": {
     "open": "Abrir menú de navegación",
     "close": "Cerrar menú de navegación",

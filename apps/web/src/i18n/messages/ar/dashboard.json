@@ -14,6 +14,26 @@
     "many": "عبر آخر {count} فحصًا مكتملًا لديك",
     "other": "عبر آخر {count} فحص مكتمل لديك"
   },
+  "kpiAvgScore": "متوسط النتيجة",
+  "kpiScans": "الفحوصات هذا الشهر",
+  "ofLimit": "من {limit}",
+  "trendTitle": "اتجاه الدرجات",
+  "trendSub": {
+    "zero": "آخر {count} فحص مكتمل",
+    "one": "آخر فحص مكتمل",
+    "two": "آخر فحصين مكتملين",
+    "few": "آخر {count} فحوصات مكتملة",
+    "many": "آخر {count} فحصًا مكتملًا",
+    "other": "آخر {count} فحص مكتمل"
+  },
+  "trendVsFirst": "منذ أول فحص",
+  "donutTotal": "مشكلة",
+  "table": {
+    "status": "الحالة",
+    "pages": "الصفحات",
+    "date": "التاريخ",
+    "score": "النتيجة"
+  },
   "usageTitle": "الاستخدام هذا الشهر",
   "meters": {
     "scans": "الفحوصات",

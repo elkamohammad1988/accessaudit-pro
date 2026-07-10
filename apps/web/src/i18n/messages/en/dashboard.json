@@ -10,6 +10,22 @@
     "one": "Across your last {count} completed scan",
     "other": "Across your last {count} completed scans"
   },
+  "kpiAvgScore": "Average score",
+  "kpiScans": "Scans this month",
+  "ofLimit": "of {limit}",
+  "trendTitle": "Score trend",
+  "trendSub": {
+    "one": "Last {count} completed scan",
+    "other": "Last {count} completed scans"
+  },
+  "trendVsFirst": "since first scan",
+  "donutTotal": "issues",
+  "table": {
+    "status": "Status",
+    "pages": "Pages",
+    "date": "Date",
+    "score": "Score"
+  },
   "usageTitle": "Usage this month",
   "meters": {
     "scans": "Scans",

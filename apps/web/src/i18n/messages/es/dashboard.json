@@ -10,6 +10,22 @@
     "one": "En tu último {count} análisis completado",
     "other": "En tus últimos {count} análisis completados"
   },
+  "kpiAvgScore": "Puntuación media",
+  "kpiScans": "Análisis este mes",
+  "ofLimit": "de {limit}",
+  "trendTitle": "Tendencia de la puntuación",
+  "trendSub": {
+    "one": "Último {count} análisis completado",
+    "other": "Últimos {count} análisis completados"
+  },
+  "trendVsFirst": "desde el primero",
+  "donutTotal": "problemas",
+  "table": {
+    "status": "Estado",
+    "pages": "Páginas",
+    "date": "Fecha",
+    "score": "Puntuación"
+  },
   "usageTitle": "Uso este mes",
   "meters": {
     "scans": "Análisis",

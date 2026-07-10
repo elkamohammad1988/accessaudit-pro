@@ -9,6 +9,7 @@ import { displayLimit } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, cardSurfaceClass } from "@/components/ui/card";
+import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ export default async function ProjectsPage() {
   const t = await getTranslations("projects");
   const tc = await getTranslations("common");
   const tp = await getTranslations("plans");
+  const tn = await getTranslations("nav");
   const [{ data: projects, error: projectsError }, { data: clients }, { data: sub }] = await Promise.all([
     supabase
       .from("projects")
@@ -60,21 +62,24 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-          <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+      <PageHeader
+        breadcrumb={[{ label: tn("app.dashboard"), href: "/dashboard" }, { label: tn("app.projects") }]}
+        title={t("title")}
+        subtitle={
+          <>
             {t("subtitle")}
             <Badge variant="secondary">
               {active.length} / {displayLimit(limit, tp)}
             </Badge>
-          </p>
-        </div>
-        <ButtonLink href="/projects/new">
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          {t("new")}
-        </ButtonLink>
-      </header>
+          </>
+        }
+        actions={
+          <ButtonLink href="/projects/new">
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            {t("new")}
+          </ButtonLink>
+        }
+      />
 
       {truncated ? (
         <NoticeBanner tone="info">{tc("labels.listTruncated", { count: LIST_PAGE_LIMIT })}</NoticeBanner>
