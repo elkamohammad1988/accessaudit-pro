@@ -130,12 +130,12 @@
    * A bright, faintly warm glass surface with a soft inner catch-light and a
    * thin border, blooming a clay ring on focus. `--field-ink` is the warm umber
    * ink the typed copy renders in; `--field-autofill` repaints the browser yellow. */
-  --field-bg: 32 46% 99.4%;
-  --field-bg-2: 32 36% 97.5%;
-  --field-border: 30 24% 84%;
-  --field-border-hover: 24 40% 64%;
-  --field-ink: 20 26% 14%;
-  --field-autofill: 32 46% 99%;
+  --field-bg: 42 44% 99.4%;
+  --field-bg-2: 40 32% 97.5%;
+  --field-border: 38 22% 84%;
+  --field-border-hover: 42 52% 54%;
+  --field-ink: 34 14% 14%;
+  --field-autofill: 42 44% 99%;
   --field-shadow:
     inset 0 1px 2px 0 hsl(24 22% 30% / 0.06),
     inset 0 -1px 0 0 hsl(0 0% 100% / 0.7),
@@ -218,12 +218,12 @@
   --glow-brand: 0 8px 34px -6px hsl(var(--brand-2) / 0.55);
 
   /* Form controls — dark glass pressed into the clay, warm inner shadow, clay ring. */
-  --field-bg: 20 22% 15%;
-  --field-bg-2: 20 24% 11%;
-  --field-border: 24 16% 29%;
-  --field-border-hover: 24 40% 46%;
-  --field-ink: 28 24% 92%;
-  --field-autofill: 20 22% 16%;
+  --field-bg: 32 8% 15%;
+  --field-bg-2: 32 9% 11%;
+  --field-border: 36 8% 27%;
+  --field-border-hover: 44 48% 46%;
+  --field-ink: 40 16% 92%;
+  --field-autofill: 32 8% 15%;
   --field-shadow:
     inset 0 1px 3px 0 hsl(20 44% 4% / 0.55),
     inset 0 -1px 0 0 hsl(30 30% 80% / 0.05);
