@@ -193,7 +193,7 @@ export default async function DashboardPage() {
           value={projects}
           caption={t("ofLimit", { limit: displayLimit(limits.projects, tp) })}
           icon={FolderKanban}
-          tone="success"
+          tone="brand"
           href="/projects"
           locale={locale}
         />

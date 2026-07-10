@@ -34,9 +34,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolved, setResolved] = useState<Resolved>("light");
 
   useEffect(() => {
-    // Light-first: unset defaults to "light" (mirrors the no-flash themeScript), so
-    // a first-time visitor lands on the warm paper identity without a flip.
-    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "light";
+    // Dark-first: unset defaults to "dark" (mirrors the no-flash themeScript), so a
+    // first-time visitor lands on the signature Gilded Charcoal identity without a flip.
+    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "dark";
     setThemeState(stored);
     setResolved(applyTheme(stored));
   }, []);

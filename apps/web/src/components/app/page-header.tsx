@@ -56,9 +56,16 @@ export function PageHeader({
       ) : null}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <div className="flex items-center gap-3">
+            {/* Gilded section marker — a slim gold rule that anchors the title. */}
+            <span
+              aria-hidden="true"
+              className="h-7 w-1 shrink-0 rounded-full bg-gradient-to-b from-brand-2 to-brand"
+            />
+            <h1 className="text-[1.75rem] font-bold leading-none tracking-tight">{title}</h1>
+          </div>
           {subtitle ? (
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <div className="mt-2 flex flex-wrap items-center gap-2 ps-4 text-sm text-muted-foreground">
               {subtitle}
             </div>
           ) : null}

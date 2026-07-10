@@ -6,9 +6,9 @@
  */
 export const THEME_STORAGE_KEY = "theme";
 
-// Light-first identity: with no saved choice the app opens in the bright "Verdant
-// Glass" theme (unset → light) — a first-time visitor lands on luminous minted white,
-// never a dark stage. An explicit `system` choice still follows the OS; `light`/`dark`
-// are honored verbatim (dark is the deep "Verdant Dusk" pine, never black). Mirror
-// this default in ThemeProvider so the client never flips the theme after hydration.
-export const themeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
+// Dark-first identity: with no saved choice the app opens in the signature "Gilded
+// Charcoal" theme (unset → dark) — a first-time visitor lands on warm graphite lit by
+// gold, the premium enterprise stage. An explicit `system` choice still follows the OS;
+// `light`/`dark` are honored verbatim (light is the warm-ivory day theme). Mirror this
+// default in ThemeProvider so the client never flips the theme after hydration.
+export const themeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||t==null||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;

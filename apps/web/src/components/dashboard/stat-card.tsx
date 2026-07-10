@@ -99,25 +99,24 @@ export function FilledStatCard({
   return (
     <div
       className={cn(
-        "lux-rim relative flex flex-col overflow-hidden rounded-2xl p-5 text-brand-fg shadow-md",
-        "bg-gradient-to-br from-brand-2 via-brand to-brand",
+        "surface-gold relative flex flex-col overflow-hidden rounded-2xl p-5 shadow-lg",
         className,
       )}
     >
-      {/* Soft top-light so the fill reads as a domed, lit surface rather than flat paint. */}
+      {/* Beaded silver ornament — a fine studded frame inset from the gilt edge. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/15 to-transparent"
+        className="bead-frame pointer-events-none absolute inset-[7px] rounded-[0.7rem] border-2"
       />
       <div className="relative">
-        <p className="text-sm font-medium text-brand-fg/85">{label}</p>
+        <p className="text-sm font-semibold text-aurum-ink/80">{label}</p>
         <div className="mt-3 flex items-end gap-1.5">
-          <span className="text-4xl font-bold leading-none tabular-nums tracking-tight">
+          <span className="text-4xl font-bold leading-none tabular-nums tracking-tight text-aurum-ink">
             {value != null ? <CountUp value={value} locale={locale} /> : "—"}
           </span>
-          {unit ? <span className="pb-1 text-sm font-medium text-brand-fg/80">{unit}</span> : null}
+          {unit ? <span className="pb-1 text-sm font-medium text-aurum-ink/70">{unit}</span> : null}
         </div>
-        {caption ? <p className="mt-1.5 text-xs text-brand-fg/80">{caption}</p> : null}
+        {caption ? <p className="mt-1.5 text-xs font-medium text-aurum-ink/75">{caption}</p> : null}
       </div>
       {spark && spark.length >= 2 ? (
         <div className="relative -mx-5 -mb-5 mt-4">
@@ -126,9 +125,9 @@ export function FilledStatCard({
             label={sparkLabel}
             height={68}
             gridlines={0}
-            colorVar="--brand-fg"
+            colorVar="--aurum-ink"
             endDot={false}
-            className="opacity-90"
+            className="opacity-75"
           />
         </div>
       ) : null}

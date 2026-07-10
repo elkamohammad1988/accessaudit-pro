@@ -26,6 +26,17 @@ const config: Config = {
           strong: "hsl(var(--gold-strong) / <alpha-value>)",
           fg: "hsl(var(--gold-fg) / <alpha-value>)",
         },
+        // Aurum (metallic gold) + silver — the gilt & bead ornament accents.
+        aurum: {
+          DEFAULT: "hsl(var(--aurum) / <alpha-value>)",
+          2: "hsl(var(--aurum-2) / <alpha-value>)",
+          deep: "hsl(var(--aurum-deep) / <alpha-value>)",
+          ink: "hsl(var(--aurum-ink) / <alpha-value>)",
+        },
+        silver: {
+          DEFAULT: "hsl(var(--silver) / <alpha-value>)",
+          2: "hsl(var(--silver-2) / <alpha-value>)",
+        },
         card: {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
