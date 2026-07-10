@@ -21,6 +21,26 @@
     "distribution": "Violation severity distribution: {distribution}"
   },
   "report": {
+    "exec": {
+      "eyebrow": "Executive summary",
+      "riskLabel": "Risk level",
+      "risk": {
+        "critical": "Critical",
+        "high": "High",
+        "moderate": "Moderate",
+        "low": "Low"
+      },
+      "verdict": {
+        "critical": "Critical accessibility barriers were found that can block some users entirely. Immediate remediation is required to move toward WCAG {level} conformance.",
+        "high": "Serious accessibility issues were found that are likely to affect real users. Prioritized remediation is recommended for WCAG {level} conformance.",
+        "moderate": "The site is broadly usable, with moderate issues to resolve for full WCAG {level} conformance.",
+        "low": "Strong automated conformance with WCAG {level}. A manual review is recommended to confirm the result."
+      },
+      "priority": {
+        "one": "Priority: address the {count} critical or serious finding first.",
+        "other": "Priority: address the {count} critical or serious findings first."
+      }
+    },
     "inProgressNote": "The worker is auditing your page(s). This view updates automatically.",
     "inProgressAria": "Scan in progress",
     "failedTitle": "Scan failed",

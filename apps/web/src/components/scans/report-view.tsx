@@ -91,6 +91,11 @@ export function ReportView({
   const failedPages = Math.max(0, pages.length - pagesScanned);
   const band = scoreBand(score);
   const criticalAndSerious = totals.critical + totals.serious;
+  // Boardroom risk grade, derived from the worst severity present. Drives the
+  // executive-summary verdict + the risk chip (mapped to the severity color scale).
+  const riskKey =
+    totals.critical > 0 ? "critical" : totals.serious > 0 ? "high" : totals.moderate > 0 ? "moderate" : "low";
+  const RISK_BADGE = { critical: "critical", high: "serious", moderate: "moderate", low: "success" } as const;
 
   if (inProgress) {
     return (
@@ -138,6 +143,32 @@ export function ReportView({
           <p className="mt-1 text-muted-foreground">{t.plural("report.partialBody", pagesScanned)}</p>
         </section>
       ) : null}
+
+      {/* Executive summary — the boardroom verdict: a risk grade plus a plain-language
+          reading of what the score means and where remediation should start. Rendered
+          on screen, in the shared report, and in the PDF/print export. */}
+      <section aria-label={t("report.exec.eyebrow")}>
+        <Card className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              {t("report.exec.eyebrow")}
+            </p>
+            <span className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">{t("report.exec.riskLabel")}</span>
+              <Badge variant={RISK_BADGE[riskKey]}>{t(`report.exec.risk.${riskKey}`)}</Badge>
+            </span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-card-foreground/90 sm:text-[15px]">
+            {t(`report.exec.verdict.${riskKey}`, { level: wcagLevel })}
+          </p>
+          {criticalAndSerious > 0 ? (
+            <p className="mt-2.5 flex items-start gap-2 text-sm font-medium">
+              <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+              {t.plural("report.exec.priority", criticalAndSerious)}
+            </p>
+          ) : null}
+        </Card>
+      </section>
 
       {/* Summary — the report's headline verdict, composed as a certificate band:
           a focal score "seal" (a soft gold halo behind the gauge on screen) beside

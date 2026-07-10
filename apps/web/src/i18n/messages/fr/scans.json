@@ -21,6 +21,26 @@
     "distribution": "Répartition des violations par gravité : {distribution}"
   },
   "report": {
+    "exec": {
+      "eyebrow": "Résumé exécutif",
+      "riskLabel": "Niveau de risque",
+      "risk": {
+        "critical": "Critique",
+        "high": "Élevé",
+        "moderate": "Modéré",
+        "low": "Faible"
+      },
+      "verdict": {
+        "critical": "Des obstacles d'accessibilité critiques ont été détectés, susceptibles de bloquer totalement certains utilisateurs. Une remédiation immédiate est nécessaire pour progresser vers la conformité WCAG {level}.",
+        "high": "Des problèmes d'accessibilité sérieux ont été détectés, susceptibles d'affecter de vrais utilisateurs. Une remédiation priorisée est recommandée pour la conformité WCAG {level}.",
+        "moderate": "Le site est globalement utilisable, avec des problèmes modérés à résoudre pour une conformité WCAG {level} complète.",
+        "low": "Forte conformité automatisée à la norme WCAG {level}. Une revue manuelle est recommandée pour confirmer le résultat."
+      },
+      "priority": {
+        "one": "Priorité : traiter d'abord le {count} problème critique ou sérieux.",
+        "other": "Priorité : traiter d'abord les {count} problèmes critiques ou sérieux."
+      }
+    },
     "inProgressNote": "Le worker audite votre/vos page(s). Cette vue se met à jour automatiquement.",
     "inProgressAria": "Analyse en cours",
     "failedTitle": "Échec de l'analyse",
