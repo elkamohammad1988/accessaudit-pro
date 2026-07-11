@@ -23,6 +23,12 @@
     "overview": "Resumen",
     "workspace": "Espacio de trabajo"
   },
+  "search": {
+    "placeholder": "Buscar…",
+    "label": "Buscar en la aplicación",
+    "newScan": "Nuevo análisis",
+    "empty": "Sin resultados"
+  },
   "topbar": {
     "workspace": "Espacio de trabajo",
     "account": "Ajustes de la cuenta"

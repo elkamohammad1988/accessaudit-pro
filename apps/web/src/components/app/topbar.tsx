@@ -6,6 +6,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { IconChip } from "@/components/ui/icon-chip";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { TopSearch } from "@/components/app/top-search";
 import { useTranslations } from "@/i18n/provider";
 
 /**
@@ -44,7 +45,12 @@ export function TopBar({
         </div>
       </div>
 
-      <div className="ms-auto flex items-center gap-1.5">
+      {/* Quick-search — the Jumbo "Search anything" bar, centered in the chrome. */}
+      <div className="mx-4 hidden max-w-md flex-1 xl:block">
+        <TopSearch />
+      </div>
+
+      <div className="ms-auto flex items-center gap-1.5 xl:ms-0">
         <LanguageSwitcher variant="compact" />
         <ThemeToggle />
         <div className="mx-1 h-6 w-px bg-border" aria-hidden="true" />

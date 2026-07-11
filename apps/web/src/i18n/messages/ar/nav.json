@@ -23,6 +23,12 @@
     "overview": "نظرة عامة",
     "workspace": "مساحة العمل"
   },
+  "search": {
+    "placeholder": "بحث…",
+    "label": "ابحث في التطبيق",
+    "newScan": "فحص جديد",
+    "empty": "لا نتائج"
+  },
   "topbar": {
     "workspace": "مساحة العمل",
     "account": "إعدادات الحساب"

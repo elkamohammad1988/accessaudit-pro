@@ -23,6 +23,12 @@
     "overview": "Aperçu",
     "workspace": "Espace de travail"
   },
+  "search": {
+    "placeholder": "Rechercher…",
+    "label": "Rechercher dans l'application",
+    "newScan": "Nouvelle analyse",
+    "empty": "Aucun résultat"
+  },
   "topbar": {
     "workspace": "Espace de travail",
     "account": "Paramètres du compte"

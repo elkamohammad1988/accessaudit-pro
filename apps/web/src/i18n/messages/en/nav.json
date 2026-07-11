@@ -23,6 +23,12 @@
     "overview": "Overview",
     "workspace": "Workspace"
   },
+  "search": {
+    "placeholder": "Search…",
+    "label": "Search the app",
+    "newScan": "New scan",
+    "empty": "No matches"
+  },
   "topbar": {
     "workspace": "Workspace",
     "account": "Account settings"

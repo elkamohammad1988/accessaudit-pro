@@ -23,6 +23,12 @@
     "overview": "概览",
     "workspace": "工作区"
   },
+  "search": {
+    "placeholder": "搜索…",
+    "label": "在应用中搜索",
+    "newScan": "新建扫描",
+    "empty": "无匹配项"
+  },
   "topbar": {
     "workspace": "工作区",
     "account": "账户设置"
