@@ -19,6 +19,10 @@
     "menu": "قائمة الحساب",
     "appearance": "المظهر"
   },
+  "sections": {
+    "overview": "نظرة عامة",
+    "workspace": "مساحة العمل"
+  },
   "topbar": {
     "workspace": "مساحة العمل",
     "account": "إعدادات الحساب"

@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   FolderKanban,
+  Gauge,
   Plus,
   ScanLine,
   TrendingDown,
@@ -34,7 +35,7 @@ import { Progress } from "@/components/ui/progress";
 import { CountUp } from "@/components/ui/count-up";
 import { AreaChart } from "@/components/charts/area-chart";
 import { Donut } from "@/components/charts/donut";
-import { StatCard, FilledStatCard } from "@/components/dashboard/stat-card";
+import { GradientStatCard } from "@/components/dashboard/stat-card";
 import { ScanStatusBadge } from "@/components/scans/scan-status-badge";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -160,40 +161,41 @@ export default async function DashboardPage() {
         }
       />
 
-      {/* Row 1 — KPI tiles */}
+      {/* Row 1 — colorful gradient metric cards (the Jumbo signature) */}
       <section className="grid animate-rise-in gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <FilledStatCard
+        <GradientStatCard
           label={t("kpiAvgScore")}
           value={avgScore}
           unit="/ 100"
           caption={avgScore != null ? bandLabel(band.tone, tb) : undefined}
-          spark={trend}
-          sparkLabel={t("scoreTrendLabel", { count: trend.length })}
+          icon={Gauge}
+          gradient="gold"
+          beaded
           locale={locale}
         />
-        <StatCard
+        <GradientStatCard
           label={t("kpiScans")}
           value={scansUsed}
           caption={t("ofLimit", { limit: displayLimit(limits.scansPerMonth, tp) })}
           icon={ScanLine}
-          tone="brand"
+          gradient="terracotta"
           locale={locale}
         />
-        <StatCard
+        <GradientStatCard
           label={t("meters.clients")}
           value={clients}
           caption={t("ofLimit", { limit: displayLimit(limits.clients, tp) })}
           icon={Users}
-          tone="gold"
+          gradient="emerald"
           href="/clients"
           locale={locale}
         />
-        <StatCard
+        <GradientStatCard
           label={t("meters.projects")}
           value={projects}
           caption={t("ofLimit", { limit: displayLimit(limits.projects, tp) })}
           icon={FolderKanban}
-          tone="brand"
+          gradient="rose"
           href="/projects"
           locale={locale}
         />

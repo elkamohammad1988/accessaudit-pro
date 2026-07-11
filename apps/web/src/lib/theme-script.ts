@@ -11,4 +11,4 @@ export const THEME_STORAGE_KEY = "theme";
 // gold, the premium enterprise stage. An explicit `system` choice still follows the OS;
 // `light`/`dark` are honored verbatim (light is the warm-ivory day theme). Mirror this
 // default in ThemeProvider so the client never flips the theme after hydration.
-export const themeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||t==null||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
+export const themeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;

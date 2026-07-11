@@ -19,6 +19,10 @@
     "menu": "Menú de cuenta",
     "appearance": "Apariencia"
   },
+  "sections": {
+    "overview": "Resumen",
+    "workspace": "Espacio de trabajo"
+  },
   "topbar": {
     "workspace": "Espacio de trabajo",
     "account": "Ajustes de la cuenta"

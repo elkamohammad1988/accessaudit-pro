@@ -12,11 +12,21 @@ import { useTranslations, useLocale } from "@/i18n/provider";
 import { directionOf } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
-  { href: "/clients", key: "clients", icon: Users },
-  { href: "/projects", key: "projects", icon: FolderKanban },
-  { href: "/settings", key: "settings", icon: Settings },
+// Grouped nav — the Jumbo-style sectioned rail (small uppercase section labels
+// above each cluster) instead of one flat list.
+const NAV_SECTIONS = [
+  {
+    key: "overview",
+    items: [{ href: "/dashboard", key: "dashboard", icon: LayoutDashboard }],
+  },
+  {
+    key: "workspace",
+    items: [
+      { href: "/clients", key: "clients", icon: Users },
+      { href: "/projects", key: "projects", icon: FolderKanban },
+      { href: "/settings", key: "settings", icon: Settings },
+    ],
+  },
 ] as const;
 
 // Drawer open/close transition length (ms). Matches the `duration-300` on the
@@ -58,45 +68,52 @@ function SidebarBody({
         </div>
       </div>
 
-      <nav aria-label={t("primary")} className="flex-1 space-y-0.5 px-3">
-        {NAV.map(({ href, key, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
-          return (
-            <Link
-              key={href}
-              href={href}
-              onClick={onNavigate}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
-                active
-                  ? "bg-white/70 text-foreground shadow-sm ring-1 ring-inset ring-brand/20 backdrop-blur-sm dark:bg-elevated/80 dark:ring-brand/25"
-                  : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
-              )}
-            >
-              {/* Active accent bar — the Linear/Vercel cue for "you are here".
-                  Logical inline-start so it sits on the correct edge in RTL. */}
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "absolute start-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-brand transition-opacity",
-                  active ? "opacity-100" : "opacity-0",
-                )}
-              />
-              <Icon
-                className={cn(
-                  "h-4 w-4 shrink-0 transition-colors",
-                  active ? "text-brand" : "text-muted-foreground group-hover:text-foreground",
-                  // Signature micro-interaction: the Settings gear turns slowly
-                  // while you hover the row, then settles. Stilled by reduced-motion.
-                  key === "settings" && "group-hover:animate-spin-slow",
-                )}
-                aria-hidden="true"
-              />
-              {t(`app.${key}`)}
-            </Link>
-          );
-        })}
+      <nav aria-label={t("primary")} className="flex-1 space-y-4 px-3">
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.key} className="space-y-0.5">
+            <p className="px-3 pb-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">
+              {t(`sections.${section.key}`)}
+            </p>
+            {section.items.map(({ href, key, icon: Icon }) => {
+              const active = pathname === href || pathname.startsWith(`${href}/`);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,color,box-shadow] duration-200",
+                    active
+                      ? "bg-white/70 text-foreground shadow-sm ring-1 ring-inset ring-brand/20 backdrop-blur-sm dark:bg-elevated/80 dark:ring-brand/25"
+                      : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+                  )}
+                >
+                  {/* Active accent bar — the "you are here" cue. Logical inline-start
+                      so it sits on the correct edge in RTL. */}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute start-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-brand transition-opacity",
+                      active ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  <Icon
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-colors",
+                      active ? "text-brand" : "text-muted-foreground group-hover:text-foreground",
+                      // Signature micro-interaction: the Settings gear turns slowly
+                      // while you hover the row, then settles. Stilled by reduced-motion.
+                      key === "settings" && "group-hover:animate-spin-slow",
+                    )}
+                    aria-hidden="true"
+                  />
+                  {t(`app.${key}`)}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       <div className="border-t p-2">

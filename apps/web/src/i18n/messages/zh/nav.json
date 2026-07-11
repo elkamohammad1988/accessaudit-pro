@@ -19,6 +19,10 @@
     "menu": "账户菜单",
     "appearance": "外观"
   },
+  "sections": {
+    "overview": "概览",
+    "workspace": "工作区"
+  },
   "topbar": {
     "workspace": "工作区",
     "account": "账户设置"
