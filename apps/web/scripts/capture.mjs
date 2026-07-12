@@ -76,6 +76,16 @@ async function shoot(browser, route, theme, size, { fullPage = false } = {}) {
       ? "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
       : undefined,
   });
+  // The app's theme is localStorage-driven (`.dark` on <html>, dark-first default),
+  // NOT `prefers-color-scheme`. Setting `colorScheme` alone leaves every shot on the
+  // default theme — which is why an earlier pass produced byte-identical light/dark
+  // files. Seed the stored choice before first paint so the no-flash themeScript
+  // resolves the theme we actually want.
+  await ctx.addInitScript((t) => {
+    try {
+      localStorage.setItem("theme", t);
+    } catch {}
+  }, theme);
   const page = await ctx.newPage();
   const errors = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));

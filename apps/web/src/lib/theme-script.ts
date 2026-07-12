@@ -6,9 +6,9 @@
  */
 export const THEME_STORAGE_KEY = "theme";
 
-// Dark-first identity: with no saved choice the app opens in the signature "Gilded
-// Charcoal" theme (unset → dark) — a first-time visitor lands on warm graphite lit by
-// gold, the premium enterprise stage. An explicit `system` choice still follows the OS;
-// `light`/`dark` are honored verbatim (light is the warm-ivory day theme). Mirror this
-// default in ThemeProvider so the client never flips the theme after hydration.
+// Light-first default: with no saved choice the app opens in the warm-ivory day theme,
+// matching the airy Material feel (unset → light). Dark is the signature "Gilded Charcoal"
+// stage kept as a premium opt-in. An explicit `system` choice follows the OS; `light`/`dark`
+// are honored verbatim. Mirror this default in ThemeProvider so the client never flips the
+// theme after hydration.
 export const themeScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
