@@ -30,6 +30,13 @@ export function safeNextPath(next: string | null | undefined, fallback = "/dashb
   return next;
 }
 
+/** Trim a form value, collapsing a blank / whitespace-only string to `null` — the
+ *  shape nullable text columns want from an optional field. */
+export function emptyToNull(value?: string | null): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
+
 /** A URL-safe slug from a free-text name (e.g. an org name). */
 export function slugify(input: string): string {
   return input

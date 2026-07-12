@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowUpRight, ChevronDown, FolderKanban, Globe, Plus } from "lucide-react";
+import { FolderKanban, Globe, Plus, ScanLine } from "lucide-react";
 import { effectivePlan, limitsFor } from "@accessaudit/shared";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "@/i18n/server";
 import { displayLimit } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { Card, cardSurfaceClass } from "@/components/ui/card";
+import { ButtonLink } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
+import { EntityRow, ScorePill, StatPill } from "@/components/app/entity-row";
+import { ArchivedList } from "@/components/app/archived-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
-import { cn } from "@/lib/utils";
+import { rollupScansBy } from "@/lib/scan-format";
 import { restoreProjectRecord } from "./actions";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -34,22 +35,31 @@ export default async function ProjectsPage() {
   const tc = await getTranslations("common");
   const tp = await getTranslations("plans");
   const tn = await getTranslations("nav");
-  const [{ data: projects, error: projectsError }, { data: clients }, { data: sub }] = await Promise.all([
-    supabase
-      .from("projects")
-      .select("id, name, base_url, client_id, archived_at, created_at")
-      .eq("organization_id", organization.id)
-      .order("created_at", { ascending: false })
-      .limit(LIST_PAGE_LIMIT + 1),
-    supabase.from("clients").select("id, name").eq("organization_id", organization.id),
-    supabase
-      .from("subscriptions")
-      .select("plan, status")
-      .eq("organization_id", organization.id)
-      .maybeSingle(),
-  ]);
+  const [{ data: projects, error: projectsError }, { data: clients }, { data: sub }, { data: allScans }] =
+    await Promise.all([
+      supabase
+        .from("projects")
+        .select("id, name, base_url, client_id, archived_at, created_at")
+        .eq("organization_id", organization.id)
+        .order("created_at", { ascending: false })
+        .limit(LIST_PAGE_LIMIT + 1),
+      supabase.from("clients").select("id, name").eq("organization_id", organization.id),
+      supabase
+        .from("subscriptions")
+        .select("plan, status")
+        .eq("organization_id", organization.id)
+        .maybeSingle(),
+      // Per-project rollups: scan count + the most recent scored scan's score.
+      supabase
+        .from("scans")
+        .select("id, project_id, score, created_at")
+        .eq("organization_id", organization.id)
+        .order("created_at", { ascending: false })
+        .limit(1000),
+    ]);
 
   const clientName = new Map((clients ?? []).map((c) => [c.id, c.name] as const));
+  const rollup = rollupScansBy(allScans ?? [], (projectId) => projectId);
   const projectRows = projects ?? [];
   const truncated = projectRows.length > LIST_PAGE_LIMIT;
   const visible = truncated ? projectRows.slice(0, LIST_PAGE_LIMIT) : projectRows;
@@ -90,33 +100,30 @@ export default async function ProjectsPage() {
       ) : active.length > 0 ? (
         <Card className="overflow-hidden">
           <ul className="divide-y">
-            {active.map((project) => (
-              <li key={project.id}>
-                <Link
+            {active.map((project) => {
+              const stats = rollup.get(project.id);
+              const sc = stats?.scans ?? 0;
+              const score = stats?.latestScore ?? null;
+              return (
+                <EntityRow
+                  key={project.id}
                   href={`/projects/${project.id}`}
-                  className="group flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
-                      <FolderKanban className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{project.name}</p>
-                      <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-                        <Globe className="h-3 w-3 shrink-0" aria-hidden="true" />
-                        <span className="truncate">
-                          {clientName.get(project.client_id) ?? t("unknownClient")} · {project.base_url}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowUpRight
-                    className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    aria-hidden="true"
-                  />
-                </Link>
-              </li>
-            ))}
+                  title={project.name}
+                  subtitle={`${clientName.get(project.client_id) ?? t("unknownClient")} · ${project.base_url}`}
+                  subtitleIcon={Globe}
+                  monogramName={project.name}
+                  stats={
+                    <>
+                      <StatPill icon={ScanLine} value={sc} label={tc.plural("stats.scans", sc)} />
+                      <ScorePill
+                        score={score}
+                        label={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
+                      />
+                    </>
+                  }
+                />
+              );
+            })}
           </ul>
         </Card>
       ) : (
@@ -133,35 +140,7 @@ export default async function ProjectsPage() {
         />
       )}
 
-      {archived.length > 0 ? (
-        <details
-          className={cn(
-            cardSurfaceClass,
-            "group px-4 py-3 transition-colors hover:border-foreground/15 dark:hover:border-gold/25",
-          )}
-        >
-          <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium [&::-webkit-details-marker]:hidden">
-            {tc("labels.archivedCount", { count: archived.length })}
-            <ChevronDown
-              aria-hidden="true"
-              className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180"
-            />
-          </summary>
-          <ul className="mt-2 divide-y border-t pt-1">
-            {archived.map((project) => (
-              <li key={project.id} className="flex items-center justify-between py-2">
-                <span className="text-sm text-muted-foreground">{project.name}</span>
-                <form action={restoreProjectRecord}>
-                  <input type="hidden" name="id" value={project.id} />
-                  <Button type="submit" variant="ghost" size="sm">
-                    {tc("actions.restore")}
-                  </Button>
-                </form>
-              </li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
+      <ArchivedList items={archived} restoreAction={restoreProjectRecord} />
     </div>
   );
 }

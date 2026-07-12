@@ -41,9 +41,19 @@ export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
   return <div className={cn("flex flex-col gap-1.5 p-6", className)} {...props} />;
 }
 
-export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+/**
+ * Card heading. Defaults to `<h3>` (its most common nesting under a page `<h2>`),
+ * but takes an `as` so a card that sits directly under the page `<h1>` — e.g. the
+ * dashboard's top-level sections — can render `<h2>` and keep the document outline
+ * gap-free (no skipped heading levels for screen-reader / heading navigation).
+ */
+export function CardTitle({
+  as: Tag = "h3",
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement> & { as?: "h2" | "h3" | "h4" }) {
   return (
-    <h3
+    <Tag
       className={cn("text-base font-semibold leading-tight tracking-tight", className)}
       {...props}
     />

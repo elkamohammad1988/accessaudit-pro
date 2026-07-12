@@ -754,6 +754,50 @@
   }
 }
 
+/* ── Entity monogram ──────────────────────────────────────────────────────────
+ * A small domed enamel disc carrying an entity's initials, tinted by a warm hue
+ * derived deterministically from its name (`--mono-h`, set inline). Every client,
+ * project and site gets its own colour from one cohesive warm family, so a list
+ * reads as a wall of distinct identities rather than one repeated icon — while the
+ * single-recipe surface keeps them unmistakably kin. Ink clears AA on the tint in
+ * both themes; the whole thing is decorative (the name sits beside it as text). */
+@layer components {
+  .monogram {
+    background-image: linear-gradient(
+      140deg,
+      hsl(var(--mono-h) 58% 62% / 0.24) 0%,
+      hsl(var(--mono-h) 52% 46% / 0.1) 100%
+    );
+    color: hsl(var(--mono-h) 52% 30%);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--mono-h) 48% 46% / 0.32),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
+  }
+  .dark .monogram {
+    background-image: linear-gradient(
+      140deg,
+      hsl(var(--mono-h) 62% 56% / 0.3) 0%,
+      hsl(var(--mono-h) 56% 40% / 0.12) 100%
+    );
+    color: hsl(var(--mono-h) 68% 74%);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--mono-h) 56% 56% / 0.34),
+      inset 0 1px 0 0 hsl(30 30% 80% / 0.09);
+  }
+  /* Catch-light so the disc reads domed, not flat. */
+  .monogram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image: linear-gradient(180deg, hsl(0 0% 100% / 0.45) 0%, transparent 55%);
+  }
+  .dark .monogram::before {
+    background-image: linear-gradient(180deg, hsl(30 40% 82% / 0.12) 0%, transparent 55%);
+  }
+}
+
 /* ── Gilt & silver ornament ───────────────────────────────────────────────────
  * The "dahabi mozrkach b ni9ad fidiyya" treatment: a leaf-gold surface dressed
  * with a beaded silver frame. Reserved for the one focal statistic so the gilt

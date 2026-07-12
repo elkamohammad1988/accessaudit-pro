@@ -1,15 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { initials } from "@/lib/initials";
 import { cn } from "@/lib/utils";
-
-/** First-letters monogram for the initials fallback (name or email). */
-export function initials(value: string): string {
-  const cleaned = value.trim();
-  if (!cleaned) return "?";
-  const parts = cleaned.split(/[\s@.]+/).filter(Boolean);
-  return (parts[0]?.[0] ?? cleaned[0]).concat(parts[1]?.[0] ?? "").toUpperCase();
-}
 
 const sizeClass = {
   sm: "h-8 w-8 text-xs",

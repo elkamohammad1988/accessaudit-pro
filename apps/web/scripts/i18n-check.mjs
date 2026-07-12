@@ -52,9 +52,14 @@ for (const locale of locales) {
   const cur = flatten(loadLocale(locale), "", new Map());
   const missing = [...ref.keys()].filter((k) => !cur.has(k) && !isOptionalPlural(k));
   const extra = [...cur.keys()].filter((k) => !ref.has(k) && !isOptionalPlural(k));
-  // Placeholder mismatches: ignore plural sub-keys (zero/two/few/many add {count} freely).
+  // Placeholder mismatches: ignore plural sub-keys. zero/two/few/many aren't in the
+  // en reference, so they're never compared; the singular `one` form legitimately
+  // omits the interpolated count in some languages (Arabic renders "مشروع واحد", not
+  // "1 مشروع"), so we exempt it too. Only the universal `other` fallback and ordinary
+  // keys must keep placeholder parity.
   const placeholderMismatch = [...ref.keys()].filter((k) => {
     if (!cur.has(k)) return false;
+    if (k.split(".").pop() === "one") return false;
     return ref.get(k) !== cur.get(k);
   });
 

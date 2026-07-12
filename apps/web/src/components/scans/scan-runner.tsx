@@ -182,8 +182,10 @@ export function ScanRunner({
   return (
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6"
-      role="dialog"
-      aria-modal="true"
+      // Not role="dialog"/aria-modal: this overlay has no interactive controls and
+      // auto-dismisses, so claiming modal semantics (which promise focus containment
+      // we don't provide) would mislead assistive tech. It's an honest busy region.
+      role="status"
       aria-label={t("runner.title")}
       aria-busy={!done}
     >

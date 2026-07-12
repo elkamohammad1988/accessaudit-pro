@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { PLAN_LIMITS, PLAN_TIERS, isUnlimited, type PlanTier } from "@accessaudit/shared";
 import { ButtonLink } from "@/components/ui/button";
+import { jsonLdScript } from "@/lib/json-ld";
 import { Card } from "@/components/ui/card";
 import { IconChip } from "@/components/ui/icon-chip";
 import { Reveal } from "@/components/ui/reveal";
@@ -400,7 +401,7 @@ export default async function LandingPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: jsonLdScript({
               "@context": "https://schema.org",
               "@type": "FAQPage",
               mainEntity: faqs.map((f) => ({

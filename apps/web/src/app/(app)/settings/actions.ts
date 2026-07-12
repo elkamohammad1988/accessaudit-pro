@@ -3,17 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireOrg } from "@/lib/auth";
-import { slugify } from "@/lib/utils";
+import { emptyToNull, slugify } from "@/lib/utils";
 import { optionalHttpsUrl } from "@/lib/validation";
 import { genericWriteError } from "@/lib/errors";
 import { getTranslations } from "@/i18n/server";
 
 export type SettingsState = { error: string | null; ok: boolean };
-
-const emptyToNull = (value?: string | null): string | null => {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed : null;
-};
 
 /* ----------------------------- Profile ----------------------------------- */
 

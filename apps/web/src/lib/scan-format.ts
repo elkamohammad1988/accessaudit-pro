@@ -55,6 +55,30 @@ export const STATUS_META: Record<ScanStatus, StatusMeta> = {
   failed: { className: "bg-danger/10 text-danger-strong ring-1 ring-inset ring-danger/25", dot: "bg-danger", terminal: true },
 };
 
+/**
+ * Roll a list of scans (ordered newest-first) up to a per-key summary: how many
+ * scans, and the most recent *scored* scan's score. `keyOf` maps a scan's
+ * `project_id` to its grouping key — identity for the per-project lists, or a
+ * project→client hop for the clients list. A key of `undefined` (a scan under a
+ * project we didn't load) is skipped. Replaces the three hand-rolled count/latest
+ * loops on the clients, projects and client-detail lists.
+ */
+export function rollupScansBy<K>(
+  scans: readonly { project_id: string; score: number | null }[],
+  keyOf: (projectId: string) => K | undefined,
+): Map<K, { scans: number; latestScore: number | null }> {
+  const out = new Map<K, { scans: number; latestScore: number | null }>();
+  for (const scan of scans) {
+    const key = keyOf(scan.project_id);
+    if (key === undefined) continue;
+    const summary = out.get(key) ?? { scans: 0, latestScore: null };
+    summary.scans += 1;
+    if (summary.latestScore == null && scan.score != null) summary.latestScore = scan.score;
+    out.set(key, summary);
+  }
+  return out;
+}
+
 /** Color the numeric score by band (good / needs work / poor). */
 export function scoreClassName(score: number | null): string {
   const { tone } = scoreBand(score);

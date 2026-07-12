@@ -62,6 +62,11 @@ export function ShareControl({
       <Button type="button" onClick={copy} variant="secondary" size="sm" className="h-9 w-20">
         {copied ? tc("copied") : tc("copy")}
       </Button>
+      {/* The visible label swaps Copy→Copied!, which is silent to screen readers; a
+          polite live region announces the success without stealing focus. */}
+      <span aria-live="polite" className="sr-only">
+        {copied ? tc("copied") : ""}
+      </span>
       <form action={setScanShare}>
         <input type="hidden" name="scanId" value={scanId} />
         <input type="hidden" name="share" value="off" />

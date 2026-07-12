@@ -63,6 +63,17 @@
     "aria": "Puntuación de accesibilidad {score} de 100",
     "none": "Aún sin puntuación"
   },
+  "stats": {
+    "projects": {
+      "one": "{count} proyecto",
+      "other": "{count} proyectos"
+    },
+    "scans": {
+      "one": "{count} análisis",
+      "other": "{count} análisis"
+    },
+    "noScans": "Sin análisis todavía"
+  },
   "theme": {
     "system": "Tema del sistema",
     "light": "Tema claro",

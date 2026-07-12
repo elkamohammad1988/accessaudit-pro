@@ -9,6 +9,8 @@ import {
   limitsFor,
   pagesWithinScanLimit,
   rpcQuotaLimit,
+  SCAN_TYPES,
+  WCAG_LEVELS,
   type PlanLimits,
   type PlanTier,
 } from "@accessaudit/shared";
@@ -47,8 +49,10 @@ export async function createScan(_prev: NewScanState, formData: FormData): Promi
 
   const schema = z.object({
     projectId: z.string().uuid(t("chooseProject")),
-    scanType: z.enum(["single", "list"]),
-    wcagLevel: z.enum(["A", "AA", "AAA"]),
+    // Derived from the shared domain consts so the accepted values can never drift
+    // from the canonical ScanType / WcagLevel definitions the worker enforces.
+    scanType: z.enum(SCAN_TYPES),
+    wcagLevel: z.enum(WCAG_LEVELS),
     singleUrl: z.string().max(2_048).optional(),
     urlList: z.string().max(MAX_URL_LIST_CHARS, t("urlListTooLarge")).optional(),
   });

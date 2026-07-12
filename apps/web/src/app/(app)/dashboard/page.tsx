@@ -206,7 +206,7 @@ export default async function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
             <div>
-              <CardTitle>{t("trendTitle")}</CardTitle>
+              <CardTitle as="h2">{t("trendTitle")}</CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
                 {t.plural("trendSub", Math.max(trend.length, 0))}
               </p>
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>{t("severityHeading")}</CardTitle>
+            <CardTitle as="h2">{t("severityHeading")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-5">
             <Donut
@@ -269,7 +269,7 @@ export default async function DashboardPage() {
       <section className="grid animate-rise-in gap-4 [animation-delay:160ms] lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>{t("usageTitle")}</CardTitle>
+            <CardTitle as="h2">{t("usageTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Meter
@@ -304,7 +304,7 @@ export default async function DashboardPage() {
 
         <Card className="lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
-            <CardTitle className="flex items-center gap-2.5">
+            <CardTitle as="h2" className="flex items-center gap-2.5">
               {t("recentHeading")}
               {hasLiveScans ? <span className="live-dot" aria-hidden="true" /> : null}
             </CardTitle>

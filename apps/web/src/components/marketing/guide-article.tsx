@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fragment } from "react";
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
+import { jsonLdScript } from "@/lib/json-ld";
 import { getTranslations } from "@/i18n/server";
 
 /** The two long-form guides share one layout; only the translation sub-namespace,
@@ -82,7 +83,7 @@ export async function GuideArticle({
       <script
         type="application/ld+json"
         // Structured data for search engines.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       {/* Editorial running-head — a mono index with a short gold rule, the same

@@ -63,6 +63,25 @@
     "aria": "درجة إمكانية الوصول {score} من 100",
     "none": "لا توجد درجة بعد"
   },
+  "stats": {
+    "projects": {
+      "zero": "{count} مشروع",
+      "one": "مشروع واحد",
+      "two": "مشروعان",
+      "few": "{count} مشاريع",
+      "many": "{count} مشروعًا",
+      "other": "{count} مشروع"
+    },
+    "scans": {
+      "zero": "{count} فحص",
+      "one": "فحص واحد",
+      "two": "فحصان",
+      "few": "{count} فحوصات",
+      "many": "{count} فحصًا",
+      "other": "{count} فحص"
+    },
+    "noScans": "لا فحوصات بعد"
+  },
   "theme": {
     "system": "سمة النظام",
     "light": "السمة الفاتحة",

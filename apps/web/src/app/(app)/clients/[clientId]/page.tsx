@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Globe, Pencil, Plus } from "lucide-react";
+import { ArrowLeft, Globe, Pencil, Plus, ScanLine } from "lucide-react";
 import { requireSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "@/i18n/server";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { EntityRow, ScorePill, StatPill } from "@/components/app/entity-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { rollupScansBy } from "@/lib/scan-format";
 import { archiveClientRecord, restoreClientRecord } from "../actions";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -47,12 +49,23 @@ export default async function ClientDetailPage({
 
   if (!client) notFound();
 
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("id, name, base_url, archived_at, created_at")
-    .eq("client_id", client.id)
-    .is("archived_at", null)
-    .order("created_at", { ascending: false });
+  const [{ data: projects }, { data: allScans }] = await Promise.all([
+    supabase
+      .from("projects")
+      .select("id, name, base_url, archived_at, created_at")
+      .eq("client_id", client.id)
+      .is("archived_at", null)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("scans")
+      .select("id, project_id, score, created_at")
+      .eq("organization_id", organization.id)
+      .order("created_at", { ascending: false })
+      .limit(1000),
+  ]);
+
+  // Per-project rollups for the trailing stat pills (scan count + latest score).
+  const rollup = rollupScansBy(allScans ?? [], (projectId) => projectId);
 
   const isArchived = Boolean(client.archived_at);
 
@@ -125,28 +138,30 @@ export default async function ClientDetailPage({
         {projects && projects.length > 0 ? (
           <Card className="overflow-hidden">
             <ul className="divide-y">
-              {projects.map((project) => (
-                <li key={project.id}>
-                  <Link
+              {projects.map((project) => {
+                const stats = rollup.get(project.id);
+                const sc = stats?.scans ?? 0;
+                const score = stats?.latestScore ?? null;
+                return (
+                  <EntityRow
+                    key={project.id}
                     href={`/projects/${project.id}`}
-                    className="group flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-muted/50"
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand ring-1 ring-inset ring-brand/15">
-                        <Globe className="h-4 w-4" aria-hidden="true" />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{project.name}</p>
-                        <p className="truncate text-xs text-muted-foreground">{project.base_url}</p>
-                      </div>
-                    </div>
-                    <ArrowUpRight
-                      className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </li>
-              ))}
+                    title={project.name}
+                    subtitle={project.base_url}
+                    subtitleIcon={Globe}
+                    monogramName={project.name}
+                    stats={
+                      <>
+                        <StatPill icon={ScanLine} value={sc} label={tc.plural("stats.scans", sc)} />
+                        <ScorePill
+                          score={score}
+                          label={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
+                        />
+                      </>
+                    }
+                  />
+                );
+              })}
             </ul>
           </Card>
         ) : (

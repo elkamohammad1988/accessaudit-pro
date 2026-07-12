@@ -63,6 +63,17 @@
     "aria": "Score d'accessibilité de {score} sur 100",
     "none": "Pas encore de score"
   },
+  "stats": {
+    "projects": {
+      "one": "{count} projet",
+      "other": "{count} projets"
+    },
+    "scans": {
+      "one": "{count} analyse",
+      "other": "{count} analyses"
+    },
+    "noScans": "Aucune analyse"
+  },
   "theme": {
     "system": "Thème système",
     "light": "Thème clair",

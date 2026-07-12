@@ -38,7 +38,7 @@ export function Progress({ value, max, tone = "brand", className, label }: Progr
         className={cn(
           // `lux-sheen` adds a slow gloss wipe across the filled portion in dark
           // mode (a no-op in light mode), so the meter reads as lit, not flat.
-          "lux-sheen h-full origin-left rounded-full shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.25)] transition-all duration-700 ease-out",
+          "lux-sheen h-full rounded-full shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.25)] transition-all duration-700 ease-out",
           toneClass[tone],
         )}
         style={{ width: finite ? `${pct}%` : "8%" }}

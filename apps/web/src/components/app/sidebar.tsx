@@ -71,7 +71,7 @@ function SidebarBody({
       <nav aria-label={t("primary")} className="flex-1 space-y-4 px-3">
         {NAV_SECTIONS.map((section) => (
           <div key={section.key} className="space-y-0.5">
-            <p className="px-3 pb-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">
+            <p className="px-3 pb-1 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               {t(`sections.${section.key}`)}
             </p>
             {section.items.map(({ href, key, icon: Icon }) => {

@@ -93,15 +93,19 @@ export function AccountMenu({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
+        // Capture-phase + stopPropagation so Escape closes *this* popover only, and
+        // doesn't also bubble to the drawer's document-level Escape handler when the
+        // menu is open inside the mobile drawer (one Escape = close the popover first).
+        e.stopPropagation();
         close();
       }
     };
     document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKey);
+    document.addEventListener("keydown", onKey, true);
     panelRef.current?.querySelector<HTMLElement>("a,button")?.focus();
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("keydown", onKey, true);
     };
   }, [open, close]);
 

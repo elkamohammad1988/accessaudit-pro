@@ -63,6 +63,15 @@
     "aria": "无障碍评分 {score}（满分 100）",
     "none": "暂无评分"
   },
+  "stats": {
+    "projects": {
+      "other": "{count} 个项目"
+    },
+    "scans": {
+      "other": "{count} 次扫描"
+    },
+    "noScans": "暂无扫描"
+  },
   "theme": {
     "system": "系统主题",
     "light": "浅色主题",

@@ -12,6 +12,7 @@ import { ButtonLink, buttonVariants } from "@/components/ui/button";
 import { getTranslations } from "@/i18n/server";
 import { displayLimit } from "@/i18n/format";
 import { cn } from "@/lib/utils";
+import { jsonLdScript } from "@/lib/json-ld";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketing.pricing");
@@ -206,7 +207,7 @@ export default async function PricingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: faqs.map((f) => ({

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { GrainOverlay } from "@/components/ui/grain";
 import { appBaseUrl } from "@/lib/env";
+import { jsonLdScript } from "@/lib/json-ld";
 import { themeScript } from "@/lib/theme-script";
 import { directionOf, htmlLangOf } from "@/i18n/config";
 import { getLocale, getMessages } from "@/i18n/server";
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
 // knowledge-panel signals). Emitted once, site-wide.
 function structuredData(): string {
   const base = appBaseUrl();
-  return JSON.stringify({
+  return jsonLdScript({
     "@context": "https://schema.org",
     "@graph": [
       {

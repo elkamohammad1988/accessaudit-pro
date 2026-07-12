@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { effectivePlan, isWithinLimit, limitsFor, rpcQuotaLimit } from "@accessaudit/shared";
 import { requireOrg } from "@/lib/auth";
+import { emptyToNull } from "@/lib/utils";
 import { genericWriteError } from "@/lib/errors";
 import { getTranslations } from "@/i18n/server";
 import { displayLimit } from "@/i18n/format";
@@ -25,11 +26,6 @@ function clientSchema(t: Translator) {
     notes: z.string().trim().max(500, t("messages.notesMax")).optional(),
   });
 }
-
-const emptyToNull = (value?: string | null): string | null => {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed : null;
-};
 
 function parse(formData: FormData, t: Translator) {
   return clientSchema(t).safeParse({

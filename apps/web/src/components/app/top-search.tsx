@@ -96,7 +96,13 @@ export function TopSearch() {
         type="text"
         role="combobox"
         aria-expanded={open}
-        aria-controls={listId}
+        // Only reference the listbox while it exists in the DOM, and point AT are
+        // the currently-highlighted option so ↑/↓ are announced without moving DOM
+        // focus (the WAI-ARIA activedescendant combobox pattern).
+        aria-controls={open ? listId : undefined}
+        aria-activedescendant={
+          open && results.length > 0 ? `${listId}-opt-${active}` : undefined
+        }
         aria-autocomplete="list"
         aria-label={t("search.label")}
         value={q}
@@ -120,7 +126,7 @@ export function TopSearch() {
             results.map((d, i) => {
               const Icon = d.icon;
               return (
-                <li key={d.href} role="option" aria-selected={i === active}>
+                <li key={d.href} id={`${listId}-opt-${i}`} role="option" aria-selected={i === active}>
                   <Link
                     href={d.href as never}
                     onClick={() => go(d.href)}
