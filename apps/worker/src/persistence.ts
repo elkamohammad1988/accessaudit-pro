@@ -53,9 +53,16 @@ function pagePayload(page: PageScanResult, totals: ImpactTotals) {
 export function summarize(pages: PageScanResult[]): ScanSummary {
   const okPageTotals: ImpactTotals[] = [];
   let okCount = 0;
+  let scannedCount = 0;
   let firstError: string | null = null;
 
   for (const page of pages) {
+    // Defensive: `scanAllPages` pre-sizes its result array and fills by index, so
+    // an interrupted (shutdown) scan can leave holes. Skip them rather than deref
+    // `undefined.ok` — the caller also short-circuits interrupted scans, but a
+    // rollup that never crashes on a sparse array is the safer contract.
+    if (!page) continue;
+    scannedCount += 1;
     if (page.ok) {
       okPageTotals.push(totalsFromViolations(page.violations));
       okCount += 1;
@@ -71,7 +78,9 @@ export function summarize(pages: PageScanResult[]): ScanSummary {
     score: scoreFromPages(okPageTotals),
     pagesScanned: okCount,
     allFailed: okCount === 0,
-    anyFailed: okCount !== pages.length,
+    // Compare against pages actually attempted (holes excluded), not the raw
+    // pre-sized length, so an interrupted run isn't mislabeled "partial".
+    anyFailed: okCount !== scannedCount,
     firstError,
   };
 }
@@ -89,7 +98,11 @@ export async function persistAndFinalize(
   status: Extract<ScanStatus, "completed" | "partial">,
   summary: ScanSummary,
 ): Promise<boolean> {
-  const payload = pages.map((page) => pagePayload(page, totalsFromViolations(page.violations)));
+  // Drop any holes a shutdown-interrupted scan may have left in the pre-sized
+  // result array before shaping the payload (see `summarize`).
+  const payload = pages
+    .filter((page): page is PageScanResult => Boolean(page))
+    .map((page) => pagePayload(page, totalsFromViolations(page.violations)));
 
   const { data, error } = await supabase.rpc("persist_scan_results", {
     p_scan_id: scan.id,

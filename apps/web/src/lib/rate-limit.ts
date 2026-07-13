@@ -24,6 +24,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * the limiter. We therefore prefer `x-real-ip` (set by the platform edge and not
  * client-controllable on Vercel/most hosts) and otherwise take the RIGHT-most XFF
  * hop (added by the closest trusted proxy).
+ *
+ * DEPLOYMENT CONTRACT: this trusts `x-real-ip` unconditionally. That is safe on
+ * Vercel (the documented target), which overwrites it at the edge. If you self-host
+ * behind a proxy that does NOT set/overwrite `x-real-ip`, a client could forge it to
+ * mint a fresh bucket — configure the proxy to strip inbound `x-real-ip` and set it
+ * from the real peer, or switch this to a known trusted-hop index.
  */
 export async function clientIp(): Promise<string> {
   const h = await headers();

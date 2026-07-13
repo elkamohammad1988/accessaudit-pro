@@ -5,7 +5,7 @@ import { IconChip } from "@/components/ui/icon-chip";
 
 /**
  * Consistent empty state — never a dead end, always an invitation. A floating,
- * glowing icon medallion rises out of a soft emerald light-pool (two blurred blobs
+ * glowing icon medallion rises out of a soft warm-clay light-pool (two blurred blobs
  * + a dotted "horizon" ring), over a frosted-glass well. A title, supporting copy,
  * and an optional call to action sit beneath. Used wherever a list or section has
  * no data yet.
@@ -32,7 +32,7 @@ export function EmptyState({
         className,
       )}
     >
-      {/* Ambient light — two soft emerald blobs drifting behind the medallion. */}
+      {/* Ambient light — two soft warm-clay blobs drifting behind the medallion. */}
       <span
         aria-hidden="true"
         className="blob blob-mint animate-blob absolute -top-10 left-1/2 h-40 w-40 -translate-x-1/2 opacity-40"

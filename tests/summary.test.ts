@@ -68,4 +68,15 @@ describe("summarize (worker scan rollup)", () => {
     expect(s.score).toBe(100);
     expect(s.allFailed).toBe(false);
   });
+
+  it("skips holes left by a shutdown-interrupted sparse result array", () => {
+    // scanAllPages pre-sizes its result array and fills by index, so an interrupted
+    // (shutdown) run can leave holes. summarize must skip them and compute anyFailed
+    // against pages actually attempted — a fully-ok-but-interrupted run is NOT partial.
+    const sparse = [ok(), undefined, ok()] as unknown as PageScanResult[];
+    const s = summarize(sparse);
+    expect(s.pagesScanned).toBe(2);
+    expect(s.allFailed).toBe(false);
+    expect(s.anyFailed).toBe(false);
+  });
 });

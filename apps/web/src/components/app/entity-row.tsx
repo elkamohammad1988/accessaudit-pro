@@ -18,6 +18,8 @@ export function EntityRow({
   subtitleIcon: SubtitleIcon,
   monogramName,
   stats,
+  score,
+  scoreLabel,
 }: {
   href: string;
   title: string;
@@ -26,8 +28,13 @@ export function EntityRow({
   subtitleIcon?: LucideIcon;
   /** Seeds the monogram's initials + colour (usually the title). */
   monogramName: string;
-  /** Trailing metric pills; hidden on the narrowest screens so the row never overflows. */
+  /** Secondary metric pills (counts); hidden below `sm` so the row never overflows. */
   stats?: React.ReactNode;
+  /** Latest score. Rendered as a pill kept visible even on mobile — it's the primary
+   *  signal a list scanner wants, so unlike `stats` it does not collapse below `sm`.
+   *  Pass `undefined` to omit entirely; `null` renders the muted "no score" dash. */
+  score?: number | null;
+  scoreLabel?: string;
 }) {
   return (
     <li>
@@ -46,6 +53,7 @@ export function EntityRow({
           ) : null}
         </div>
         {stats ? <div className="hidden shrink-0 items-center gap-1.5 sm:flex">{stats}</div> : null}
+        {score !== undefined ? <ScorePill score={score} label={scoreLabel ?? ""} /> : null}
         <ArrowUpRight
           className="h-4 w-4 shrink-0 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
           aria-hidden="true"
@@ -78,7 +86,7 @@ export function StatPill({
 }
 
 /** A latest-score chip, coloured by band; a muted dash when there's no score. */
-export function ScorePill({ score, label }: { score: number | null; label: string }) {
+function ScorePill({ score, label }: { score: number | null; label: string }) {
   return (
     <span
       className={cn(

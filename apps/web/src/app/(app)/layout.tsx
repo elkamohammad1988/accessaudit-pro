@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       >
         {t("skipToContent")}
       </a>
-      {/* Ambient emerald light drifting behind the whole workspace — soft, fixed,
+      {/* Ambient warm-clay light drifting behind the whole workspace — soft, fixed,
           decorative, and reduced-motion safe. */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="blob blob-mint animate-blob absolute -start-[6%] top-[-8%] h-[30rem] w-[30rem] opacity-30" />

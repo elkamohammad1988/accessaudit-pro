@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { ReportView } from "@/components/scans/report-view";
 import { SAMPLE_BRAND, SAMPLE_REPORT } from "@/lib/sample-report";
-import { getTranslations } from "@/i18n/server";
+import { getTranslations, getLocale } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketing.sample");
@@ -16,6 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function SampleReportPage() {
   const t = await getTranslations("marketing.sample");
+  // ReportView is a Server Component now — feed it the same translators + locale
+  // the real /r/[token] page passes.
+  const tReport = await getTranslations("scans");
+  const tBand = await getTranslations("common.band");
+  const tScore = await getTranslations("common.score");
+  const locale = await getLocale();
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
@@ -56,7 +62,13 @@ export default async function SampleReportPage() {
         <h1 className="mt-6 text-2xl font-semibold">{t("reportTitle")}</h1>
 
         <div className="mt-5">
-          <ReportView {...SAMPLE_REPORT} />
+          <ReportView
+            {...SAMPLE_REPORT}
+            t={tReport}
+            tb={tBand}
+            ts={tScore}
+            locale={locale}
+          />
         </div>
 
         <footer className="mt-8 border-t pt-4 text-center text-xs text-muted-foreground">

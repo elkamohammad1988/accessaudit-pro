@@ -1,10 +1,15 @@
-"use client";
-
+// Server Component (no "use client"): this is a purely presentational tree — no
+// state, effects, or handlers (expand/collapse uses native <details>) — so it
+// renders entirely on the server. It receives its translators + locale as props
+// from the (already server-rendered) parent instead of client i18n hooks, which
+// keeps the app's largest render tree (up to 1000 violation rows) out of the
+// client bundle and off the hydration path — notably on the public share page.
 import { ChevronDown } from "lucide-react";
 import { IMPACT_LEVELS, scoreBand, type ImpactTotals, type ScanStatus } from "@accessaudit/shared";
 import { IMPACT_BADGE, scoreClassName, totalViolations } from "@/lib/scan-format";
 import { formatDateTime } from "@/lib/dates";
-import { useTranslations, useLocale } from "@/i18n/provider";
+import type { Translator } from "@/i18n/translate";
+import type { Locale } from "@/i18n/config";
 import { bandLabel } from "@/i18n/format";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -43,6 +48,11 @@ export interface ReportViewProps {
   totalViolationRows?: number;
   /** True when more violations exist than were loaded for display. */
   truncated?: boolean;
+  /** Translators + locale, injected by the server parent (see the file header). */
+  t: Translator;
+  tb: Translator;
+  ts: Translator;
+  locale: Locale;
 }
 
 /**
@@ -81,11 +91,11 @@ export function ReportView({
   expanded = false,
   totalViolationRows,
   truncated = false,
+  t,
+  tb,
+  ts,
+  locale,
 }: ReportViewProps) {
-  const t = useTranslations("scans");
-  const tb = useTranslations("common.band");
-  const ts = useTranslations("common.score");
-  const locale = useLocale();
   const issues = totalViolations(totals);
   const inProgress = status === "queued" || status === "running";
   const failedPages = Math.max(0, pages.length - pagesScanned);
@@ -350,7 +360,10 @@ export function ReportView({
                               {occ.nodes.map((node, j) => (
                                 <div key={j} className="rounded-md border bg-muted/60 p-3">
                                   {node.target.length > 0 ? (
-                                    <code className="block font-mono text-xs font-semibold">
+                                    // break-all so a long unbroken CSS selector token can't
+                                    // push page-level horizontal scroll on the mobile /r/ deliverable
+                                    // (matches the sibling <pre> below).
+                                    <code className="block break-all font-mono text-xs font-semibold">
                                       {node.target.join(" ")}
                                     </code>
                                   ) : null}

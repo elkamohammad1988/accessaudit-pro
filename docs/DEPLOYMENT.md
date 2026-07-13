@@ -63,6 +63,17 @@ The worker needs Chromium and a long-running process — **not** serverless.
 Scale horizontally if needed — `claim_next_scan()` uses `FOR UPDATE SKIP LOCKED`,
 so multiple workers won't double-process a job.
 
+> **Egress hardening (SSRF defense-in-depth — recommended).** The worker fetches
+> arbitrary user-supplied URLs with a real Chromium, and Chromium resolves DNS
+> itself at connect time, so the app-layer SSRF guard cannot fully close a
+> DNS-rebinding TOCTOU on its own (see [`SECURITY.md`](../SECURITY.md)). Run the
+> worker with **network egress filtering** that drops private/link-local ranges —
+> `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16` (cloud
+> metadata), `127.0.0.0/8`, and IPv6 `::1`/`fc00::/7`/`fe80::/10` — via the host
+> firewall, a Kubernetes `NetworkPolicy`/egress gateway, or a filtering forward
+> proxy. This makes rebinding unreachable regardless of what DNS returns. Required
+> before running scans for untrusted tenants at scale.
+
 ## 4. Stripe (billing)
 
 1. Create three **Products** (Starter, Agency, Scale), each with a monthly recurring

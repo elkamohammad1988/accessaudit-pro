@@ -25,6 +25,8 @@ export default async function PrintReportPage({
   if (!organization) return null;
 
   const t = await getTranslations("scans");
+  const tb = await getTranslations("common.band");
+  const ts = await getTranslations("common.score");
   const locale = await getLocale();
   const supabase = await createClient();
   const { data: sub } = await supabase
@@ -53,11 +55,19 @@ export default async function PrintReportPage({
 
       <header className="flex items-center gap-3">
         {organization.logo_url ? (
+          // Reserve a fixed 40×160 box (width/height set the aspect ratio to reserve
+          // space before this off-domain logo loads) so the header doesn't reflow.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={organization.logo_url} alt={t("logoAlt", { name: organization.name })} className="h-10 w-auto" />
+          <img
+            src={organization.logo_url}
+            alt={t("logoAlt", { name: organization.name })}
+            width={160}
+            height={40}
+            className="h-10 w-auto max-w-[160px] shrink-0 object-contain"
+          />
         ) : null}
-        <div>
-          <p className="text-lg font-semibold">{organization.name}</p>
+        <div className="min-w-0">
+          <p className="truncate text-lg font-semibold">{organization.name}</p>
           <p className="text-sm text-muted-foreground">
             {report.clientName ? `${report.clientName} · ` : ""}
             {t("wcagShort", { level: scan.wcag_level })} · {formatDateTime(scan.created_at, locale)}
@@ -78,6 +88,12 @@ export default async function PrintReportPage({
         pages={report.pages}
         groups={report.groups}
         expanded
+        totalViolationRows={report.totalViolationRows}
+        truncated={report.truncated}
+        t={t}
+        tb={tb}
+        ts={ts}
+        locale={locale}
       />
 
       {showPoweredBy ? (

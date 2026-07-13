@@ -52,7 +52,9 @@ function SidebarBody({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2.5 px-5 py-5">
+      {/* pe-12 clears the mobile drawer's absolute close button (end-3, h-9 w-9) so a
+          long workspace name truncates before it instead of running underneath. */}
+      <div className="flex items-center gap-2.5 px-5 py-5 pe-12">
         <LogoMark aria-hidden="true" className="h-8 w-8 rounded-lg shadow-sm" />
         <div className="min-w-0">
           <Link
@@ -236,7 +238,9 @@ export function Sidebar({
           onClick={() => setOpen(true)}
           aria-label={t("mobile.open")}
           aria-expanded={open}
-          aria-controls="mobile-nav"
+          // Drawer is unmounted when closed, so only reference it while open — no
+          // dangling IDREF (matches the TopSearch combobox pattern).
+          aria-controls={open ? "mobile-nav" : undefined}
           className="-ms-1 inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <Menu className="h-5 w-5" aria-hidden="true" />

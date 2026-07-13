@@ -154,7 +154,7 @@ export function LanguageSwitcher({
                 dir={meta.dir}
                 onClick={() => select(meta.code)}
                 className={cn(
-                  "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-start text-sm transition-colors hover:bg-muted focus:bg-muted focus:outline-none",
+                  "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-start text-sm transition-colors hover:bg-muted focus:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50",
                   checked && "font-medium",
                 )}
               >

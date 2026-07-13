@@ -233,8 +233,9 @@ const SAMPLE_GROUPS: GroupedViolation[] = [
   },
 ];
 
-/** Props ready to spread into <ReportView />. */
-export const SAMPLE_REPORT: ReportViewProps = {
+/** The DATA half of <ReportView />'s props (translators + locale are injected by
+ *  the page at render time, so they're excluded here). */
+export const SAMPLE_REPORT: Omit<ReportViewProps, "t" | "tb" | "ts" | "locale"> = {
   status: "completed" as ScanStatus,
   score: scoreFromPages([homeTotals, contactTotals]),
   totals: SAMPLE_TOTALS,

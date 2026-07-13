@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 /**
  * The AccessAudit monogram — a bespoke mark, not a letter in a box.
  *
- * The tile is a polished EMERALD → MINT gradient with a soft inner rim of light.
- * The "A" is drawn as two clean apex strokes; its crossbar is a separate pale-mint
- * bar — the "bar you must clear" — so the mark reads as accessibility *conformance*,
- * not just the initial. Colors are theme tokens, so the mark stays vivid in the
- * minted daylight and inverts correctly against the bright mint tile of the pine
- * night, and org branding flows through automatically.
+ * The tile is a polished champagne→deep-gold gradient (--brand-2 → --brand) with a
+ * soft inner rim of light. The "A" is drawn as two clean apex strokes; its crossbar
+ * is a separate pale-cream bar — the "bar you must clear" — so the mark reads as
+ * accessibility *conformance*, not just the initial. Colors are theme tokens, so the
+ * mark stays vivid on the warm-ivory day tile and inverts correctly against the gold
+ * tile at night, and org branding flows through automatically.
  *
  * Decorative by default (`aria-hidden`); pass a `title` to give it an accessible
  * name when it stands alone as a link target.
@@ -35,7 +35,7 @@ export function LogoMark({
           <stop offset="1" className="[stop-color:hsl(var(--brand))]" />
         </linearGradient>
       </defs>
-      {/* Tile with the emerald→mint gradient and a lit inner rim. */}
+      {/* Tile with the champagne→gold gradient and a lit inner rim. */}
       <rect x="0" y="0" width="32" height="32" rx="9" fill="url(#logo-tile)" />
       {/* Top gloss catch-light — the domed highlight. */}
       <rect x="1" y="1" width="30" height="15" rx="8" className="fill-white/20" />

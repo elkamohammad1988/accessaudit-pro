@@ -28,6 +28,8 @@ export default async function PublicReportPage({
   const { token } = await params;
 
   const t = await getTranslations("scans");
+  const tb = await getTranslations("common.band");
+  const ts = await getTranslations("common.score");
   const locale = await getLocale();
   const admin = createAdminClient();
   const report = await loadReportByToken(admin, token);
@@ -60,13 +62,24 @@ export default async function PublicReportPage({
       <ThemeToggle className="no-print fixed end-4 top-4 z-20 border bg-card/80 shadow-sm backdrop-blur-sm" />
       <div className="h-1.5 w-full rounded-full" style={{ backgroundColor: brandColor }} />
 
-      <header className="mt-5 flex items-center gap-3">
+      {/* pe-14 keeps the header clear of the fixed ThemeToggle (end-4 top-4) so a long
+          org name never runs under it on narrow screens. */}
+      <header className="mt-5 flex items-center gap-3 pe-14">
         {org?.logo_url ? (
+          // Reserve a fixed 40×160 box (width/height give the browser an aspect ratio
+          // to reserve space before this off-domain, arbitrary-ratio logo loads) so the
+          // header doesn't reflow — object-contain keeps the real logo undistorted.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={org.logo_url} alt={t("logoAlt", { name: org.name ?? "" })} className="h-10 w-auto" />
+          <img
+            src={org.logo_url}
+            alt={t("logoAlt", { name: org.name || t("public.metaTitle") })}
+            width={160}
+            height={40}
+            className="h-10 w-auto max-w-[160px] shrink-0 object-contain"
+          />
         ) : null}
-        <div>
-          <p className="text-lg font-semibold">{org?.name ?? t("public.metaTitle")}</p>
+        <div className="min-w-0">
+          <p className="truncate text-lg font-semibold">{org?.name ?? t("public.metaTitle")}</p>
           <p className="text-sm text-muted-foreground">
             {report.clientName ? `${report.clientName} · ` : ""}
             {t("wcagShort", { level: scan.wcag_level })} · {formatDateTime(scan.created_at, locale)}
@@ -89,6 +102,10 @@ export default async function PublicReportPage({
           groups={report.groups}
           totalViolationRows={report.totalViolationRows}
           truncated={report.truncated}
+          t={t}
+          tb={tb}
+          ts={ts}
+          locale={locale}
         />
       </div>
 

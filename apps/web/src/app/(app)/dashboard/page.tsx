@@ -98,15 +98,21 @@ export default async function DashboardPage() {
       .eq("organization_id", organization.id)
       .order("created_at", { ascending: false })
       .limit(6),
-    // Oldest→newest completed scans for the trend + severity rollup.
+    // Most recent 30 completed scans for the trend + severity rollup. Ordered
+    // DESC + limit so we keep the LATEST 30 (ascending + limit would freeze the
+    // dashboard on the oldest 30 forever); reversed to oldest→newest below so the
+    // trend chart still reads left-to-right in chronological order.
     supabase
       .from("scans")
       .select("score, totals, created_at")
       .eq("organization_id", organization.id)
       .eq("status", "completed")
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(30),
   ]);
+
+  // Reverse the DESC fetch back to chronological order for the trend line/delta.
+  const completed = (completedScans ?? []).slice().reverse();
 
   const plan: PlanTier = effectivePlan(subscription?.plan, subscription?.status);
   const limits = limitsFor(plan);
@@ -114,7 +120,7 @@ export default async function DashboardPage() {
   const clients = clientsCount ?? 0;
   const projects = projectsCount ?? 0;
 
-  const trend = (completedScans ?? [])
+  const trend = completed
     .map((s) => s.score)
     .filter((s): s is number => typeof s === "number");
   const avgScore =
@@ -123,7 +129,7 @@ export default async function DashboardPage() {
   const delta =
     trend.length >= 2 ? Math.round((trend[trend.length - 1] - trend[0]) * 10) / 10 : null;
 
-  const aggregateTotals = sumTotals((completedScans ?? []).map((s) => parseTotals(s.totals)));
+  const aggregateTotals = sumTotals(completed.map((s) => parseTotals(s.totals)));
   const totalIssues = totalViolations(aggregateTotals);
   const severitySegments = IMPACT_LEVELS.map((level) => ({
     value: aggregateTotals[level],

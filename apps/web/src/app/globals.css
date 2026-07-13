@@ -31,12 +31,13 @@
     monospace;
 
   /* Brand — LUXURY GOLD (#C8A24D / #D4AF37 family), the signature of the premium
-   * identity. `--brand` is the deep, AA-legible gold cut (clears ~4.5:1 as text and
-   * as a button fill on the warm ivory ground); `--brand-2` is the luminous
-   * champagne gold used for gradient ends, hover glows and highlights. In light mode
-   * the gold is deepened so gilt type stays readable; dark mode brightens it to true
-   * leaf-gold. Overridable per-org at runtime. */
-  --brand: 40 64% 38%;
+   * identity. `--brand` is the deep, AA-legible gold cut: at L33% it clears 4.5:1
+   * both as text on the ivory ground (5.19:1 on --card, 5.00:1 on --background) and
+   * as the primary-button fill (--brand-fg label = 5.06:1). `--brand-2` is the
+   * luminous champagne gold used for gradient ends, hover glows and highlights. In
+   * light mode the gold is deepened so gilt type stays readable; dark mode brightens
+   * it to true leaf-gold. Overridable per-org at runtime. */
+  --brand: 40 64% 33%;
   --brand-2: 43 76% 52%;
   --brand-fg: 40 45% 98%;
 
@@ -84,7 +85,10 @@
    * so it must clear 3:1 against the ground per WCAG 1.4.11. */
   --border: 38 22% 87%;
   --input: 36 18% 46%;
-  --ring: 43 66% 44%;
+  /* Focus ring must clear 3:1 against the ground for a visible focus indicator
+   * (WCAG 1.4.11 / 2.4.7). At L40% it is 3.35:1 on --background, 3.48:1 on --card;
+   * L44% fell short at ~2.85:1. */
+  --ring: 43 66% 40%;
 
   /* Accessibility-impact scale (axe taxonomy) — kept a semantically distinct
    * warm→cool ramp (severe→minor) so severity is never conveyed by brand green
@@ -102,7 +106,8 @@
   --sev-moderate-strong: 34 80% 32%;
   --sev-minor-strong: 158 60% 28%;
 
-  /* Status — success is the brand emerald, warning amber, danger madder. */
+  /* Status — success is a semantic emerald green (independent of the gold brand),
+     warning amber, danger madder. */
   --success: 152 56% 36%;
   --success-foreground: 150 60% 98%;
   --success-strong: 156 60% 28%;
@@ -250,9 +255,9 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Luminous mesh ground: three soft emerald/mint light-pools bleed in from the
+  /* Luminous mesh ground: three soft gold/clay light-pools bleed in from the
    * corners so the page glows rather than sitting as a dead flat fill. Fixed so it
-   * stays calm while content scrolls; `.dark body` deepens it into pine dusk;
+   * stays calm while content scrolls; `.dark body` deepens it into warm-charcoal dusk;
    * @media print drops it for clean paper. */
   body {
     background-image:
@@ -333,7 +338,7 @@
 
   /* A floating pane of glass — the surface Cards are cut from, exposed as a utility
    * for bespoke panels (auth cards, modals, popovers). A frosted translucent fill
-   * with a bright top rim of light and a soft, wide emerald shadow so it reads as
+   * with a bright top rim of light and a soft, wide warm shadow so it reads as
    * glass hovering above the ground. */
   .glass-panel,
   .paper-panel {
@@ -378,9 +383,10 @@
       inset 0 -1px 0 0 hsl(30 30% 80% / 0.05);
   }
 
-  /* Emerald→mint foil text — the living brand gradient for hero numerals and
-   * display accents. Falls back to solid emerald where background-clip:text is
-   * unsupported. Every existing `text-gold-gradient` now renders as green light. */
+  /* Gold foil text — the living brand gradient for hero numerals and display
+   * accents. Falls back to solid gold where background-clip:text is unsupported.
+   * (`.text-gradient-emerald` is a legacy alias kept for compatibility; it too
+   * renders as gold.) */
   .text-gold-gradient,
   .text-gradient-emerald {
     color: hsl(var(--brand));
@@ -406,7 +412,7 @@
     );
   }
 
-  /* Soft emerald bloom on hover for lit chips/cards, and a static glow utility. */
+  /* Soft gold bloom on hover for lit chips/cards, and a static glow utility. */
   .glow-brand {
     box-shadow: var(--glow-brand);
   }
@@ -446,9 +452,9 @@
 @layer components {
   /* ── Frosted-glass form-control surface ─────────────────────────────────────
    * Shared by the Input / Textarea / Select / ColorInput primitives so every field
-   * feels like one pane of glass: a bright minted fill, a delicate inner light,
-   * a thin border, an emerald bloom on focus, expensive type rendering for the
-   * typed "ink", an emerald caret, a refined selection, and an autofill skin that
+   * feels like one pane of glass: a bright ceramic fill, a delicate inner light,
+   * a thin border, a gold bloom on focus, expensive type rendering for the
+   * typed "ink", a gold caret, a refined selection, and an autofill skin that
    * matches the design exactly — never the cheap browser default. */
   .field {
     background-color: hsl(var(--field-bg));
@@ -526,7 +532,7 @@
 }
 
 @layer utilities {
-  /* A single luminous mint wash anchored top-center — the marketing hero's ambient
+  /* A single luminous gold wash anchored top-center — the marketing hero's ambient
    * halo. */
   .bg-spotlight {
     background-image: radial-gradient(
@@ -536,7 +542,7 @@
     );
   }
 
-  /* Soft emerald mesh for section backdrops — two mint light-pools bleeding in. */
+  /* Soft warm-clay mesh for section backdrops — two clay light-pools bleeding in. */
   .bg-mesh {
     background-image:
       radial-gradient(40% 60% at 8% 0%, hsl(22 78% 60% / 0.1) 0%, transparent 60%),
@@ -549,7 +555,7 @@
    * GPU-cheap and fully honour prefers-reduced-motion. */
 
   /* A soft, blurred gradient orb. Drop one behind a section (absolutely positioned,
-   * `pointer-events-none`) for ambient emerald light. Pair with `animate-blob`. */
+   * `pointer-events-none`) for ambient warm-clay light. Pair with `animate-blob`. */
   .blob {
     position: absolute;
     border-radius: 50%;
@@ -649,7 +655,7 @@
   }
 }
 
-/* ── Verdant flourishes ───────────────────────────────────────────────────────
+/* ── Decorative flourishes ────────────────────────────────────────────────────
  * A few hand-placed details that make surfaces feel crafted: a top rim of light,
  * a live activity pulse, and a tactile button sheen. */
 @layer components {
@@ -720,7 +726,7 @@
     animation: none;
   }
 
-  /* Live activity indicator — a soft breathing dot with an expanding emerald halo.
+  /* Live activity indicator — a soft breathing dot with an expanding gold halo.
    * One of the few always-on functional animations. */
   @keyframes lux-ping {
     75%,

@@ -165,7 +165,7 @@ export function AccountMenu({
               close(false);
               onNavigate?.();
             }}
-            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:bg-muted focus:outline-none"
+            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
           >
             <Settings className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             {t("app.settings")}
@@ -226,7 +226,7 @@ export function AccountMenu({
                   lang={meta.htmlLang}
                   onClick={() => selectLocale(meta.code)}
                   className={cn(
-                    "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-start text-sm transition-colors hover:bg-muted focus:bg-muted focus:outline-none",
+                    "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-start text-sm transition-colors hover:bg-muted focus:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50",
                     selected && "font-medium",
                   )}
                 >
@@ -262,7 +262,7 @@ export function AccountMenu({
           <form action={signOut}>
             <button
               type="submit"
-              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:bg-muted focus:outline-none"
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
             >
               <LogOut className="h-4 w-4 shrink-0" aria-hidden="true" />
               {t("app.signOut")}

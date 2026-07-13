@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link";
 type Size = "sm" | "md" | "lg" | "icon";
 
-// The primary is a glossy EMERALD pill: a solid brand fill (token-driven so it stays
-// AA and inverts to bright mint-on-dark automatically) lit by an inner top catch-light
-// so it reads as a soft-gradient dome, and — on hover — a colored EMERALD bloom (the
-// signature glow) plus a thin band of light that sweeps edge-to-edge (`btn-sheen`).
-// The base `active:scale` carries the tactile press. Secondary/outline are frosted
-// glass; destructive blooms madder on hover.
+// The primary is a glossy GOLD pill: a solid brand fill (token-driven, so the
+// --brand-fg label clears AA — 5.06:1 in light, and it inverts to warm-charcoal-on-
+// leaf-gold in dark automatically) lit by an inner top catch-light so it reads as a
+// soft-gradient dome, and — on hover — a colored gold bloom (the signature glow) plus
+// a thin band of light that sweeps edge-to-edge (`btn-sheen`). The base `active:scale`
+// carries the tactile press. Secondary/outline are frosted glass; destructive blooms
+// madder on hover.
 const variantClasses: Record<Variant, string> = {
   primary:
     "btn-sheen bg-brand text-brand-fg shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.32),inset_0_-2px_5px_0_hsl(20_55%_14%/0.35),var(--shadow-sm)] hover:shadow-[inset_0_1px_0_0_hsl(0_0%_100%/0.4),var(--glow-brand)]",

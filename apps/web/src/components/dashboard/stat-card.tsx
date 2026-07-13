@@ -163,7 +163,10 @@ export function GradientStatCard({
     </>
   );
   const cls = cn(
-    "group relative h-28 overflow-hidden rounded-2xl shadow-md transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+    // min-h (not fixed h): a two-line KPI label in FR/ES at ≤375px must grow the card
+    // rather than clip its caption under `overflow-hidden`. Grid `items-stretch` keeps
+    // the row's cards equal-height.
+    "group relative min-h-28 overflow-hidden rounded-2xl shadow-md transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
     href && "hover:-translate-y-0.5 hover:shadow-lg",
     className,
   );

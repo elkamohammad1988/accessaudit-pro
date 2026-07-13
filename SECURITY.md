@@ -49,12 +49,22 @@ highest-value target (it holds the service-role key). Defenses
 - **Pre-navigation validation** resolves DNS and blocks if any resolved address is
   private/loopback/link-local/CGNAT/cloud-metadata (IPv4 + IPv6, incl. IPv4-mapped).
 - **Per-request interceptor** re-checks every navigation, redirect, and subresource
-  — and now **resolves hostnames** (cached per scan), closing the DNS-rebinding
-  gap where a hostname returns a public IP at validation time and a private IP at
+  and re-resolves hostnames (cached per scan), which **narrows** the DNS-rebinding
+  window where a hostname returns a public IP at validation time and a private IP at
   connect time.
 - **Timeouts everywhere.** Navigation and the axe analysis pass are both bounded,
   so a hostile or pathological page cannot hang the worker; a heartbeat + reaper
   recovers genuinely stuck scans.
+
+> **Residual (defense-in-depth expected at the network layer).** Because Chromium
+> performs its *own* DNS resolution when it opens the socket, an application-layer
+> guard cannot fully close the rebinding TOCTOU on its own — a sub-second DNS flip
+> timed against the browser connect could still reach a private address. The
+> definitive control is **network-level egress filtering on the worker** (drop
+> RFC1918 + `169.254.0.0/16` + IPv6 ULA/link-local at the kernel/firewall or a
+> forward proxy), which makes rebinding unreachable regardless of DNS. Treat this as
+> a **deployment requirement** for running untrusted scans at scale — see
+> [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## Billing integrity
 
@@ -80,7 +90,11 @@ These are tracked, not hidden:
   limiter (`rate_limits` + `check_rate_limit`, fails open) on sign-in, sign-up,
   and password-reset (per IP) and on scan creation (per org), layered on top of
   Supabase's built-in auth limits. It is intentionally coarse; a per-route
-  token-bucket with burst credits is a future refinement.
+  token-bucket with burst credits is a future refinement. **Proxy-trust contract:**
+  the per-IP identity trusts `x-real-ip` (safe on Vercel, which overwrites it at the
+  edge). If you self-host behind a proxy that forwards a client-supplied `x-real-ip`,
+  configure that proxy to strip inbound `x-real-ip` and set it from the real peer —
+  otherwise a client can forge it to mint a fresh bucket per request.
 - **CSP** uses `'unsafe-inline'` for scripts/styles (required by Next's inline
   bootstrap); moving to a per-request nonce is planned.
 - **RLS integration tests** require a live Postgres and are not in CI yet; the

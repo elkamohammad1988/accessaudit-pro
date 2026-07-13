@@ -8,7 +8,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   const t = await getTranslations("auth.legalConsent");
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-10">
-      {/* Living emerald aurora behind the card — drifting blobs + the assay rings,
+      {/* Living warm-clay aurora behind the card — drifting blobs + the assay rings,
           so the auth surface has real depth and light in both themes. */}
       <AuroraField anchor="right" />
       {/* Theme switch is reachable even before sign-in — signed-out visitors land

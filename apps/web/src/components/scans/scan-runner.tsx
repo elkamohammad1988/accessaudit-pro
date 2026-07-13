@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Check, Loader2, Radar, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/i18n/provider";
@@ -160,6 +161,13 @@ export function ScanRunner({
     };
   }, []);
 
+  // Portal to <body>: the `fixed inset-0` overlay must escape the (app) template's
+  // entrance-animation wrapper, whose held `transform`/`filter` (fill-mode: both)
+  // otherwise becomes the containing block for fixed descendants — which would clip
+  // and mis-center this overlay to the content column instead of the viewport.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const activeIndex = done ? STAGES.length : STAGES.findIndex((_, i) => p >= START[i] && p < END[i]);
   const activeStage = STAGES[Math.min(activeIndex, STAGES.length - 1)];
   const percent = Math.round(p * 100);
@@ -179,15 +187,23 @@ export function ScanRunner({
     if (el) el.scrollTop = el.scrollHeight;
   }, [visibleLogs.length]);
 
-  return (
+  // Guard AFTER all hooks (Rules of Hooks): render nothing until mounted so the
+  // portal target (document.body) exists on the client before we portal into it.
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6"
       // Not role="dialog"/aria-modal: this overlay has no interactive controls and
       // auto-dismisses, so claiming modal semantics (which promise focus containment
-      // we don't provide) would mislead assistive tech. It's an honest busy region.
-      role="status"
+      // we don't provide) would mislead assistive tech. It's a labelled `group`, NOT
+      // a live region: making the whole constantly-updating panel a `role="status"`
+      // (implicitly atomic) + `aria-busy` region caused screen readers to suppress
+      // until `done` then announce the entire panel at once — and it nested a second
+      // live region (the sr-only <p> below). Announcements ride solely on that single
+      // sr-only polite `role="status"` line, which emits concise per-stage updates.
+      role="group"
       aria-label={t("runner.title")}
-      aria-busy={!done}
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-md animate-fade-in" aria-hidden="true" />
 
@@ -364,7 +380,8 @@ export function ScanRunner({
           {t("runner.liveStatus", { stage: t(`runner.stages.${activeStage}`), percent })}
         </p>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

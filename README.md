@@ -9,8 +9,11 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Tests](https://img.shields.io/badge/tests-79%20passing-2ea44f)](tests/)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20RLS-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Stripe](https://img.shields.io/badge/Stripe-Billing-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![Tests](https://img.shields.io/badge/tests-80%20passing-2ea44f)](tests/)
 [![Standards](https://img.shields.io/badge/WCAG-2.2%20AA-A24425)](https://www.w3.org/TR/WCAG22/)
+[![License](https://img.shields.io/badge/license-Proprietary-777)](LICENSE)
 
 **[▶ Live demo — accessaudit-pro.vercel.app](https://accessaudit-pro.vercel.app)** &nbsp;·&nbsp; No signup — runs on a seeded demo agency.
 
@@ -53,20 +56,7 @@ AccessAudit Pro closes that gap. An agency points it at a URL, a headless-Chromi
 **Craft**
 - **Gilded Charcoal** design identity — Luxury Gold on warm charcoal, dark-first, Fraunces display over Inter — in both a dark stage and a warm-ivory day theme
 - Full internationalization: **English, French, Arabic, Spanish, Chinese**, with correct **RTL** mirroring
-- Accessibility held to its own standard: keyboard paths, focus states, reduced-motion support, and AA contrast throughout
-
----
-
-## Plans
-
-| Tier | Price/mo | Clients | Projects | Scans/mo | Pages/scan | White-label | Priority queue |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **Free** | $0 | 1 | 2 | 10 | 1 | — | — |
-| **Starter** | $29 | 5 | 25 | 150 | 25 | ✓ | — |
-| **Agency** | $79 | ∞ | ∞ | 750 | 100 | ✓ | ✓ |
-| **Scale** | $199 | ∞ | ∞ | 3,000 | 500 | ✓ | ✓ |
-
-Annual billing is 10× the monthly price (two months free). Limits are the single source of truth in [`packages/shared/src/plans.ts`](packages/shared/src/plans.ts).
+- Accessibility held to its own standard: keyboard paths, focus states, reduced-motion support, and AA contrast throughout (verified in both themes)
 
 ---
 
@@ -80,40 +70,81 @@ Annual billing is 10× the monthly price (two months free). Limits are the singl
 | --- | --- |
 | <img src="docs/screenshots/shared-report-dark.png" width="420"> | <img src="docs/screenshots/dashboard-light.png" width="420"> |
 
-Every route, in light and dark at portfolio aspect ratios, is captured from the live product via [`apps/web/scripts/capture.mjs`](apps/web/scripts/capture.mjs) (output kept local, outside git).
+Every route, in light and dark at portfolio aspect ratios, is captured from the live product via [`apps/web/scripts/capture.mjs`](apps/web/scripts/capture.mjs); cinematic device mockups via [`apps/web/scripts/marketing-assets.mjs`](apps/web/scripts/marketing-assets.mjs) (output kept local, outside git).
+
+---
+
+## Architecture
+
+A pnpm + Turborepo monorepo with a clean **web / worker split** and a shared, framework-free domain core. Full write-up in [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+```
+                         ┌──────────────────────────────┐
+   Browser  ───────────► │  apps/web  (Next.js 15)       │
+                         │  • App Router, RSC, SSR auth  │
+                         │  • Server Actions (mutations) │
+                         │  • Stripe Checkout/Portal     │
+                         │  • Public report  /r/[token]  │
+                         └───────┬───────────────▲───────┘
+                                 │ insert scan    │ realtime + poll
+                                 │ (status=queued)│ (status updates)
+                                 ▼                │
+                         ┌──────────────────────────────┐
+                         │  Supabase Postgres            │
+                         │  • RLS on every tenant table  │
+                         │  • claim_next_scan() RPC      │
+                         │    (FOR UPDATE SKIP LOCKED)   │
+                         │  • Auth, Realtime, Storage    │
+                         └───────▲───────────────┬───────┘
+                       claim job │               │ write pages +
+                  (service role) │               │ violations
+                         ┌───────┴───────────────▼───────┐
+                         │  apps/worker (Node)           │
+                         │  • Playwright + axe-core      │
+                         │  • SSRF guard, timeouts       │
+                         │  • heartbeat + reaper         │
+                         └──────────────────────────────┘
+```
+
+**Key decisions**
+- **Separate always-on worker** — axe-core needs a rendered DOM (headless Chromium), which can't run in serverless/edge functions, so the scan engine is a dedicated Node service. The web app stays fast and serverless-friendly.
+- **Postgres-native queue, no Redis** — the web app inserts a `scans` row; the worker claims jobs atomically via a `claim_next_scan()` RPC using `FOR UPDATE SKIP LOCKED`, so replicas never double-process. A per-page heartbeat + reaper recovers crashed scans.
+- **One source of truth for domain logic** — plan limits, scoring, and the impact taxonomy live in `packages/shared`, imported by both web and worker, so the report, the worker, and the public sample can never disagree. Unit-tested in isolation.
 
 ---
 
 ## Tech stack
 
-- **Framework** — Next.js 15 (App Router, Server Actions), React 19, TypeScript (strict)
-- **Styling** — Tailwind CSS 3 with a bespoke design-token layer; self-hosted Inter + Fraunces
-- **Backend** — Supabase (Postgres, Auth, Row-Level Security, Realtime); 10 SQL migrations covering schema, triggers, RLS, the scan queue, atomic quota/persist RPCs, rate limiting, and Stripe event idempotency
+- **Framework** — Next.js 15 (App Router, Server Actions, typed routes), React 19, TypeScript (strict)
+- **Styling** — Tailwind CSS 3 with a bespoke design-token layer; self-hosted Inter + Fraunces via `next/font`
+- **Backend** — Supabase (Postgres, Auth, Row-Level Security, Realtime); **13 SQL migrations** covering schema, triggers, RLS, the scan queue, atomic quota/persist RPCs, rate limiting, and Stripe event idempotency
 - **Worker** — a standalone Node service (`apps/worker`) running Playwright + `@axe-core/playwright` to render pages and run the audit
 - **Billing** — Stripe (Checkout, Billing Portal, webhooks with signature verification + idempotent event storage)
-- **Observability** — Sentry (web + worker)
-- **Tooling** — pnpm workspaces + Turborepo, Vitest (79 unit tests), Playwright (e2e), ESLint
-- **Deploy** — Vercel (web), containerized worker
+- **Observability** — Sentry (web + worker), gated on a DSN
+- **Tooling** — pnpm workspaces + Turborepo, Vitest (**80 unit tests**), Playwright (e2e), ESLint, GitHub Actions CI + CodeQL
+- **Deploy** — Vercel (web), containerized worker (Railway / any long-running host)
 
 ---
 
-## Monorepo layout
+## Folder structure
 
 ```
 accessaudit-pro/
 ├── apps/
-│   ├── web/          Next.js app — marketing, auth, dashboard, reports, billing
-│   │   ├── src/app/        route groups: (marketing) (auth) (app) (legal) + /r/[token]
-│   │   ├── src/components/  design system + feature components
-│   │   ├── src/lib/         scoring, report, csv, stripe, url-safety, demo store, …
-│   │   ├── src/i18n/        5 locales + RTL, cookie-driven, no next-intl
-│   │   └── portfolio/       generated screenshots + presentation kit
-│   └── worker/       headless-Chromium + axe-core scan runner
+│   ├── web/                 Next.js app — marketing, auth, dashboard, reports, billing
+│   │   ├── src/app/           route groups: (marketing) (auth) (app) (legal) + /r/[token]
+│   │   ├── src/components/     design system + feature components
+│   │   ├── src/lib/           scoring, report, csv, stripe, url-safety, demo store, env
+│   │   ├── src/i18n/          5 locales + RTL, cookie-driven, no next-intl
+│   │   ├── scripts/           screenshot + marketing-asset capture
+│   │   └── portfolio/         generated screenshots + video assets (gitignored)
+│   └── worker/              headless-Chromium + axe-core scan runner
 ├── packages/
-│   ├── shared/       plans, domain constants, WCAG/impact levels (framework-free)
-│   └── database/     generated Supabase types
-├── supabase/migrations/   10 ordered SQL migrations
-└── tests/            Vitest suites (scoring, plans, report, security, ssrf, stripe, …)
+│   ├── shared/              plans, domain constants, WCAG/impact levels (framework-free)
+│   └── database/            generated Supabase types
+├── supabase/migrations/     13 ordered SQL migrations
+├── docs/                    ARCHITECTURE, DEPLOYMENT, DATABASE, RUNBOOKS, ERD, …
+└── tests/                   Vitest suites (scoring, plans, report, security, ssrf, stripe, …)
 ```
 
 ---
@@ -122,12 +153,14 @@ accessaudit-pro/
 
 ### Demo mode (zero config)
 
-The app ships a full in-memory demo tenant, so it runs with **no backend and no environment variables**. When `NEXT_PUBLIC_SUPABASE_URL` is unset, every Supabase call is served by a local mock ([`apps/web/src/lib/demo`](apps/web/src/lib/demo)) seeded with a realistic agency (*Pixel & Pine Studio*, six clients, real WCAG findings).
+The app ships a full in-memory demo tenant, so it runs with **no backend and no environment variables**. In demo mode every Supabase call is served by a local mock ([`apps/web/src/lib/demo`](apps/web/src/lib/demo)) seeded with a realistic agency (*Pixel & Pine Studio*, six clients, real WCAG findings).
 
 ```bash
 pnpm install
 pnpm --filter @accessaudit/web dev      # http://localhost:3000 — demo mode
 ```
+
+Demo mode is inferred automatically in local dev when no Supabase URL is set. For a **production** demo build it must be opted into explicitly with `NEXT_PUBLIC_DEMO_MODE=1` (it disables auth, so it never activates silently in production — a production build without Supabase keys fails closed instead).
 
 ### Full stack (real backend)
 
@@ -137,13 +170,32 @@ supabase start
 supabase db reset                        # applies all migrations
 pnpm db:types                            # regenerate typed schema
 
-# 2. Configure env (apps/web/.env.local)
-#    NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
-#    NEXT_PUBLIC_APP_URL, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, …
+# 2. Configure env (root .env.local) — see the table below
 
 # 3. Run web + worker
 pnpm dev
 ```
+
+---
+
+## Environment variables
+
+All apps read a single root `.env.local` in local dev (see [`.env.example`](.env.example)). In production, set these on the host. `NEXT_PUBLIC_*` vars are inlined at build time.
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | prod | Supabase project URL (client + server) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | prod | Supabase anon key (safe to expose) |
+| `SUPABASE_URL` | worker | Supabase URL for the worker |
+| `SUPABASE_SERVICE_ROLE_KEY` | server/worker | Service-role key — **server-only, never `NEXT_PUBLIC`** |
+| `NEXT_PUBLIC_APP_URL` | prod | Deployed origin — backs canonical URLs, OG tags, sitemap, Stripe redirects, auth emails |
+| `NEXT_PUBLIC_DEMO_MODE` | no | `1` to force the in-memory demo (disables auth — explicit opt-in) |
+| `STRIPE_SECRET_KEY` | billing | Stripe secret key |
+| `STRIPE_WEBHOOK_SECRET` | billing | Verifies inbound webhook signatures |
+| `STRIPE_PRICE_STARTER` / `_AGENCY` / `_SCALE` (+ `_ANNUAL`) | billing | Price IDs, per tier |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | billing | Stripe publishable key |
+| `NEXT_PUBLIC_SENTRY_DSN` / `SENTRY_DSN` | no | Error monitoring (inert when unset) |
+| `WORKER_*` | no | Worker tuning (poll interval, timeouts, concurrency, max attempts, health port) |
 
 ---
 
@@ -156,22 +208,43 @@ Run from the repo root:
 | `pnpm build` | Production build of every workspace (Turborepo) |
 | `pnpm typecheck` | `tsc --noEmit` across the monorepo |
 | `pnpm lint` | ESLint (Next.js config) |
-| `pnpm test` | Vitest — **79 unit tests** over scoring, plans, reports, security, SSRF, Stripe |
+| `pnpm test` | Vitest — **80 unit tests** over scoring, plans, reports, security, SSRF, Stripe |
 | `pnpm --filter @accessaudit/web e2e` | Playwright end-to-end flows |
+| `node apps/web/scripts/i18n-check.mjs` | Locale-parity check (all 5 languages in sync) |
 
-The test suite covers the load-bearing business logic directly: the scoring algorithm, plan-limit/entitlement math, report grouping, executive-summary risk grading, CSV formatting, SSRF URL guards, and Stripe webhook handling.
+Every push/PR runs typecheck, lint, unit tests, i18n parity, and build in **GitHub Actions CI**, plus **CodeQL** SAST. The test suite covers the load-bearing business logic directly: the scoring algorithm, plan-limit/entitlement math, report grouping, executive-summary risk grading, CSV formatting, SSRF URL guards, and Stripe webhook handling.
 
 ---
 
 ## Deployment
 
-The web app is deployed on Vercel (`accessaudit-pro.vercel.app`). Because it's a pnpm monorepo, set the Vercel **Root Directory** to `apps/web` and deploy from the repo root. The live instance runs in demo mode (no secrets), so it's a safe public showcase; point it at a real Supabase + Stripe project by adding the environment variables above.
+The web app is deployed on **Vercel** (`accessaudit-pro.vercel.app`). Because it's a pnpm monorepo, set the Vercel **Root Directory** to `apps/web` and deploy from the repo root. The live instance runs in demo mode (`NEXT_PUBLIC_DEMO_MODE=1`, no secrets), so it's a safe public showcase; point it at a real Supabase + Stripe project by adding the environment variables above.
+
+The **worker** needs Chromium and a long-running process (not serverless) — deploy it as a container (Railway, Fly, Render, or the provided [`Dockerfile.worker`](Dockerfile.worker)). For untrusted-tenant scanning at scale, run it behind **network egress filtering** (blocks private/metadata ranges as SSRF defense-in-depth). Full walkthrough in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md); security posture in [`SECURITY.md`](SECURITY.md).
 
 ---
 
 ## Accessibility & internationalization
 
-A tool that audits accessibility has to hold itself to the standard it enforces. AccessAudit Pro ships with keyboard-navigable flows, visible focus states, AA-contrast tokens in both themes, `prefers-reduced-motion` support, an explicit non-zoom-blocking viewport, and semantic landmarks. It's fully translated into five languages with correct right-to-left mirroring for Arabic — the entire app, including charts and tables, flips direction.
+A tool that audits accessibility has to hold itself to the standard it enforces. AccessAudit Pro ships with keyboard-navigable flows, visible focus states, **AA-contrast tokens verified in both light and dark**, `prefers-reduced-motion` support, an explicit non-zoom-blocking viewport, and semantic landmarks. It's fully translated into five languages with correct right-to-left mirroring for Arabic — the entire app, including charts and tables, flips direction.
+
+---
+
+## Roadmap
+
+- **Priority queue** — a `priority` sort key in `claim_next_scan()` to honor the priority-queue plan flag
+- **CSP nonce** — move `script-src` to a per-request nonce, dropping `'unsafe-inline'`
+- **Scheduled re-scans** — recurring audits per project with change diffs
+- **RLS integration tests in CI** — currently the pure security logic is unit-tested; add a live-Postgres RLS suite
+- **Manual-review workflow** — track the human-verified findings that automation can't catch, alongside the automated pass
+
+---
+
+## Credits
+
+- Scanning by [axe-core](https://github.com/dequelabs/axe-core) (Deque Systems) via [`@axe-core/playwright`](https://playwright.dev)
+- Backend by [Supabase](https://supabase.com); billing by [Stripe](https://stripe.com); hosting by [Vercel](https://vercel.com)
+- Type: [Inter](https://rsms.me/inter/) and [Fraunces](https://fonts.google.com/specimen/Fraunces); icons by [Lucide](https://lucide.dev)
 
 ---
 

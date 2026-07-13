@@ -29,6 +29,16 @@ import {
 type Row = Record<string, any>;
 type Result = { data: any; error: any; count: number | null; status: number; statusText: string };
 
+// Real Postgres orders the `impact` enum by declared severity (worst-first); the
+// mock must rank it the same way so `.order("impact")` keeps critical→minor rather
+// than falling back to alphabetical string compare (see order() below).
+const IMPACT_SORT_RANK: Record<string, number> = {
+  critical: 0,
+  serious: 1,
+  moderate: 2,
+  minor: 3,
+};
+
 const ok = (data: any, count: number | null = null): Result => ({
   data,
   error: null,
@@ -220,8 +230,12 @@ class MockQuery implements PromiseLike<Result> {
     if (this.ordering) {
       const { col, asc } = this.ordering;
       list = [...list].sort((a, b) => {
-        const av = a[col];
-        const bv = b[col];
+        // `impact` is a Postgres enum; real Postgres orders it by declared severity
+        // (critical→serious→moderate→minor), which is what `.order("impact")` relies
+        // on to keep worst-first (and make the row cap "keep the worst"). Raw string
+        // compare would give alphabetical order, so rank it explicitly to stay faithful.
+        const av = col === "impact" ? IMPACT_SORT_RANK[a[col] as string] ?? 99 : a[col];
+        const bv = col === "impact" ? IMPACT_SORT_RANK[b[col] as string] ?? 99 : b[col];
         if (av === bv) return 0;
         if (av == null) return 1;
         if (bv == null) return -1;

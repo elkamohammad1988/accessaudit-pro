@@ -10,14 +10,27 @@ export const publicEnv = {
 };
 
 /**
- * Demo mode — active when no Supabase project is configured. In this mode the app
- * runs entirely on the local in-memory dataset (lib/demo): `createClient`,
- * `createAdminClient` and the browser client all return a mock Supabase client,
- * and the middleware skips auth routing. `NEXT_PUBLIC_SUPABASE_URL` is inlined at
- * build time, so this resolves identically on server and client. Fill the Supabase
- * keys in `.env.local` to switch back to the real backend.
+ * Demo mode — the app runs entirely on the local in-memory dataset (lib/demo):
+ * `createClient`, `createAdminClient` and the browser client all return a mock
+ * Supabase client, and the middleware skips auth routing.
+ *
+ * FAIL CLOSED: demo mode disables authentication, so it must be an *explicit*
+ * opt-in — never the silent consequence of a missing secret. An explicit
+ * `NEXT_PUBLIC_DEMO_MODE` flag wins in both directions. With the flag unset we
+ * infer demo from the absence of a Supabase URL *only outside production*, for
+ * zero-config local dev; a production deploy that loses its Supabase env then
+ * fails closed (assertPublicEnv throws) instead of degrading to a single shared,
+ * unauthenticated tenant. All three inputs (the two `NEXT_PUBLIC_*` vars and
+ * `NODE_ENV`) are inlined by Next at build time, so this resolves identically on
+ * server and client.
  */
 export function isDemoMode(): boolean {
+  const flag = process.env.NEXT_PUBLIC_DEMO_MODE;
+  if (flag === "1" || flag === "true") return true;
+  if (flag === "0" || flag === "false") return false;
+  // Unset flag: infer from config only in non-production. In production the
+  // absence of a backend must break loudly, not silently disable auth.
+  if (process.env.NODE_ENV === "production") return false;
   return !process.env.NEXT_PUBLIC_SUPABASE_URL;
 }
 

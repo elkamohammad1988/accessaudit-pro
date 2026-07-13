@@ -39,6 +39,8 @@ export default async function ScanReportPage({
 
   const t = await getTranslations("scans");
   const tc = await getTranslations("common.actions");
+  const tb = await getTranslations("common.band");
+  const ts = await getTranslations("common.score");
   const locale = await getLocale();
 
   // Feedback for the redirect-only actions on this page (re-scan / delete / share).
@@ -181,6 +183,10 @@ export default async function ScanReportPage({
         groups={report.groups}
         totalViolationRows={report.totalViolationRows}
         truncated={report.truncated}
+        t={t}
+        tb={tb}
+        ts={ts}
+        locale={locale}
       />
     </div>
   );

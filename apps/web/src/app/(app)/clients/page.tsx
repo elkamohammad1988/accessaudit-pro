@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/app/page-header";
-import { EntityRow, ScorePill, StatPill } from "@/components/app/entity-row";
+import { EntityRow, StatPill } from "@/components/app/entity-row";
 import { ArchivedList } from "@/components/app/archived-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
@@ -130,12 +130,10 @@ export default async function ClientsPage() {
                     <>
                       <StatPill icon={FolderKanban} value={pc} label={tc.plural("stats.projects", pc)} />
                       <StatPill icon={ScanLine} value={sc} label={tc.plural("stats.scans", sc)} />
-                      <ScorePill
-                        score={score}
-                        label={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
-                      />
                     </>
                   }
+                  score={score}
+                  scoreLabel={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
                 />
               );
             })}

@@ -39,15 +39,39 @@ const TITLE = "AccessAudit Pro";
 const DESCRIPTION =
   "On-demand WCAG 2.2 accessibility audits and white-label reports for agencies.";
 
+// Namespaces consumed by CLIENT components (verified: every `useTranslations("…")`
+// call inside a `"use client"` module). These are the ONLY messages hydrated into
+// the browser via the client I18nProvider — server pages read the full catalog
+// through `getTranslations` independently, so `legal`/`guides`/`marketing`/
+// `dashboard`/`validation` (server-only, ~40 KB) never ship to the client.
+// ⚠️ If you add `useTranslations("x")` to a client component, add "x" here or its
+// keys will fall back to the raw key string in the browser.
+const CLIENT_NAMESPACES = new Set([
+  "auth",
+  "billing",
+  "clients",
+  "common",
+  "errors",
+  "language",
+  "nav",
+  "onboarding",
+  "plans",
+  "projects",
+  "scans",
+  "settings",
+]);
+
 // Own the viewport explicitly so zoom is never disabled (WCAG 1.4.4) and the
 // value is auditable rather than relying on Next's injected default.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   // Do NOT set maximumScale/userScalable — pinch-zoom must stay enabled.
+  // Matches the actual --background tokens (warm ivory / warm charcoal). Keep in
+  // sync with globals.css if the ground shifts — these tint the mobile browser chrome.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4fbf7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c1f18" },
+    { media: "(prefers-color-scheme: light)", color: "#fbf9f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#151311" },
   ],
 };
 
@@ -115,6 +139,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // correctly on the first byte — no client flip, no RTL flash.
   const locale = await getLocale();
   const messages = await getMessages(locale);
+  // Trim the client hydration payload to the namespaces client components use.
+  const clientMessages = Object.fromEntries(
+    Object.entries(messages).filter(([ns]) => CLIENT_NAMESPACES.has(ns)),
+  );
 
   return (
     <html
@@ -140,7 +168,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <noscript>
           <style>{".reveal{opacity:1 !important;transform:none !important}"}</style>
         </noscript>
-        <Providers locale={locale} messages={messages}>
+        <Providers locale={locale} messages={clientMessages}>
           {children}
         </Providers>
       </body>

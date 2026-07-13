@@ -1,14 +1,14 @@
 import { cn } from "@/lib/utils";
 
 /**
- * AuroraField — the ambient emerald light behind marketing/auth surfaces. Layered,
+ * AuroraField — the ambient warm-clay light behind marketing/auth surfaces. Layered,
  * all GPU-cheap (transform/opacity/blur only), and fully reduced-motion safe (the
  * blobs simply hold still):
  *
- *  1. Two-to-three blurred gradient BLOBS of emerald + mint that slowly drift and
+ *  1. Two-to-three blurred gradient BLOBS of warm clay + amber that slowly drift and
  *     breathe — the living "aurora" of light.
  *  2. A field of concentric contour rings emanating from a corner — the "assay"
- *     precision motif, drawn as hairline emerald strokes and masked to dissolve at
+ *     precision motif, drawn as hairline gold strokes and masked to dissolve at
  *     the edges, so it reads as a partial engraving.
  *  3. A couple of small floating glass shapes for depth.
  *
@@ -34,7 +34,7 @@ export function AuroraField({
       aria-hidden="true"
       className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden", className)}
     >
-      {/* Drifting emerald + mint light — the aurora, drawn to the focal corner. A bright
+      {/* Drifting warm-clay + gold light — the aurora, drawn to the focal corner. A bright
           bloom high on the anchor side, a softer pool beneath it, and just a whisper on
           the reading side so the field reads balanced rather than lopsided. */}
       <div

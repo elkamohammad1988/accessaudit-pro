@@ -244,6 +244,28 @@ async function processScan(scan: Scan): Promise<void> {
     return;
   }
 
+  // Interrupted-scan short-circuit (the caller-side guard persistence.ts's
+  // `summarize` comment relies on). `scanAllPages`' workers stop claiming URLs the
+  // moment `shuttingDown` flips, so a shutdown-interrupted multi-page scan returns a
+  // SPARSE result array (holes at the indices that never ran). Persisting that would
+  // finalize the scan as `completed`/`partial` with only the pages that happened to
+  // finish before the signal — permanently presenting a truncated audit as done.
+  // Instead bail and leave the row `running`: its heartbeat goes stale and
+  // `reapStaleScans` requeues it for a clean, full re-run.
+  //
+  // We key ONLY on the sparse check, not on `shuttingDown` itself: if the signal
+  // lands while the final in-flight pages are settling, they still fill their
+  // indices, so `scanAllPages` returns a DENSE, genuinely-complete array. That is a
+  // finished audit — persist it (one fast, idempotent RPC, guarded on
+  // status='running', well inside the shutdown force-quit window) rather than
+  // discarding real work. Gating on `shuttingDown ||` here would abandon it, wasting
+  // a full re-scan and — on the final attempt — letting the reaper mislabel a
+  // succeeded scan as `failed` ("timed out").
+  if (pages.some((p) => !p)) {
+    console.log(`scan ${scan.id} interrupted mid-scan — leaving 'running' for the reaper.`);
+    return;
+  }
+
   // Summary is derived from in-memory results, so we decide the terminal status
   // (and whether to persist) before writing.
   const summary = summarize(pages);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,10 +9,17 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FormError } from "@/components/ui/form-error";
-import { ScanRunner } from "@/components/scans/scan-runner";
 import { createScan, type NewScanState } from "@/app/(app)/scans/actions";
 import { isDemoMode } from "@/lib/env";
 import { useTranslations } from "@/i18n/provider";
+
+// The cinematic scan overlay (~388 lines: rAF loop, streaming log, staged
+// checklist) only mounts AFTER the form is submitted, so keep it out of the
+// initial /scans/new chunk and fetch it on demand — mirrors ScanLive → ScanSync.
+const ScanRunner = dynamic(
+  () => import("@/components/scans/scan-runner").then((m) => m.ScanRunner),
+  { ssr: false },
+);
 
 export interface ProjectOption {
   id: string;

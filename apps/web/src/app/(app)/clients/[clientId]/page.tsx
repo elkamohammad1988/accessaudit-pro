@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getTranslations } from "@/i18n/server";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { EntityRow, ScorePill, StatPill } from "@/components/app/entity-row";
+import { EntityRow, StatPill } from "@/components/app/entity-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NoticeBanner } from "@/components/ui/notice-banner";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
@@ -153,12 +153,10 @@ export default async function ClientDetailPage({
                     stats={
                       <>
                         <StatPill icon={ScanLine} value={sc} label={tc.plural("stats.scans", sc)} />
-                        <ScorePill
-                          score={score}
-                          label={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
-                        />
                       </>
                     }
+                    score={score}
+                    scoreLabel={score != null ? tc("score.aria", { score }) : tc("stats.noScans")}
                   />
                 );
               })}
