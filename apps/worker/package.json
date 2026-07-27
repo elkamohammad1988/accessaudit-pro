@@ -12,15 +12,15 @@
   "dependencies": {
     "@accessaudit/database": "workspace:*",
     "@accessaudit/shared": "workspace:*",
-    "@axe-core/playwright": "^4.11.3",
+    "@axe-core/playwright": "^4.12.1",
     "@sentry/node": "^8.47.0",
-    "@supabase/supabase-js": "2.47.10",
+    "@supabase/supabase-js": "2.110.8",
     "axe-core": "^4.12.1",
-    "playwright": "^1.60.0"
+    "playwright": "^1.62.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.1",
     "typescript": "^5.6.3"
   }
 }
