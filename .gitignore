@@ -15,8 +15,6 @@ next-env.d.ts
 .turbo/
 
 # Env / secrets
-.env
-.env.local
 .env.*.local
 *.local
 
@@ -34,7 +32,6 @@ pnpm-debug.log*
 .claude/scheduled_tasks.lock
 
 # Editor / OS
-.vscode/*
 !.vscode/extensions.json
 .idea/
 .DS_Store
@@ -47,3 +44,4 @@ test-results/
 
 # Portfolio capture output (screenshots / covers / video are large binaries — kept local)
 portfolio/
+config.bat
