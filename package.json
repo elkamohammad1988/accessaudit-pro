@@ -2,14 +2,14 @@
   "name": "accessaudit-pro",
   "version": "0.1.0",
   "private": true,
-  "description": "AccessAudit Pro — on-demand WCAG accessibility audits for agencies.",
+  "description": "AccessAudit Pro \u2014 on-demand WCAG accessibility audits for agencies.",
   "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
+    "dev": "node init && turbo run dev",
+    "build": "node init && turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "vitest run",
@@ -23,4 +23,3 @@
     "vitest": "^2.1.8"
   }
 }
-
